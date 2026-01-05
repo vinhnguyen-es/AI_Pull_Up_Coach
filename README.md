@@ -11,7 +11,7 @@ The backend processes video frames from the Android camera, detects body keypoin
 ### Backend (Python/FastAPI)
 
 **Core Components:**
-- `main.py`: FastAPI application with CORS, endpoints for frame analysis, session management, and status checks (709 lines)
+- `main.py`: FastAPI application with CORS, endpoints for frame analysis, session management, and status checks
 - `config.py`: Configuration with three debug modes (debug with frame saving, debug without saving, non-debug)
 - `run.py`: Uvicorn server launcher with command-line arguments
 
@@ -21,7 +21,7 @@ The backend processes video frames from the Android camera, detects body keypoin
   - Saves frames with timestamp: `frame_{num}_diff_{val}_reps_{count}_{timestamp}.jpg`
 
 **Models:**
-- `pull_up_counter.py`: **PullUpCounter** - Stateful rep counting logic using direction change detection (502 lines)
+- `pull_up_counter.py`: **PullUpCounter** - Stateful rep counting logic using direction change detection
   - Tracks wrist-to-shoulder vertical distance over time
   - Detects DOWN→UP motion patterns with hysteresis to prevent false positives
   - Uses configurable thresholds: movement_threshold (8px), min_movement_range (30px), rep_cooldown (2s)
@@ -35,7 +35,7 @@ The backend processes video frames from the Android camera, detects body keypoin
   - Keypoint index constants: LEFT_SHOULDER=5, RIGHT_SHOULDER=6, LEFT_WRIST=9, RIGHT_WRIST=10
 
 **Test:**
-- `test/test_pose_service_visualization.py`: Educational test script (292 lines) demonstrating:
+- `test/test_pose_service_visualization.py`: Educational test script demonstrating:
   - Webcam integration for testing pose detection
   - Real-time keypoint visualization
   - Pose skeleton drawing
@@ -72,7 +72,7 @@ python-multipart==0.0.20
   - Automatically ensures URL ends with `/`
 
 **ViewModels & State:**
-- `ui/viewmodels/WorkoutViewModels.kt`: Manages workout state, frame analysis requests, network error handling (208 lines)
+- `ui/viewmodels/WorkoutViewModels.kt`: Manages workout state, frame analysis requests, network error handling 
   - Frame throttling (5 FPS via CameraHelper)
   - Network resilience: max 5 consecutive failures before retry delay (5s)
   - Connection status tracking
@@ -87,13 +87,13 @@ python-multipart==0.0.20
   - `lastRepTime`: Timestamp of last counted rep
 
 **UI Components:**
-- `ui/screens/WorkoutScreen.kt`: Main workout interface composable (107 lines)
+- `ui/screens/WorkoutScreen.kt`: Main workout interface composable 
   - Combined Start/Reset button (starts when idle, resets when active)
   - Connection status indicator
   - Rep counter display
   - Error message cards with dismissal
-- `ui/components/CameraComponents.kt`: CameraX integration for frame capture (148 lines)
-- `ui/components/UIComponents.kt`: Reusable UI elements (243 lines)
+- `ui/components/CameraComponents.kt`: CameraX integration for frame capture
+- `ui/components/UIComponents.kt`: Reusable UI elements 
 
 **Theme:**
 - `ui/theme/Color.kt`: App color palette
@@ -104,7 +104,7 @@ python-multipart==0.0.20
 - `utils/ApiService.kt`: Retrofit interface for backend communication
   - Uses `AppConfig.backendUrl` for dynamic configuration
   - Endpoints: `/analyze_frame`, `/status`, `/reset_session`
-- `utils/CameraHelper.kt`: **Core camera implementation** (163 lines)
+- `utils/CameraHelper.kt`: **Core camera implementation** 
   - CameraX integration with RGBA output format
   - Frame throttling: 5 FPS (200ms intervals)
   - JPEG conversion with 70% quality
@@ -250,7 +250,6 @@ Test backend from Android device:
 
 For learning the codebase:
 - **test_pose_service_visualization.py**: Interactive webcam script showing pose detection in real-time
-- **LEARNING_ROADMAP.md**: Comprehensive 4-week learning guide with day-by-day activities
 - **keypoint_utils.py**: Reference for YOLO keypoint indices and extraction logic
 
 ### Network Resilience Features
@@ -267,41 +266,41 @@ The app includes robust error handling:
 ```
 AI_Pull_Up_Coach/
 ├── backend/
-│   ├── main.py                     # FastAPI application (709 lines)
-│   ├── config.py                   # Configuration & thresholds (73 lines)
-│   ├── run.py                      # Server launcher (27 lines)
+│   ├── main.py                     # FastAPI application 
+│   ├── config.py                   # Configuration & thresholds 
+│   ├── run.py                      # Server launcher 
 │   ├── requirements.txt            # Python dependencies
-│   ├── yolov8n-pose.pt            # YOLO model (6.8 MB)
+│   ├── yolov8n-pose.pt            
 │   ├── models/
-│   │   └── pull_up_counter.py     # Rep counting algorithm (502 lines)
+│   │   └── pull_up_counter.py     # Rep counting algorithm 
 │   ├── services/
-│   │   ├── pose_service.py        # YOLO wrapper (70 lines)
-│   │   └── debug_service.py       # Frame visualization (179 lines)
+│   │   ├── pose_service.py        # YOLO wrapper 
+│   │   └── debug_service.py       # Frame visualization
 │   ├── utils/
-│   │   ├── logging_utils.py       # Logging config (27 lines)
-│   │   └── keypoint_utils.py      # Keypoint extraction (98 lines)
+│   │   ├── logging_utils.py       # Logging config 
+│   │   └── keypoint_utils.py      # Keypoint extraction 
 │   ├── test/
-│   │   └── test_pose_service_visualization.py  # Educational webcam test (292 lines)
+│   │   └── test_pose_service_visualization.py  # Educational webcam test
 │   └── debug_frames/              # Created when --mode debug
 │
 └── frontend/app/src/main/java/vinh/nguyen/app/
-    ├── MainActivity.kt             # App entry point (105 lines)
+    ├── MainActivity.kt             # App entry point 
     ├── config/
-    │   └── AppConfig.kt           # Backend URL configuration (31 lines)
+    │   └── AppConfig.kt           # Backend URL configuration 
     ├── ui/
     │   ├── screens/
-    │   │   └── WorkoutScreen.kt   # Main UI (107 lines)
+    │   │   └── WorkoutScreen.kt   # Main UI 
     │   ├── components/
-    │   │   ├── CameraComponents.kt # Camera integration (148 lines)
-    │   │   └── UIComponents.kt     # Reusable components (243 lines)
+    │   │   ├── CameraComponents.kt # Camera integration 
+    │   │   └── UIComponents.kt     # Reusable components
     │   ├── viewmodels/
-    │   │   ├── WorkoutViewModels.kt # State management (208 lines)
-    │   │   └── WorkoutState.kt      # State data class (14 lines)
+    │   │   ├── WorkoutViewModels.kt # State management 
+    │   │   └── WorkoutState.kt      # State data class 
     │   └── theme/
     │       ├── Color.kt            # Color palette
     │       ├── Theme.kt            # Theme config
     │       └── Type.kt             # Typography
     └── utils/
-        ├── ApiService.kt           # Retrofit API (59 lines)
-        └── CameraHelper.kt         # Camera implementation (163 lines)
+        ├── ApiService.kt           # Retrofit API 
+        └── CameraHelper.kt         # Camera implementation 
 ```
