@@ -52,7 +52,7 @@ class MainActivity : ComponentActivity() {
                             viewModel = viewModel
                         )
                     }
-                    composable("PullUps") {
+                    composable("WorkoutScreen") {
                         WorkoutScreen(
                             viewModel = viewModel,
                             onFrameCapture = ::handleFrameCapture,
