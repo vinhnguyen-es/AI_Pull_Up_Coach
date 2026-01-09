@@ -49,24 +49,6 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-
-//        setContent {
-//            AppTheme {
-//                Surface(
-//                    modifier = Modifier.fillMaxSize(),
-//                    color = MaterialTheme.colorScheme.background
-//                ) {
-//                    WorkoutScreen(
-//                        viewModel = viewModel,
-//                        onFrameCapture = ::handleFrameCapture,
-//                        onCameraReady = ::handleCameraReady
-//                    )
-//                    ExercisesDisplay(
-//
-//                    )
-//                }
-//            }
-//        }
     }
 
     private fun setupWindow() {
