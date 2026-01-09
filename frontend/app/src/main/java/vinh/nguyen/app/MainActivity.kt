@@ -7,20 +7,13 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import vinh.nguyen.app.ui.screens.WorkoutScreen
-import vinh.nguyen.app.ui.theme.AppTheme
 import vinh.nguyen.app.ui.viewmodels.WorkoutViewModel
 import vinh.nguyen.app.utils.CameraHelper
 import kotlin.getValue
@@ -40,12 +33,14 @@ class MainActivity : ComponentActivity() {
         setupOrientation()
         initializeHelpers()
 
+        enableEdgeToEdge()
         setContent {
-            AppTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
+            val navController = rememberNavController()
+            NavHost(navController, startDestination = "ExercisesDisplay") {
+                composable("ExercisesDisplay") {
+                    ExercisesDisplay(navController)
+                }
+                composable("PullUps") {
                     WorkoutScreen(
                         viewModel = viewModel,
                         onFrameCapture = ::handleFrameCapture,
@@ -54,6 +49,24 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+
+//        setContent {
+//            AppTheme {
+//                Surface(
+//                    modifier = Modifier.fillMaxSize(),
+//                    color = MaterialTheme.colorScheme.background
+//                ) {
+//                    WorkoutScreen(
+//                        viewModel = viewModel,
+//                        onFrameCapture = ::handleFrameCapture,
+//                        onCameraReady = ::handleCameraReady
+//                    )
+//                    ExercisesDisplay(
+//
+//                    )
+//                }
+//            }
+//        }
     }
 
     private fun setupWindow() {
