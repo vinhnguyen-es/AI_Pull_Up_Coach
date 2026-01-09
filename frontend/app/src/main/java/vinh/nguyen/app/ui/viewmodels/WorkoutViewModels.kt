@@ -15,6 +15,9 @@ class WorkoutViewModel : ViewModel() {
     private val _state = MutableStateFlow(WorkoutState())
     val state: StateFlow<WorkoutState> = _state
 
+    // The exercise of which to count reps
+    private var exercise = ""
+
     // Controlled frame processing
     private var framesSentCount = 0
     private var lastLogTime = 0L
@@ -28,6 +31,15 @@ class WorkoutViewModel : ViewModel() {
 
     companion object {
         private const val TAG = "WorkoutViewModel"
+    }
+
+    /**
+     * Stores the exercise type that was selected on the home screen.
+     * Used to decide which model to use for counting reps.
+     */
+    fun chooseExercise(chosenExercise: String) {
+        exercise = chosenExercise
+        Log.i(TAG, "Selected exercise: $exercise")
     }
 
     /**
@@ -122,7 +134,7 @@ class WorkoutViewModel : ViewModel() {
                 val requestFile = frameData.toRequestBody("image/jpeg".toMediaTypeOrNull())
                 val multipartBody = MultipartBody.Part.createFormData("file", "frame_${framesSentCount}.jpg", requestFile)
 
-                val response = NetworkClient.apiService.analyzeFrame(multipartBody, )
+                val response = NetworkClient.apiService.analyzeFrame(multipartBody, exercise)
 
                 if (response.isSuccessful) {
                     response.body()?.let { result ->

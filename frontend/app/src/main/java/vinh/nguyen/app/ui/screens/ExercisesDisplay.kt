@@ -25,9 +25,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import vinh.nguyen.app.ui.viewmodels.WorkoutViewModel
 
 @Composable
-fun ExercisesDisplay(navController: NavController, modifier: Modifier = Modifier) {
+fun ExercisesDisplay(navController: NavController, modifier: Modifier = Modifier, viewModel: WorkoutViewModel) {
     Column(
         modifier = Modifier.background(Color.White)
     ) {
@@ -75,7 +76,8 @@ fun ExercisesDisplay(navController: NavController, modifier: Modifier = Modifier
                             text = text,
                             resource = resource,
                             resourceDescription = resourceDescription,
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f),
+                            viewModel = viewModel
                         )
                     }
                 }
@@ -85,9 +87,19 @@ fun ExercisesDisplay(navController: NavController, modifier: Modifier = Modifier
 }
 
 @Composable
-fun ExerciseCard(navController: NavController, text: String, resource: Int, resourceDescription: String, modifier: Modifier = Modifier) {
+fun ExerciseCard(
+    navController: NavController,
+    text: String,
+    resource: Int,
+    resourceDescription: String,
+    modifier: Modifier = Modifier,
+    viewModel: WorkoutViewModel
+) {
     Button(
-        onClick = { navController.navigate("PullUps") },
+        onClick = {
+            navController.navigate("WorkoutScreen")
+            viewModel.chooseExercise(text)
+        },
         modifier
             .padding(20.dp)
             .clip(RoundedCornerShape(50f))

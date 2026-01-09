@@ -38,9 +38,9 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
             NavHost(navController, startDestination = "ExercisesDisplay") {
                 composable("ExercisesDisplay") {
-                    ExercisesDisplay(navController)
+                    ExercisesDisplay(navController, viewModel = viewModel)
                 }
-                composable("PullUps") {
+                composable("WorkoutScreen") {
                     WorkoutScreen(
                         viewModel = viewModel,
                         onFrameCapture = ::handleFrameCapture,
