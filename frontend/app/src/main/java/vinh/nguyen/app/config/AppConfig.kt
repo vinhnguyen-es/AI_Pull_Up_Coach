@@ -23,7 +23,11 @@ object AppConfig {
      *
      * Note: The setter automatically ensures the URL has a trailing slash.
      */
-    var backendUrl: String = "http://192.168.1.8:8000/"
+//    var backendUrl: String = "http://113.176.100.97:8000/"
+    var backendUrl: String = "http://192.168.1.95:8000/"
+
+//    var backendUrl: String = "http://10.0.2.2:8000/"
+
         set(value) {
             field = if (value.endsWith("/")) value else "$value/"
         }

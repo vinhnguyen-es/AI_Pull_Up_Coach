@@ -228,7 +228,7 @@ private fun StartResetButton(
             .height(60.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = if (isWorkoutActive)
-                MaterialTheme.colorScheme.error
+                MaterialTheme.colorScheme.tertiary
             else
                 MaterialTheme.colorScheme.primary
         ),
