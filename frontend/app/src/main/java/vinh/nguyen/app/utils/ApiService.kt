@@ -11,6 +11,7 @@ import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
+import retrofit2.http.Query
 
 data class AnalysisResult(
     val rep_count: Int,
@@ -28,7 +29,8 @@ interface ApiService {
     @Multipart
     @POST("analyze_frame")
     suspend fun analyzeFrame(
-        @Part file: MultipartBody.Part
+        @Part file: MultipartBody.Part,
+        @Query("exercise") exercise: String
     ): Response<AnalysisResult>
 
     @GET("status")

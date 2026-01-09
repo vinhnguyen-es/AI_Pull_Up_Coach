@@ -43,12 +43,12 @@ import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material3.Icon
 import androidx.compose.material3.SwitchDefaults
-
+import vinh.nguyen.app.ui.viewmodels.WorkoutViewModel
 @Composable
 fun ExercisesDisplay(navController: NavController,
                      darkTheme: Boolean,
                      onToggleTheme: () -> Unit,
-                     modifier: Modifier = Modifier) {
+                     modifier: Modifier = Modifier, viewModel: WorkoutViewModel) {
     Column(
         //this is the banner colour
         modifier = Modifier.background(MaterialTheme.colorScheme.onTertiary)
@@ -121,7 +121,8 @@ fun ExercisesDisplay(navController: NavController,
                             text = text,
                             resource = resource,
                             resourceDescription = resourceDescription,
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f),
+                            viewModel = viewModel
                         )
                     }
                 }
@@ -131,13 +132,22 @@ fun ExercisesDisplay(navController: NavController,
 }
 
 @Composable
-fun ExerciseCard(navController: NavController, text: String, resource: Int, resourceDescription: String, modifier: Modifier = Modifier) {
+fun ExerciseCard(
+    navController: NavController,
+    text: String,
+    resource: Int,
+    resourceDescription: String,
+    modifier: Modifier = Modifier,
+    viewModel: WorkoutViewModel
+) {
     Button(
-        onClick = { navController.navigate("PullUps") },
+        onClick = {
+            navController.navigate("WorkoutScreen")
+            viewModel.chooseExercise(text)
+        },
         modifier
             .padding(20.dp)
             .clip(RoundedCornerShape(50f))
-            //this low key did nothing...
             .background(Color.White),
         colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.onSecondary),
         //^^ changes colours of buttons
@@ -159,7 +169,6 @@ fun ExerciseCard(navController: NavController, text: String, resource: Int, reso
                 textAlign = TextAlign.Center,
                 fontWeight = Bold,
                 fontSize = 25.sp,
-                //
                 color = Color.Black
             )
         }

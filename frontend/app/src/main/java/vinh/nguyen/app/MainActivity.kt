@@ -48,7 +48,8 @@ class MainActivity : ComponentActivity() {
                         ExercisesDisplay(
                             navController,
                             darkTheme = isDarkTheme,
-                            onToggleTheme = { isDarkTheme = !isDarkTheme }
+                            onToggleTheme = { isDarkTheme = !isDarkTheme},
+                            viewModel = viewModel
                         )
                     }
                     composable("PullUps") {
