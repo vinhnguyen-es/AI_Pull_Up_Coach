@@ -122,7 +122,7 @@ class WorkoutViewModel : ViewModel() {
                 val requestFile = frameData.toRequestBody("image/jpeg".toMediaTypeOrNull())
                 val multipartBody = MultipartBody.Part.createFormData("file", "frame_${framesSentCount}.jpg", requestFile)
 
-                val response = NetworkClient.apiService.analyzeFrame(multipartBody)
+                val response = NetworkClient.apiService.analyzeFrame(multipartBody, )
 
                 if (response.isSuccessful) {
                     response.body()?.let { result ->
