@@ -35,15 +35,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Brightness2
-import androidx.compose.material.icons.filled.Brightness7
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.DarkMode
-import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material3.Icon
 import androidx.compose.material3.SwitchDefaults
-import vinh.nguyen.app.ui.viewmodels.WorkoutState
 import vinh.nguyen.app.ui.viewmodels.WorkoutViewModel
 @Composable
 fun ExercisesDisplay(navController: NavController,
@@ -51,6 +46,7 @@ fun ExercisesDisplay(navController: NavController,
                      onToggleTheme: () -> Unit,
                      modifier: Modifier = Modifier, viewModel: WorkoutViewModel) {
     Column(
+        //this is the banner colour
         modifier = Modifier.background(MaterialTheme.colorScheme.onTertiary)
     ) {
         Row(
@@ -72,8 +68,19 @@ fun ExercisesDisplay(navController: NavController,
                 onToggle = onToggleTheme
             )
         }
+//        ThemeSwitch(darkTheme = darkTheme,
+//            onToggle = onToggleTheme)
+//        Text(
+//            text = stringResource(R.string.title),
+//            modifier = modifier.padding(20.dp).fillMaxWidth(),
+//            textAlign = TextAlign.Center,
+//            fontWeight = Bold,
+//            fontSize = 30.sp
+//        )
+
 
         Column(
+            //the background
             modifier.background(MaterialTheme.colorScheme.background),
             verticalArrangement = Arrangement.SpaceEvenly,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -139,6 +146,7 @@ fun ExerciseCard(
             .clip(RoundedCornerShape(50f))
             .background(Color.White),
         colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.onSecondary),
+        //^^ changes colours of buttons
         shape = RectangleShape
     ) {
         Column() {
@@ -175,6 +183,27 @@ class Toggle(){
     }
 }
 
+//@Composable
+//fun ThemeSwitch() {
+//    val toggle = remember { Toggle() }
+//    var darkTheme by remember { mutableStateOf(toggle.isDark) }
+//
+//    Row(
+//        verticalAlignment = Alignment.CenterVertically,
+//        modifier = Modifier.padding(16.dp)
+//    ) {
+//        Text("Dark Theme")
+//        Spacer(modifier = Modifier.width(8.dp))
+//        Switch(
+//            checked = darkTheme,
+//            onCheckedChange = {
+//                toggle.switchToggle()  // Call your function
+//                darkTheme = toggle.whichToggle()  // Update the state
+//            }
+//        )
+//    }
+//}
+
 @Composable
 fun ThemeSwitch(
     darkTheme: Boolean,
@@ -196,14 +225,12 @@ fun ThemeSwitch(
             onCheckedChange = { onToggle() },
             thumbContent = {
                 if (darkTheme) {
-
-                        Icon(
-                            imageVector = if (darkTheme) Icons.Filled.DarkMode else Icons.Filled.WbSunny,
-                            contentDescription = null,
-                            modifier = Modifier.size(SwitchDefaults.IconSize),
-                            tint = if (darkTheme) Color.Blue else Color.Yellow  // Custom colors!
-                        )
-
+                    Icon(
+                        imageVector = if (darkTheme) Icons.Filled.DarkMode else Icons.Filled.WbSunny,
+                        contentDescription = null,
+                        modifier = Modifier.size(SwitchDefaults.IconSize),
+                        tint = if (darkTheme) Color.Blue else Color.Yellow  // Custom colors!
+                    )
                 }
             }
         )
