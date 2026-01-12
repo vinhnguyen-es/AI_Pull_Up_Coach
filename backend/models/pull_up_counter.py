@@ -52,7 +52,7 @@ from utils.logging_utils import logger
 from utils.keypoint_utils import extract_shoulder_wrist_keypoints, calculate_wrist_shoulder_diff
 
 
-from counters.base_counter import Counter
+from models.base_counter import Counter
 from utils.keypoint_utils import extract_shoulder_wrist_keypoints, calculate_wrist_shoulder_diff
 
 

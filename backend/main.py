@@ -100,7 +100,7 @@ from models.jumping_jack_counter import JumpingJackCounter
 from models.push_up_counter import PushUpCounter
 from models.sit_up_counter import SitUpCounter
 from models.squat_counter import SquatCounter
-from models.counter import Counter
+from models.base_counter import Counter
 
 # ============================================================================
 # CONFIGURATION AND CONSTANTS
