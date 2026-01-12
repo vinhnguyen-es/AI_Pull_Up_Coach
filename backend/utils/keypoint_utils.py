@@ -63,7 +63,7 @@ def extract_shoulder_wrist_keypoints(
         return None, None, None, None, None
 
 
-def calculate_wrist_shoulder_diff(
+def calculate_vertical_wrist_shoulder_diff(
     left_shoulder: np.ndarray,
     right_shoulder: np.ndarray,
     left_wrist: np.ndarray,
@@ -86,12 +86,49 @@ def calculate_wrist_shoulder_diff(
         Negative values indicate wrists are above shoulders (pulled up position).
 
     Example:
-        >>> diff = calculate_wrist_shoulder_diff(ls, rs, lw, rw)
+        >>> diff = calculate_vertical_wrist_shoulder_diff(ls, rs, lw, rw)
         >>> if diff > 30:
         ...     print("Person is in hanging position")
         >>> elif diff < -30:
         ...     print("Person is in pulled-up position")
     """
+    shoulder_y = (left_shoulder[1] + right_shoulder[1]) / 2
+    wrist_y = (left_wrist[1] + right_wrist[1]) / 2
+    return wrist_y - shoulder_y
+
+def calculate_horizontal_wrist_shoulder_diff(
+        left_shoulder: np.ndarray,
+        right_shoulder: np.ndarray,
+        left_wrist: np.ndarray,
+        right_wrist: np.ndarray,
+        arm: str = "Both"
+) -> float:
+    """Calculate vertical difference between average wrist and shoulder positions.
+
+    This metric is used to determine if the person is at the top (wrists above shoulders)
+    or bottom (wrists below shoulders) of a pull-up motion.
+
+    Args:
+        left_shoulder: Left shoulder keypoint [x, y, confidence]
+        right_shoulder: Right shoulder keypoint [x, y, confidence]
+        left_wrist: Left wrist keypoint [x, y, confidence]
+        right_wrist: Right wrist keypoint [x, y, confidence]
+
+    Returns:
+        Vertical difference (wrist_y - shoulder_y) in pixels.
+        Positive values indicate wrists are below shoulders (hanging position).
+        Negative values indicate wrists are above shoulders (pulled up position).
+
+    Example:
+        >>> diff = calculate_vertical_wrist_shoulder_diff(ls, rs, lw, rw)
+        >>> if diff > 30:
+        ...     print("Person is in hanging position")
+        >>> elif diff < -30:
+        ...     print("Person is in pulled-up position")
+    """
+    match arm:
+        case "Both":
+
     shoulder_y = (left_shoulder[1] + right_shoulder[1]) / 2
     wrist_y = (left_wrist[1] + right_wrist[1]) / 2
     return wrist_y - shoulder_y
