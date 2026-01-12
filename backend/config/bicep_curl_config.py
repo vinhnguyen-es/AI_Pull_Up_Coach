@@ -16,7 +16,6 @@ from pathlib import Path
 from typing import Optional, Dict
 
 from config.config import DebugMode
-from config.pull_up_config import BicepCurlConfig
 
 
 class BicepCurlConfig:

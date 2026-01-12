@@ -214,7 +214,7 @@ class BicepCurlCounter:
             # Not enough confirmation yet, maintain current state
             return self.current_direction
 
-    def _record_direction_change(self, new_direction: str, current_diff: float) -> None:
+    def _record_direction_change(self, new_direction: str, current_diff: dict[str, float]) -> None:
         """
         Record a confirmed direction change in the history.
 
@@ -234,7 +234,7 @@ class BicepCurlCounter:
         if config.debug_mode != DebugMode.NON_DEBUG:
             logger.info(f"Direction change: {self.current_direction.upper()} (diff: {current_diff:.1f})")
 
-    def detect_direction_change(self, current_diff: float) -> Tuple[str, float]:
+    def detect_direction_change(self, current_diff: dict[str, float]) -> Tuple[str, float]:
         """
         Detect and confirm direction changes in vertical movement.
 
@@ -285,7 +285,7 @@ class BicepCurlCounter:
 
         return confirmed_direction, abs(movement)
 
-    def _validate_keypoints(self, keypoints: Optional[np.ndarray]) -> Tuple[bool, Optional[str], Optional[float]]:
+    def _validate_keypoints(self, keypoints: Optional[np.ndarray]) -> Tuple[bool, Optional[str], Optional[dict]]:
         """
         Validate keypoint data quality and extract relevant points.
 
@@ -318,11 +318,24 @@ class BicepCurlCounter:
             return False, self.STATUS_LOW_CONFIDENCE, None
 
         # Calculate distance between wrist and shoulder
-        wrist_shoulder_diff = calculate_wrist_shoulder_diff(
-            left_shoulder, right_shoulder, left_wrist, right_wrist
+        left_vertical_wrist_shoulder_diff = calculate_wrist_shoulder_diff(
+            left_shoulder, right_shoulder, left_wrist, right_wrist, "left", "vertical"
+        )
+        left_horizontal_wrist_shoulder_diff = calculate_wrist_shoulder_diff(
+            left_shoulder, right_shoulder, left_wrist, right_wrist, "left", "horizontal"
         )
 
-        return True, None, wrist_shoulder_diff
+        right_vertical_wrist_shoulder_diff = calculate_wrist_shoulder_diff(
+            left_shoulder, right_shoulder, left_wrist, right_wrist, "right", "vertical"
+        )
+        right_horizontal_wrist_shoulder_diff = calculate_wrist_shoulder_diff(
+            left_shoulder, right_shoulder, left_wrist, right_wrist, "right", "horizontal"
+        )
+        # Calculate and store total distance between wrist and shoulder
+        distances = {"left": np.sqrt(left_vertical_wrist_shoulder_diff ** 2 + left_horizontal_wrist_shoulder_diff ** 2),
+                     "right": np.sqrt(right_vertical_wrist_shoulder_diff ** 2 + right_horizontal_wrist_shoulder_diff ** 2)}
+
+        return True, None, distances
 
     def _check_for_rep_completion(self) -> bool:
         """

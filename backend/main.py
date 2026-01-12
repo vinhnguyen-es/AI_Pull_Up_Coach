@@ -275,7 +275,7 @@ def _calculate_debug_diff(keypoints: Optional[np.ndarray]) -> float:
 
     # Calculate the vertical difference metric
     diff = calculate_wrist_shoulder_diff(
-        left_shoulder, right_shoulder, left_wrist, right_wrist
+        left_shoulder, right_shoulder, left_wrist, right_wrist,
     )
 
     return diff
