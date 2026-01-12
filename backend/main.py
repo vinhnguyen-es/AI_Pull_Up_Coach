@@ -93,6 +93,7 @@ from utils.logging_utils import logger
 from utils.keypoint_utils import extract_shoulder_wrist_keypoints, calculate_wrist_shoulder_diff
 from services.pose_service import pose_service
 from services.debug_service import debug_service
+
 from models.pull_up_counter import PullUpCounter
 from models.bicep_curl_counter import BicepCurlCounter
 from models.jumping_jack_counter import JumpingJackCounter
@@ -255,7 +256,7 @@ def _get_or_create_session(session_id: str, exercise: str) -> Counter:
             case "PullUps":
                 workout_sessions[session_id] = PullUpCounter()
             case "BicepCurls":
-                workout_sessions[session_id] = BicepCounter()
+                workout_sessions[session_id] = BicepCurlCounter()
             case "JumpingJacks":
                 workout_sessions[session_id] = JumpingJackCounter()
             case "PushUps":
@@ -264,6 +265,12 @@ def _get_or_create_session(session_id: str, exercise: str) -> Counter:
                 workout_sessions[session_id] = SitUpCounter()
             case "Squats":
                 workout_sessions[session_id] = SquatCounter()
+            case x:
+                UNKOWN_EXERCISE_ERROR = f"Attempted to Create Session With Unknown Exercise. \
+                Got: {x}. Expected one of: (PullUps, BicepCurls, JumpingJacks, PushUps, SitUps, Squats)."
+
+                logger.error(UNKOWN_EXERCISE_ERROR)
+                raise ValueError(UNKOWN_EXERCISE_ERROR)
 
     return workout_sessions[session_id]
 
