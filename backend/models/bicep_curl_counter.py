@@ -337,7 +337,7 @@ class BicepCurlCounter:
 
         return True, None, distances
 
-    def arm_movement_type():
+    def arm_movement_type(self):
         recent_positions = list(self.position_history)[-self.LOOKBACK_FRAMES:]
         recent_positions_length = len(recent_positions)
 
@@ -346,24 +346,24 @@ class BicepCurlCounter:
         left_sum = 0
         right_sum = 0
 
-        for (current_pos in recent_positions):
-            recent_lefts.append(current_pos[left])
-            recent_rights.append(current_pos[right])
+        for current_pos in recent_positions:
+            recent_lefts.append(current_pos["left"])
+            recent_rights.append(current_pos["right"])
 
-        for (left in recent_lefts):
+        for left in recent_lefts:
             left_sum += abs(left)
 
-        for (right in recent_rights)
+        for right in recent_rights:
             right_sum += abs(right)
 
         ##########
         ##########
-        if (left_sum and right_sum) < config.min_arm_movement_threshold: return null
+        if (left_sum and right_sum) < config.min_arm_movement_threshold: return None
         elif (left_sum < right_sum): return "right"
         elif (left_sum > right_sum): return "left"
         else: return "both"
 
-    def _check_for_rep_completion(self) -> bool:
+    def _check_for_rep_completion(self, moving_arm: str) -> bool:
         """
         Check if recent direction changes indicate a completed rep.
 
@@ -409,20 +409,40 @@ class BicepCurlCounter:
             return False
 
         # Validate movement range to ensure full range of motion
-        #TODO
-        down_position = recent_changes[0][2]  # Position at bottom of rep
-        up_position = recent_changes[1][2]  # Position at top of rep
-        print(f"{recent_changes=}")
-        movement_range = abs(up_position - down_position)
-        print(f"{movement_range=}")
+        match moving_arm:
+            case "left":
+                left_down_position = recent_changes[0][2]["left"]  # Position at bottom of rep
+                left_up_position = recent_changes[1][2]["left"]  # Position at top of rep
+                left_movement_range = abs(left_up_position - left_down_position)
 
-        # Ensure the movement was significant (prevents counting tiny bounces)
-        if movement_range <= config.min_movement_range:
-            return False
+                # Ensure the movement was significant (prevents counting tiny bounces)
+                if left_movement_range <= config.min_movement_range:
+                    return False
 
-        # All criteria met - count the rep!
-        self._count_rep(down_position, up_position, movement_range)
-        return True
+                    # All criteria met - count the rep!
+                self._count_rep(left_down_position, left_up_position, left_movement_range)
+                return True
+
+            case "right" | "both": # If both are moving, we can just look at one
+                right_down_position = recent_changes[0][2]["right"]  # Position at bottom of rep
+                right_up_position = recent_changes[1][2]["right"]  # Position at top of rep
+                right_movement_range = abs(right_up_position - right_down_position)
+
+                # Ensure the movement was significant (prevents counting tiny bounces)
+                if right_movement_range <= config.min_movement_range:
+                    return False
+
+                    # All criteria met - count the rep!
+                self._count_rep(right_down_position, right_up_position, right_movement_range)
+                return True
+
+            case _:
+                INVALID_MOVING_ARM_MSG = f"Invalid moving arm passed to _check_for_rep_completion. \
+                Got: {moving_arm}, Expected one of: (left, right, both)."
+
+                logger.log(INVALID_MOVING_ARM_MSG)
+                raise ValueError(INVALID_MOVING_ARM_MSG)
+
 
     def _count_rep(self, down_position: float, up_position: float, movement_range: float) -> None:
         """
@@ -501,7 +521,7 @@ class BicepCurlCounter:
             direction, magnitude = self.detect_direction_change(wrist_shoulder_diff)
 
             # Step 3: Check if we've completed a rep (DOWN -> UP pattern)
-            self._check_for_rep_completion()
+            self._check_for_rep_completion(moving_arm="right")
 
             # Step 4: Update display status for UI feedback
             self._update_display_status(direction)
