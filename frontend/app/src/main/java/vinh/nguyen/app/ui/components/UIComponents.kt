@@ -151,24 +151,6 @@ private fun PanelTitle(viewModel: WorkoutViewModel) {
     )
 }
 
-//@Composable
-//private fun PanelTitle() {
-//    Text(
-//        text = when (x){
-//        x.PullUps -> "PULL-UP\nCOACH",
-//        x.JumpingJacks ->"JUMPING-JACK\nCOACH",}
-//        fontSize = 16.sp,//COULD CHANGE FONT SIZE BASED ON CHOSEN EXERCISE
-//        fontWeight = FontWeight.Bold,
-//        textAlign = TextAlign.Center,
-//        color = MaterialTheme.colorScheme.secondary
-//    )
-//Text(
-//text = if (isWorkoutActive) "RESET" else "START",
-//fontWeight = FontWeight.Bold,
-//fontSize = 16.sp
-//)
-//}
-
 @Composable
 private fun StatsDisplay(state: WorkoutState) {
     Column(
