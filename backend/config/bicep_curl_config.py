@@ -14,17 +14,12 @@ Debug Modes:
 import argparse
 from pathlib import Path
 from typing import Optional, Dict
-from enum import Enum
+
+from config.config import DebugMode
+from config.pull_up_config import BicepCurlConfig
 
 
-class DebugMode(str, Enum):
-    """Debug mode configuration options."""
-    DEBUG = "debug"
-    DEBUG_NO_SAVE = "debug_no_save"
-    NON_DEBUG = "non_debug"
-
-
-class Config:
+class BicepCurlConfig:
     """Application configuration"""
 
     def __init__(self):
@@ -71,4 +66,4 @@ class Config:
 
 
 # Global config instance
-config = Config()
+config = BicepCurlConfig()

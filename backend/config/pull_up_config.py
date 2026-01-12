@@ -14,17 +14,11 @@ Debug Modes:
 import argparse
 from pathlib import Path
 from typing import Optional, Dict
-from enum import Enum
+
+from config.config import DebugMode
 
 
-class DebugMode(str, Enum):
-    """Debug mode configuration options."""
-    DEBUG = "debug"
-    DEBUG_NO_SAVE = "debug_no_save"
-    NON_DEBUG = "non_debug"
-
-
-class Config:
+class PullUpConfig:
     """Application configuration"""
     
     def __init__(self):
@@ -52,7 +46,7 @@ class Config:
         parser.add_argument(
             "--mode", 
             choices=["debug", "debug_no_save", "non_debug"],
-            default="debug",
+            default="non_debug",
             help="Debug mode: 'debug' (save frames), 'debug_no_save' (no frame saving), 'non_debug' (minimal logging)"
         )
         args = parser.parse_args()
@@ -70,4 +64,4 @@ class Config:
         return self.mode_descriptions[self.debug_mode]
 
 # Global config instance
-config = Config()
+config = PullUpConfig()
