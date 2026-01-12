@@ -360,7 +360,7 @@ def _build_response_data(
 # ============================================================================
 
 @app.post("/analyze_frame")
-async def analyze_frame(file: UploadFile = File(...)) -> Dict[str, Any]:
+async def analyze_frame(file: UploadFile = File(...), exercise: str = "No Selected Exercise") -> Dict[str, Any]:
     """
     Analyze a single video frame for pull-up detection.
 
@@ -407,6 +407,7 @@ async def analyze_frame(file: UploadFile = File(...)) -> Dict[str, Any]:
             }
         }
     """
+    print(f"{exercise=}")
     # Verify pose detection model is loaded
     if not pose_service.model:
         raise HTTPException(
