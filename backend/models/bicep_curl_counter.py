@@ -48,11 +48,12 @@ import numpy as np
 from collections import deque
 from typing import Tuple, Optional
 from config.bicep_curl_config import config, DebugMode
+from models.base_counter import Counter
 from utils.logging_utils import logger
 from utils.keypoint_utils import extract_shoulder_wrist_keypoints, calculate_wrist_shoulder_diff
 
 
-class BicepCurlCounter:
+class BicepCurlCounter(Counter):
     """
     Pull-up counter using direction change detection.
 

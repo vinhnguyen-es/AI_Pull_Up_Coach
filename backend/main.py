@@ -254,17 +254,17 @@ def _get_or_create_session(session_id: str, exercise: str) -> Counter:
         logger.info(f"Creating new workout session: {session_id}")
         match exercise:
             case "PullUps":
-                workout_sessions[session_id] = PullUpCounter()
+                workout_sessions[session_id] = PullUpCounter(config, logger)
             case "BicepCurls":
-                workout_sessions[session_id] = BicepCurlCounter()
+                workout_sessions[session_id] = BicepCurlCounter(config, logger)
             case "JumpingJacks":
-                workout_sessions[session_id] = JumpingJackCounter()
+                workout_sessions[session_id] = JumpingJackCounter(config, logger)
             case "PushUps":
-                workout_sessions[session_id] = PushUpCounter()
+                workout_sessions[session_id] = PushUpCounter(config, logger)
             case "SitUps":
-                workout_sessions[session_id] = SitUpCounter()
+                workout_sessions[session_id] = SitUpCounter(config, logger)
             case "Squats":
-                workout_sessions[session_id] = SquatCounter()
+                workout_sessions[session_id] = SquatCounter(config, logger)
             case x:
                 UNKOWN_EXERCISE_ERROR = f"Attempted to Create Session With Unknown Exercise. \
                 Got: {x}. Expected one of: (PullUps, BicepCurls, JumpingJacks, PushUps, SitUps, Squats)."
