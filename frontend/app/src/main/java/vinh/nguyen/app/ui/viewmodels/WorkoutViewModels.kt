@@ -29,6 +29,8 @@ class WorkoutViewModel : ViewModel() {
     private var consecutiveFailures = 0
     private val maxConsecutiveFailures = 5
 
+    var exerciseType = ""
+
     companion object {
         private const val TAG = "WorkoutViewModel"
     }
@@ -39,8 +41,13 @@ class WorkoutViewModel : ViewModel() {
      */
     fun chooseExercise(chosenExercise: String) {
         exercise = chosenExercise
+        exerciseType = chosenExercise
         Log.i(TAG, "Selected exercise: $exercise")
     }
+    fun returnExercise(): String {
+        return exerciseType
+    }
+
 
     /**
      * Stops the workout without resetting count.

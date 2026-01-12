@@ -63,7 +63,8 @@ fun WorkoutScreen(
                 .padding(8.dp),
             state = state,
             onStartReset = { viewModel.startOrReset() },
-            onReconnect = { viewModel.testConnection() }
+            onReconnect = { viewModel.testConnection() },
+            viewModel = viewModel
         )
     }
 }

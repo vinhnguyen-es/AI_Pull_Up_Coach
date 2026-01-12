@@ -16,6 +16,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import vinh.nguyen.app.ui.viewmodels.WorkoutState
+import vinh.nguyen.app.ui.viewmodels.WorkoutViewModel
 
 @Composable
 fun ConnectionStatusCard(
@@ -105,7 +106,8 @@ fun ControlPanel(
     modifier: Modifier = Modifier,
     state: WorkoutState,
     onStartReset: () -> Unit,
-    onReconnect: () -> Unit
+    onReconnect: () -> Unit,
+    viewModel: WorkoutViewModel
 ) {
     Card(
         modifier = modifier,
@@ -120,7 +122,7 @@ fun ControlPanel(
             verticalArrangement = Arrangement.SpaceEvenly
         ) {
             // Title
-            PanelTitle()
+            PanelTitle(viewModel)
 
             // Stats Display
             StatsDisplay(state)
@@ -137,16 +139,35 @@ fun ControlPanel(
 }
 
 //PULL UP COACH MESSAGE
+// THIS IS  GONNA HAVE TO CHANGE BASED ON WHICH ONE IT IS//
 @Composable
-private fun PanelTitle() {
+private fun PanelTitle(viewModel: WorkoutViewModel) {
     Text(
-        text = "PULL-UP\nCOACH",
+        text = viewModel.returnExercise() + " Coach",//"PULL-UP\nCOACH",
         fontSize = 18.sp,
         fontWeight = FontWeight.Bold,
         textAlign = TextAlign.Center,
-        color = MaterialTheme.colorScheme.secondary//Color.Red//
+        color = MaterialTheme.colorScheme.secondary
     )
 }
+
+//@Composable
+//private fun PanelTitle() {
+//    Text(
+//        text = when (x){
+//        x.PullUps -> "PULL-UP\nCOACH",
+//        x.JumpingJacks ->"JUMPING-JACK\nCOACH",}
+//        fontSize = 16.sp,//COULD CHANGE FONT SIZE BASED ON CHOSEN EXERCISE
+//        fontWeight = FontWeight.Bold,
+//        textAlign = TextAlign.Center,
+//        color = MaterialTheme.colorScheme.secondary
+//    )
+//Text(
+//text = if (isWorkoutActive) "RESET" else "START",
+//fontWeight = FontWeight.Bold,
+//fontSize = 16.sp
+//)
+//}
 
 @Composable
 private fun StatsDisplay(state: WorkoutState) {
@@ -156,7 +177,6 @@ private fun StatsDisplay(state: WorkoutState) {
         Text(
             text = "Current Reps",
             fontSize = 12.sp,
-            //used to be .onSurface.copy, is now
             color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.7f)
         )
         Text(
