@@ -26,13 +26,13 @@ class BicepCurlConfig:
         self.save_frames: bool = False
         self.debug_dir: Optional[Path] = None
         self.min_confidence: float = 0.3
-        self.rep_cooldown: float = 2.0
+        self.rep_cooldown: float = 0.75
         self.min_consecutive_frames: int = 3
         self.movement_threshold: int = 8
-        self.min_movement_range: int = 30
+        self.min_movement_range: int = 20 # Ensures full range of movement
         self.image_width_limit: int = 640
         self.model_conf_threshold: float = 0.4
-        self.min_arm_movement_threashold = 20#####TODO########
+        self.min_arm_movement_threshold = 20 # TODO: experiment with and test these values
 
         # Mode descriptions
         self.mode_descriptions: Dict[DebugMode, str] = {
