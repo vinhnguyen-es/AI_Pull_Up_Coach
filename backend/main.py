@@ -407,7 +407,6 @@ async def analyze_frame(file: UploadFile = File(...), exercise: str = "No Select
             }
         }
     """
-    print(f"{exercise=}")
     # Verify pose detection model is loaded
     if not pose_service.model:
         raise HTTPException(
