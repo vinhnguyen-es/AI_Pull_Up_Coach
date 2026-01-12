@@ -337,6 +337,32 @@ class BicepCurlCounter:
 
         return True, None, distances
 
+    def arm_movement_type():
+        recent_positions = list(self.position_history)[-self.LOOKBACK_FRAMES:]
+        recent_positions_length = len(recent_positions)
+
+        recent_lefts = list()
+        recent_rights = list()
+        left_sum = 0
+        right_sum = 0
+
+        for (current_pos in recent_positions):
+            recent_lefts.append(current_pos[left])
+            recent_rights.append(current_pos[right])
+
+        for (left in recent_lefts):
+            left_sum += abs(left)
+
+        for (right in recent_rights)
+            right_sum += abs(right)
+
+        ##########
+        ##########
+        if (left_sum and right_sum) < config.min_arm_movement_threshold: return null
+        elif (left_sum < right_sum): return "right"
+        elif (left_sum > right_sum): return "left"
+        else: return "both"
+
     def _check_for_rep_completion(self) -> bool:
         """
         Check if recent direction changes indicate a completed rep.
@@ -375,14 +401,15 @@ class BicepCurlCounter:
 
         # Extract direction states from history entries
         # Each entry is (direction, timestamp, position)
+        """TODO"""
         prev_direction = recent_changes[0][0]
         curr_direction = recent_changes[1][0]
-
         # Check for the DOWN -> UP pattern (the rep signature)
         if not (prev_direction == self.DIRECTION_DOWN and curr_direction == self.DIRECTION_UP):
             return False
 
         # Validate movement range to ensure full range of motion
+        #TODO
         down_position = recent_changes[0][2]  # Position at bottom of rep
         up_position = recent_changes[1][2]  # Position at top of rep
         print(f"{recent_changes=}")

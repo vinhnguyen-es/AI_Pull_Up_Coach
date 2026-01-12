@@ -20,6 +20,12 @@ KEYPOINT_RIGHT_SHOULDER = 6
 KEYPOINT_LEFT_WRIST = 9
 KEYPOINT_RIGHT_WRIST = 10
 
+ARM_MOVEMENT_BOTH = "BOTH"
+ARM_MOVEMENT_LEFT = "LEFT"
+ARM_MOVEMENT_RIGHT = "RIGHT"
+ARM_MOVEMENT_NEITHER = null
+
+
 
 def extract_shoulder_wrist_keypoints(
     keypoints: np.ndarray,
@@ -62,6 +68,9 @@ def extract_shoulder_wrist_keypoints(
 
     except (IndexError, TypeError):
         return None, None, None, None, None
+
+
+
 
 
 def calculate_wrist_shoulder_diff(
@@ -111,3 +120,6 @@ def calculate_wrist_shoulder_diff(
             logger.log(f"Arm was: {arm}. Expected one of (both, left, right).")
             raise ValueError(f"Arm was: {arm}. Expected one of (both, left, right).")
     return wrist - shoulder
+
+
+

@@ -32,6 +32,7 @@ class BicepCurlConfig:
         self.min_movement_range: int = 30
         self.image_width_limit: int = 640
         self.model_conf_threshold: float = 0.4
+        self.min_arm_movement_threashold = 20#####TODO########
 
         # Mode descriptions
         self.mode_descriptions: Dict[DebugMode, str] = {
