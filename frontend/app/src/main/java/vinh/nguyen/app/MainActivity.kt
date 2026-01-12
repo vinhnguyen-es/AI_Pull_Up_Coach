@@ -7,6 +7,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -14,6 +18,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import vinh.nguyen.app.ui.screens.WorkoutScreen
+import vinh.nguyen.app.ui.theme.AppTheme
 import vinh.nguyen.app.ui.viewmodels.WorkoutViewModel
 import vinh.nguyen.app.utils.CameraHelper
 import kotlin.getValue
@@ -35,17 +40,25 @@ class MainActivity : ComponentActivity() {
 
         enableEdgeToEdge()
         setContent {
-            val navController = rememberNavController()
-            NavHost(navController, startDestination = "ExercisesDisplay") {
-                composable("ExercisesDisplay") {
-                    ExercisesDisplay(navController, viewModel = viewModel)
-                }
-                composable("WorkoutScreen") {
-                    WorkoutScreen(
-                        viewModel = viewModel,
-                        onFrameCapture = ::handleFrameCapture,
-                        onCameraReady = ::handleCameraReady
-                    )
+            var isDarkTheme by remember { mutableStateOf(false) }
+            AppTheme(darkTheme = isDarkTheme) {
+                val navController = rememberNavController()
+                NavHost(navController, startDestination = "ExercisesDisplay") {
+                    composable("ExercisesDisplay") {
+                        ExercisesDisplay(
+                            navController,
+                            darkTheme = isDarkTheme,
+                            onToggleTheme = { isDarkTheme = !isDarkTheme},
+                            viewModel = viewModel
+                        )
+                    }
+                    composable("WorkoutScreen") {
+                        WorkoutScreen(
+                            viewModel = viewModel,
+                            onFrameCapture = ::handleFrameCapture,
+                            onCameraReady = ::handleCameraReady
+                        )
+                    }
                 }
             }
         }

@@ -5,14 +5,23 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,22 +34,58 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Brightness2
+import androidx.compose.material.icons.filled.Brightness7
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material.icons.filled.WbSunny
+import androidx.compose.material3.Icon
+import androidx.compose.material3.SwitchDefaults
 import vinh.nguyen.app.ui.viewmodels.WorkoutViewModel
-
 @Composable
-fun ExercisesDisplay(navController: NavController, modifier: Modifier = Modifier, viewModel: WorkoutViewModel) {
+fun ExercisesDisplay(navController: NavController,
+                     darkTheme: Boolean,
+                     onToggleTheme: () -> Unit,
+                     modifier: Modifier = Modifier, viewModel: WorkoutViewModel) {
     Column(
-        modifier = Modifier.background(Color.White)
+        //this is the banner colour
+        modifier = Modifier.background(MaterialTheme.colorScheme.onTertiary)
     ) {
-        Text(
-            text = stringResource(R.string.title),
-            modifier = modifier.padding(20.dp).fillMaxWidth(),
-            textAlign = TextAlign.Center,
-            fontWeight = Bold,
-            fontSize = 30.sp
-        )
+        Row(
+            modifier = modifier
+                .padding(20.dp)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = stringResource(R.string.title),
+                textAlign = TextAlign.Center,
+                fontWeight = Bold,
+                fontSize = 30.sp
+            )
+
+            ThemeSwitch(
+                darkTheme = darkTheme,
+                onToggle = onToggleTheme
+            )
+        }
+//        ThemeSwitch(darkTheme = darkTheme,
+//            onToggle = onToggleTheme)
+//        Text(
+//            text = stringResource(R.string.title),
+//            modifier = modifier.padding(20.dp).fillMaxWidth(),
+//            textAlign = TextAlign.Center,
+//            fontWeight = Bold,
+//            fontSize = 30.sp
+//        )
+
+
         Column(
-            modifier.background(Color.Black),
+            //the background
+            modifier.background(MaterialTheme.colorScheme.background),
             verticalArrangement = Arrangement.SpaceEvenly,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -104,7 +149,8 @@ fun ExerciseCard(
             .padding(20.dp)
             .clip(RoundedCornerShape(50f))
             .background(Color.White),
-        colors = ButtonDefaults.buttonColors(Color.White),
+        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.onSecondary),
+        //^^ changes colours of buttons
         shape = RectangleShape
     ) {
         Column() {
@@ -129,3 +175,69 @@ fun ExerciseCard(
     }
 }
 
+
+class Toggle(){
+    var isDark: Boolean = true
+
+    fun whichToggle(): Boolean{
+        return isDark
+    }
+    fun switchToggle(){
+        isDark = !isDark
+    }
+}
+
+//@Composable
+//fun ThemeSwitch() {
+//    val toggle = remember { Toggle() }
+//    var darkTheme by remember { mutableStateOf(toggle.isDark) }
+//
+//    Row(
+//        verticalAlignment = Alignment.CenterVertically,
+//        modifier = Modifier.padding(16.dp)
+//    ) {
+//        Text("Dark Theme")
+//        Spacer(modifier = Modifier.width(8.dp))
+//        Switch(
+//            checked = darkTheme,
+//            onCheckedChange = {
+//                toggle.switchToggle()  // Call your function
+//                darkTheme = toggle.whichToggle()  // Update the state
+//            }
+//        )
+//    }
+//}
+@Composable
+fun ThemeSwitch(
+    darkTheme: Boolean,
+    onToggle: () -> Unit
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(16.dp)
+    ) {
+
+        if (darkTheme == true){
+            Text("Dark Theme")
+        } else {
+            Text("Light Theme")
+        }
+        Spacer(modifier = Modifier.width(2.dp))
+        Switch(
+            checked = darkTheme,
+            onCheckedChange = { onToggle() },
+            thumbContent = {
+                if (darkTheme) {
+
+                        Icon(
+                            imageVector = if (darkTheme) Icons.Filled.DarkMode else Icons.Filled.WbSunny,
+                            contentDescription = null,
+                            modifier = Modifier.size(SwitchDefaults.IconSize),
+                            tint = if (darkTheme) Color.Blue else Color.Yellow  // Custom colors!
+                        )
+
+                }
+            }
+        )
+    }
+}

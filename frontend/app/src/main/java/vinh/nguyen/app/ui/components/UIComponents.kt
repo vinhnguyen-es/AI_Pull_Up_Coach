@@ -25,6 +25,7 @@ fun ConnectionStatusCard(
     Card(
         modifier = modifier,
         colors = CardDefaults.cardColors(
+            //this is irrelavent for colouring
             containerColor = if (isConnected) Color(0xFF4CAF50) else MaterialTheme.colorScheme.error
         ),
         shape = RoundedCornerShape(16.dp)
@@ -37,7 +38,8 @@ fun ConnectionStatusCard(
             Spacer(modifier = Modifier.width(4.dp))
             Text(
                 text = if (isConnected) "LIVE" else "OFFLINE",
-                color = Color.White,
+                //i made a change here should still be white
+                color = MaterialTheme.colorScheme.onPrimary,
                 fontSize = 10.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -51,6 +53,7 @@ private fun ConnectionStatusIndicator() {
         modifier = Modifier
             .size(6.dp)
             .background(
+                //not touched
                 color = Color.White,
                 shape = RoundedCornerShape(50.dp)
             )
@@ -66,6 +69,7 @@ fun ErrorMessageCard(
     Card(
         modifier = modifier.widthIn(max = 200.dp),
         colors = CardDefaults.cardColors(
+            //not really seen by us, colour is fine as is.
             containerColor = MaterialTheme.colorScheme.errorContainer
         ),
         shape = RoundedCornerShape(8.dp)
@@ -76,6 +80,7 @@ fun ErrorMessageCard(
         ) {
             Text(
                 text = errorMessage,
+                //this one is specifically changed by me
                 color = MaterialTheme.colorScheme.onErrorContainer,
                 fontSize = 11.sp,
                 modifier = Modifier.weight(1f)
@@ -131,6 +136,7 @@ fun ControlPanel(
     }
 }
 
+//PULL UP COACH MESSAGE
 @Composable
 private fun PanelTitle() {
     Text(
@@ -138,7 +144,7 @@ private fun PanelTitle() {
         fontSize = 18.sp,
         fontWeight = FontWeight.Bold,
         textAlign = TextAlign.Center,
-        color = MaterialTheme.colorScheme.primary
+        color = MaterialTheme.colorScheme.secondary//Color.Red//
     )
 }
 
@@ -150,13 +156,14 @@ private fun StatsDisplay(state: WorkoutState) {
         Text(
             text = "Current Reps",
             fontSize = 12.sp,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+            //used to be .onSurface.copy, is now
+            color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.7f)
         )
         Text(
             text = "${state.repCount}",
             fontSize = 48.sp,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary
+            color = MaterialTheme.colorScheme.secondary
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -164,13 +171,13 @@ private fun StatsDisplay(state: WorkoutState) {
         Text(
             text = "Status: ${state.status}",
             fontSize = 11.sp,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+            color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.6f)
         )
 
         Text(
             text = "Frames: ${state.framesSent}",
             fontSize = 10.sp,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+            color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f)
         )
     }
 }
