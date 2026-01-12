@@ -94,6 +94,12 @@ from utils.keypoint_utils import extract_shoulder_wrist_keypoints, calculate_wri
 from services.pose_service import pose_service
 from services.debug_service import debug_service
 from models.pull_up_counter import PullUpCounter
+from models.bicep_curl_counter import BicepCurlCounter
+from models.jumping_jack_counter import JumpingJackCounter
+from models.push_up_counter import PushUpCounter
+from models.sit_up_counter import SitUpCounter
+from models.squat_counter import SquatCounter
+from models.counter import Counter
 
 # ============================================================================
 # CONFIGURATION AND CONSTANTS
@@ -131,9 +137,9 @@ KEY_SESSION_ID = "session_id"
 # ============================================================================
 
 # Global workout sessions storage (in-memory)
-# Maps session_id -> PullUpCounter instance
+# Maps session_id -> Counter instance
 # Simple dictionary works great for single-user development/testing
-workout_sessions: Dict[str, PullUpCounter] = {}
+workout_sessions: Dict[str, Counter] = {}
 
 # ============================================================================
 # APPLICATION SETUP
@@ -230,7 +236,7 @@ def _decode_image_from_upload(contents: bytes) -> np.ndarray:
     return img
 
 
-def _get_or_create_session(session_id: str) -> PullUpCounter:
+def _get_or_create_session(session_id: str, exercise: str) -> Counter:
     """
     Retrieve existing workout session or create a new one.
 
@@ -241,11 +247,23 @@ def _get_or_create_session(session_id: str) -> PullUpCounter:
         session_id: Unique identifier for the workout session
 
     Returns:
-        PullUpCounter: The session's counter instance
+        Counter: The session's counter instance
     """
     if session_id not in workout_sessions:
         logger.info(f"Creating new workout session: {session_id}")
-        workout_sessions[session_id] = PullUpCounter()
+        match exercise:
+            case "PullUps":
+                workout_sessions[session_id] = PullUpCounter()
+            case "BicepCurls":
+                workout_sessions[session_id] = BicepCounter()
+            case "JumpingJacks":
+                workout_sessions[session_id] = JumpingJackCounter()
+            case "PushUps":
+                workout_sessions[session_id] = PushUpCounter()
+            case "SitUps":
+                workout_sessions[session_id] = SitUpCounter()
+            case "Squats":
+                workout_sessions[session_id] = SquatCounter()
 
     return workout_sessions[session_id]
 
@@ -420,7 +438,7 @@ async def analyze_frame(file: UploadFile = File(...), exercise: str = "No Select
         img = _decode_image_from_upload(contents)
 
         # Step 2: Get or create workout session for this user
-        counter = _get_or_create_session(DEFAULT_SESSION_ID)
+        counter = _get_or_create_session(DEFAULT_SESSION_ID, exercise)
         counter.frame_count += 1
 
         # Step 3: Run pose detection on the frame

@@ -1,0 +1,2 @@
+class JumpingJackCounter:
+    pass
