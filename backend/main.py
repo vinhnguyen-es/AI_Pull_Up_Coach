@@ -83,14 +83,14 @@ Usage:
 import cv2
 import numpy as np
 import time
-from typing import Dict, Any, Optional, Tuple
+from typing import Dict, Any, Optional
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
-from config import config, DebugMode
+from config.pull_up_config import config, DebugMode
 from utils.logging_utils import logger
-from utils.keypoint_utils import extract_shoulder_wrist_keypoints, calculate_vertical_wrist_shoulder_diff
+from utils.keypoint_utils import extract_shoulder_wrist_keypoints, calculate_wrist_shoulder_diff
 from services.pose_service import pose_service
 from services.debug_service import debug_service
 from models.pull_up_counter import PullUpCounter
@@ -274,7 +274,7 @@ def _calculate_debug_diff(keypoints: Optional[np.ndarray]) -> float:
         return DEFAULT_DIFF_VALUE
 
     # Calculate the vertical difference metric
-    diff = calculate_vertical_wrist_shoulder_diff(
+    diff = calculate_wrist_shoulder_diff(
         left_shoulder, right_shoulder, left_wrist, right_wrist
     )
 

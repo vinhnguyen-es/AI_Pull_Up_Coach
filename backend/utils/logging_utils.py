@@ -11,7 +11,7 @@ Logging levels by mode:
 """
 
 import logging
-from config import config, DebugMode
+from config.pull_up_config import config, DebugMode
 
 def setup_logging() -> logging.Logger:
     """Setup logging based on debug mode"""

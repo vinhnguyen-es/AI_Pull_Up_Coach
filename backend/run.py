@@ -10,7 +10,7 @@ Usage:
 
 import uvicorn
 from main import app
-from config import config
+from config.pull_up_config import config
 
 if __name__ == "__main__":
     # Print usage information

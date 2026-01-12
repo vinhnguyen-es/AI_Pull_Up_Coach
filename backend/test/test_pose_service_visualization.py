@@ -20,7 +20,7 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent))
 
 from services.pose_service import pose_service
-from config import config
+from config.pull_up_config import config
 
 # COCO pose skeleton connections (which keypoints connect to form the skeleton)
 SKELETON_CONNECTIONS = [

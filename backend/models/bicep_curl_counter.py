@@ -47,9 +47,9 @@ import time
 import numpy as np
 from collections import deque
 from typing import Tuple, Optional
-from config import config, DebugMode
+from config.pull_up_config import config, DebugMode
 from utils.logging_utils import logger
-from utils.keypoint_utils import extract_shoulder_wrist_keypoints, calculate_vertical_wrist_shoulder_diff
+from utils.keypoint_utils import extract_shoulder_wrist_keypoints, calculate_wrist_shoulder_diff
 
 
 class BicepCurlCounter:
@@ -318,7 +318,7 @@ class BicepCurlCounter:
             return False, self.STATUS_LOW_CONFIDENCE, None
 
         # Calculate vertical position metric (wrist_y - shoulder_y)
-        wrist_shoulder_diff = calculate_vertical_wrist_shoulder_diff(
+        wrist_shoulder_diff = calculate_wrist_shoulder_diff(
             left_shoulder, right_shoulder, left_wrist, right_wrist
         )
 

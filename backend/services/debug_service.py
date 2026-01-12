@@ -17,7 +17,7 @@ import cv2
 import numpy as np
 import time
 from typing import Optional
-from config import config
+from config.pull_up_config import config
 from utils.logging_utils import logger
 
 # COCO pose skeleton connections

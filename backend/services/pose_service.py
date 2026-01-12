@@ -23,7 +23,7 @@ import numpy as np
 from typing import Optional
 from ultralytics import YOLO
 from utils.logging_utils import logger
-from config import config
+from config.pull_up_config import config
 
 class PoseService:
     """Service for handling YOLO pose detection model"""
