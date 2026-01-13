@@ -129,6 +129,7 @@ class PullUpCounter(Counter):
 
         # Step 2: Check if we have enough history to analyze
         movement = self._calculate_movement_from_history()
+        logger.info(f"Diff: {movement}")
         if movement is None:
             return self.DIRECTION_STARTING, 0
 
