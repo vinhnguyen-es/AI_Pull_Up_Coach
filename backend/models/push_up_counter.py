@@ -1,2 +1,0 @@
-class PushUpCounter:
-    pass
