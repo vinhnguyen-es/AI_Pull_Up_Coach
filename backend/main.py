@@ -252,18 +252,16 @@ def _get_or_create_session(session_id: str, exercise: str) -> Counter:
     """
     if session_id not in workout_sessions:
         logger.info(f"Creating new workout session: {session_id}")
-        logger.info(f"Exercise: {exercise}")
         match exercise:
-            case "Pull Ups":
-                logger.info(f"Pull Ups Chosen")
+            case "PullUps":
                 workout_sessions[session_id] = PullUpCounter(config, logger)
-            case "Bicep Curls":
+            case "BicepCurls":
                 workout_sessions[session_id] = BicepCurlCounter(config, logger)
-            case "Jumping Jacks":
+            case "JumpingJacks":
                 workout_sessions[session_id] = JumpingJackCounter(config, logger)
-            case "Push Ups":
+            case "PushUps":
                 workout_sessions[session_id] = PushUpCounter(config, logger)
-            case "Sit Ups":
+            case "SitUps":
                 workout_sessions[session_id] = SitUpCounter(config, logger)
             case "Squats":
                 workout_sessions[session_id] = SquatCounter()
@@ -614,7 +612,7 @@ async def reset_session() -> Dict[str, Any]:
 
         # Create a fresh counter instance (replaces existing session)
         # This discards all accumulated state from the previous workout
-        workout_sessions[session_id] = PullUpCounter(config, logger)
+        workout_sessions[session_id] = PullUpCounter()
 
         logger.info(f"Session '{session_id}' reset successfully")
 
