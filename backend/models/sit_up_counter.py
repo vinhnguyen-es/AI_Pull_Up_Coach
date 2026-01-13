@@ -1,5 +1,2 @@
-from models.base_counter import Counter
-
-
-class SitUpCounter(Counter):
+class SitUpCounter:
     pass
