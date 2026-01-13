@@ -23,7 +23,7 @@ import numpy as np
 from typing import Optional
 from ultralytics import YOLO
 from utils.logging_utils import logger
-from config.pull_up_config import config
+from config.pull_up_config import pull_up_config
 
 class PoseService:
     """Service for handling YOLO pose detection model"""
@@ -40,9 +40,9 @@ class PoseService:
         dummy = np.zeros((480, 640, 3), dtype=np.uint8)
         _ = self.model(dummy, verbose=False)
         
-        startup_msg = f"Pose model loaded in {config.mode_description}!"
-        if config.save_frames:
-            startup_msg += f" Debug frames location: {config.debug_dir.absolute()}"
+        startup_msg = f"Pose model loaded in {pull_up_config.mode_description}!"
+        if pull_up_config.save_frames:
+            startup_msg += f" Debug frames location: {pull_up_config.debug_dir.absolute()}"
         
         logger.info(startup_msg)
     
@@ -53,13 +53,13 @@ class PoseService:
         
         # Resize for performance
         height, width = img.shape[:2]
-        if width > config.image_width_limit:
-            scale = config.image_width_limit / width
+        if width > pull_up_config.image_width_limit:
+            scale = pull_up_config.image_width_limit / width
             new_width = int(width * scale)
             new_height = int(height * scale)
             img = cv2.resize(img, (new_width, new_height))
         
-        results = self.model(img, verbose=False, conf=config.model_conf_threshold)
+        results = self.model(img, verbose=False, conf=pull_up_config.model_conf_threshold)
         
         if results[0].keypoints is not None and len(results[0].keypoints.data) > 0:
             return results[0].keypoints.data[0].cpu().numpy()

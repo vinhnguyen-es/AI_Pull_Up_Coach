@@ -18,7 +18,7 @@ from typing import Optional, Dict
 from config.config import DebugMode
 
 
-class BicepCurlConfig:
+class JumpingJackConfig:
     """Application configuration"""
 
     def __init__(self):
@@ -32,7 +32,7 @@ class BicepCurlConfig:
         self.min_movement_range: int = 10
         self.image_width_limit: int = 640
         self.model_conf_threshold: float = 0.4
-        self.min_arm_movement_threshold = 10
+        self.min_arm_movement_threashold = 10 #####TODO########
 
         # Mode descriptions
         self.mode_descriptions: Dict[DebugMode, str] = {
@@ -66,4 +66,4 @@ class BicepCurlConfig:
 
 
 # Global config instance
-bicep_curl_config = BicepCurlConfig()
+jumping_jack_config = JumpingJackConfig()

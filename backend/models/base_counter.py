@@ -1,7 +1,5 @@
-import time
 from collections import deque
 from typing import Optional, Tuple
-import numpy as np
 
 from utils.logging_utils import logger
 
@@ -44,7 +42,32 @@ class Counter:
         self.frame_count = 0
 
 
-    def _calculate_movement_from_history(self) -> Optional[float]:
+    def arm_movement_type(self):
+        recent_positions = list(self.position_history)[-self.LOOKBACK_FRAMES:]
+        recent_positions_length = len(recent_positions)
+
+        recent_lefts = list()
+        recent_rights = list()
+        left_sum = 0
+        right_sum = 0
+
+        for current_pos in recent_positions:
+            recent_lefts.append(current_pos["left"])
+            recent_rights.append(current_pos["right"])
+
+        for left in recent_lefts:
+            left_sum += abs(left)
+
+        for right in recent_rights:
+            right_sum += abs(right)
+
+        if (left_sum and right_sum) < self.config.min_arm_movement_threshold: return None
+        elif (left_sum < right_sum): return "right"
+        elif (left_sum > right_sum): return "left"
+        else: return "both"
+
+
+    def _calculate_movement_from_history(self, arm: str) -> Optional[float]:
             """
             Calculate vertical movement by comparing recent positions.
 

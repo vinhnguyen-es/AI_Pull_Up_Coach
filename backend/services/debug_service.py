@@ -17,7 +17,7 @@ import cv2
 import numpy as np
 import time
 from typing import Optional
-from config.pull_up_config import config
+from config.pull_up_config import pull_up_config
 from utils.logging_utils import logger
 
 # COCO pose skeleton connections
@@ -108,7 +108,7 @@ class DebugService:
             rep_count: Current rep count
             keypoints: Optional pose keypoints for visualization
         """
-        if not config.save_frames or not config.debug_dir:
+        if not pull_up_config.save_frames or not pull_up_config.debug_dir:
             return
 
         try:
@@ -125,7 +125,7 @@ class DebugService:
 
             # Draw pose skeleton if keypoints provided
             if keypoints is not None and len(keypoints) >= 17:
-                debug_img = DebugService.draw_pose_on_frame(img, keypoints, config.min_confidence)
+                debug_img = DebugService.draw_pose_on_frame(img, keypoints, pull_up_config.min_confidence)
             else:
                 debug_img = img.copy()
             
@@ -162,7 +162,7 @@ class DebugService:
             if frame_count % save_frequency == 0:
                 timestamp = int(time.time())
                 filename = f"frame_{frame_count:04d}_diff_{diff_value:.1f}_reps_{rep_count}_{timestamp}.jpg"
-                filepath = config.debug_dir / filename
+                filepath = pull_up_config.debug_dir / filename
                 
                 # Save the image
                 success = cv2.imwrite(str(filepath), debug_img)

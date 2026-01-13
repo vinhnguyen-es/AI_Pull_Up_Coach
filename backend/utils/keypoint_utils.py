@@ -71,9 +71,6 @@ def extract_shoulder_wrist_keypoints(
         return None, None, None, None, None
 
 
-
-
-
 def calculate_wrist_shoulder_diff(
     left_shoulder: np.ndarray,
     right_shoulder: np.ndarray,

@@ -45,9 +45,8 @@ without thorough testing, as it affects rep counting accuracy.
 
 import time
 import numpy as np
-from collections import deque
 from typing import Tuple, Optional
-from config.bicep_curl_config import config, DebugMode
+from config.bicep_curl_config import bicep_curl_config, DebugMode
 from models.base_counter import Counter
 from utils.logging_utils import logger
 from utils.keypoint_utils import extract_shoulder_wrist_keypoints, calculate_wrist_shoulder_diff
@@ -90,7 +89,7 @@ class BicepCurlCounter(Counter):
         self.current_direction = new_direction
 
         # Log direction changes in debug mode for troubleshooting
-        if config.debug_mode != DebugMode.NON_DEBUG:
+        if bicep_curl_config.debug_mode != DebugMode.NON_DEBUG:
             logger.info(f"Direction change: {self.current_direction.upper()} (diff: {current_diff:.1f})")
 
     def detect_direction_change(self, current_diff: dict[str, float]) -> Tuple[str, float]:
@@ -125,7 +124,7 @@ class BicepCurlCounter(Counter):
         self.position_history.append(current_diff)
 
         # Step 2: Check if we have enough history to analyze
-        movement = self._calculate_movement_from_history()
+        movement = self._calculate_movement_from_history(self.arm_movement_type())
         if movement is None:
             return self.DIRECTION_STARTING, 0
 
@@ -173,7 +172,7 @@ class BicepCurlCounter(Counter):
             return False, self.STATUS_INVALID_KEYPOINTS, None
 
         # Verify detection confidence is sufficient
-        if min_confidence < config.min_confidence:
+        if min_confidence < bicep_curl_config.min_confidence:
             return False, self.STATUS_LOW_CONFIDENCE, None
 
         # Calculate distance between wrist and shoulder
@@ -195,32 +194,6 @@ class BicepCurlCounter(Counter):
                      "right": np.sqrt(right_vertical_wrist_shoulder_diff ** 2 + right_horizontal_wrist_shoulder_diff ** 2)}
 
         return True, None, distances
-
-    def arm_movement_type(self):
-        recent_positions = list(self.position_history)[-self.LOOKBACK_FRAMES:]
-        recent_positions_length = len(recent_positions)
-
-        recent_lefts = list()
-        recent_rights = list()
-        left_sum = 0
-        right_sum = 0
-
-        for current_pos in recent_positions:
-            recent_lefts.append(current_pos["left"])
-            recent_rights.append(current_pos["right"])
-
-        for left in recent_lefts:
-            left_sum += abs(left)
-
-        for right in recent_rights:
-            right_sum += abs(right)
-
-        ##########
-        ##########
-        if (left_sum and right_sum) < config.min_arm_movement_threshold: return None
-        elif (left_sum < right_sum): return "right"
-        elif (left_sum > right_sum): return "left"
-        else: return "both"
 
     def _check_for_rep_completion(self, moving_arm: str) -> bool:
         """
@@ -248,7 +221,7 @@ class BicepCurlCounter(Counter):
         current_time = time.time()
 
         # Check cooldown: prevent counting multiple reps too quickly
-        if current_time - self.last_rep_time <= config.rep_cooldown:
+        if current_time - self.last_rep_time <= bicep_curl_config.rep_cooldown:
             return False
 
         # Need at least 2 direction changes to form a pattern
@@ -275,7 +248,7 @@ class BicepCurlCounter(Counter):
                 left_movement_range = abs(left_up_position - left_down_position)
 
                 # Ensure the movement was significant (prevents counting tiny bounces)
-                if left_movement_range <= config.min_movement_range:
+                if left_movement_range <= bicep_curl_config.min_movement_range:
                     return False
 
                     # All criteria met - count the rep!
@@ -288,7 +261,7 @@ class BicepCurlCounter(Counter):
                 right_movement_range = abs(right_up_position - right_down_position)
 
                 # Ensure the movement was significant (prevents counting tiny bounces)
-                if right_movement_range <= config.min_movement_range:
+                if right_movement_range <= bicep_curl_config.min_movement_range:
                     return False
 
                     # All criteria met - count the rep!
@@ -316,7 +289,7 @@ class BicepCurlCounter(Counter):
         self.last_rep_time = time.time()
 
         # Log rep details for debugging and verification
-        if config.debug_mode != DebugMode.NON_DEBUG:
+        if bicep_curl_config.debug_mode != DebugMode.NON_DEBUG:
             logger.info(f"REP COMPLETED! Count: {self.count}")
             logger.info(f"   Movement: {down_position:.1f} → {up_position:.1f} (range: {movement_range:.1f})")
 
@@ -376,11 +349,13 @@ class BicepCurlCounter(Counter):
             if not is_valid:
                 return self.count, error_status
 
+            arm = self.arm_movement_type()
+
             # Step 2: Analyze movement direction over time
             direction, magnitude = self.detect_direction_change(wrist_shoulder_diff)
 
             # Step 3: Check if we've completed a rep (DOWN -> UP pattern)
-            self._check_for_rep_completion()
+            self._check_for_rep_completion(arm)
 
             # Step 4: Update display status for UI feedback
             self._update_display_status(direction)

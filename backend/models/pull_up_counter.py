@@ -45,12 +45,9 @@ without thorough testing, as it affects rep counting accuracy.
 
 import time
 import numpy as np
-from collections import deque
 from typing import Tuple, Optional
-from config.pull_up_config import config, DebugMode
+from config.pull_up_config import pull_up_config, DebugMode
 from utils.logging_utils import logger
-from utils.keypoint_utils import extract_shoulder_wrist_keypoints, calculate_wrist_shoulder_diff
-
 
 from models.base_counter import Counter
 from utils.keypoint_utils import extract_shoulder_wrist_keypoints, calculate_wrist_shoulder_diff
@@ -93,7 +90,7 @@ class PullUpCounter(Counter):
         self.current_direction = new_direction
 
         # Log direction changes in debug mode for troubleshooting
-        if config.debug_mode != DebugMode.NON_DEBUG:
+        if pull_up_config.debug_mode != DebugMode.NON_DEBUG:
             logger.info(f"Direction change: {self.current_direction.upper()} (diff: {current_diff:.1f})")
 
     def detect_direction_change(self, current_diff: float) -> Tuple[str, float]:
@@ -128,7 +125,7 @@ class PullUpCounter(Counter):
         self.position_history.append(current_diff)
 
         # Step 2: Check if we have enough history to analyze
-        movement = self._calculate_movement_from_history()
+        movement = self._calculate_movement_from_history(self)
         logger.info(f"Diff: {movement}")
         if movement is None:
             return self.DIRECTION_STARTING, 0
@@ -177,7 +174,7 @@ class PullUpCounter(Counter):
             return False, self.STATUS_INVALID_KEYPOINTS, None
 
         # Verify detection confidence is sufficient
-        if min_confidence < config.min_confidence:
+        if min_confidence < pull_up_config.min_confidence:
             return False, self.STATUS_LOW_CONFIDENCE, None
 
         # Calculate vertical position metric (wrist_y - shoulder_y)
@@ -213,7 +210,7 @@ class PullUpCounter(Counter):
         current_time = time.time()
 
         # Check cooldown: prevent counting multiple reps too quickly
-        if current_time - self.last_rep_time <= config.rep_cooldown:
+        if current_time - self.last_rep_time <= pull_up_config.rep_cooldown:
             return False
 
         # Need at least 2 direction changes to form a pattern
@@ -238,7 +235,7 @@ class PullUpCounter(Counter):
         movement_range = abs(up_position - down_position)
 
         # Ensure the movement was significant (prevents counting tiny bounces)
-        if movement_range <= config.min_movement_range:
+        if movement_range <= pull_up_config.min_movement_range:
             return False
 
         # All criteria met - count the rep!
@@ -258,7 +255,7 @@ class PullUpCounter(Counter):
         self.last_rep_time = time.time()
 
         # Log rep details for debugging and verification
-        if config.debug_mode != DebugMode.NON_DEBUG:
+        if pull_up_config.debug_mode != DebugMode.NON_DEBUG:
             logger.info(f"REP COMPLETED! Count: {self.count}")
             logger.info(f"   Movement: {down_position:.1f} → {up_position:.1f} (range: {movement_range:.1f})")
 

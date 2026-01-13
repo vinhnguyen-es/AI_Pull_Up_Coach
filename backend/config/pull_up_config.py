@@ -64,4 +64,4 @@ class PullUpConfig:
         return self.mode_descriptions[self.debug_mode]
 
 # Global config instance
-config = PullUpConfig()
+pull_up_config = PullUpConfig()

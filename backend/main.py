@@ -88,7 +88,6 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
-from config.pull_up_config import config, DebugMode
 from utils.logging_utils import logger
 from utils.keypoint_utils import extract_shoulder_wrist_keypoints, calculate_wrist_shoulder_diff
 from services.pose_service import pose_service
@@ -102,15 +101,20 @@ from models.sit_up_counter import SitUpCounter
 from models.squat_counter import SquatCounter
 from models.base_counter import Counter
 
+from config.pull_up_config import pull_up_config, DebugMode
+from config.bicep_curl_config import bicep_curl_config
+from config.sit_up_config import sit_up_config
+from config.squat_config import squat_config
+from config.push_up_config import push_up_config
+from config.jumping_jack_config import jumping_jack_config
+
 # ============================================================================
 # CONFIGURATION AND CONSTANTS
 # ============================================================================
 
 # Initialize configuration from command-line arguments
-config.setup_from_args()
-
-# Log the selected operational mode
-logger.info(f"🚀 Starting in: {config.mode_description}")
+pull_up_config.setup_from_args()
+bicep_curl_config.setup_from_args()
 
 # Constants for clarity
 DEFAULT_SESSION_ID = "default"  # Session identifier (single-user for now)
@@ -181,7 +185,7 @@ async def lifespan(app: FastAPI):
 
 # Create FastAPI application instance
 app = FastAPI(
-    title=f"AI Pull-Up Coach Backend - {config.mode_description}",
+    title=f"AI Coach Backend - {pull_up_config.mode_description}",
     description="Real-time pull-up detection and counting using YOLOv8 pose estimation",
     version="1.0.0",
     lifespan=lifespan
@@ -255,17 +259,17 @@ def _get_or_create_session(session_id: str, exercise: str) -> Counter:
         logger.warning(f"Received Exercise: {exercise}")
         match exercise:
             case "Pull Ups":
-                workout_sessions[session_id] = PullUpCounter(config, logger)
+                workout_sessions[session_id] = PullUpCounter(pull_up_config, logger)
             case "Bicep Curls":
-                workout_sessions[session_id] = BicepCurlCounter(config, logger)
+                workout_sessions[session_id] = BicepCurlCounter(bicep_curl_config, logger)
             case "Jumping Jacks":
-                workout_sessions[session_id] = JumpingJackCounter(config, logger)
+                workout_sessions[session_id] = JumpingJackCounter(jumping_jack_config, logger)
             case "Push Ups":
-                workout_sessions[session_id] = PushUpCounter(config, logger)
+                workout_sessions[session_id] = PushUpCounter(push_up_config, logger)
             case "Sit Ups":
-                workout_sessions[session_id] = SitUpCounter(config, logger)
+                workout_sessions[session_id] = SitUpCounter(sit_up_config, logger)
             case "Squats":
-                workout_sessions[session_id] = SquatCounter(config, logger)
+                workout_sessions[session_id] = SquatCounter(squat_config, logger)
             case x:
                 UNKOWN_EXERCISE_ERROR = f"Attempted to Create Session With Unknown Exercise. \
                 Got: {x}. Expected one of: (Pull Ups, Bicep Curls, Jumping Jacks, Push Ups, Sit Ups, Squats)."
@@ -319,7 +323,7 @@ def _log_frame_analysis(counter: PullUpCounter, diff: float, status: str) -> Non
         diff: Wrist-shoulder vertical difference
         status: Current motion status
     """
-    if config.debug_mode != DebugMode.NON_DEBUG:
+    if pull_up_config.debug_mode != DebugMode.NON_DEBUG:
         logger.info(
             f"Frame {counter.frame_count}: Diff {diff:.1f} | "
             f"{status.upper()} | Reps: {counter.count} | "
@@ -365,16 +369,16 @@ def _build_response_data(
     }
 
     # Add debug information in debug modes
-    if config.debug_mode != DebugMode.NON_DEBUG and counter is not None:
+    if pull_up_config.debug_mode != DebugMode.NON_DEBUG and counter is not None:
         debug_info = {
             KEY_FRAME_COUNT: counter.frame_count,
-            KEY_MODE: config.debug_mode,
-            KEY_SAVING_FRAMES: config.save_frames
+            KEY_MODE: pull_up_config.debug_mode,
+            KEY_SAVING_FRAMES: pull_up_config.save_frames
         }
 
         # Include debug directory path if saving frames
-        if config.save_frames and config.debug_dir:
-            debug_info[KEY_DEBUG_DIR] = str(config.debug_dir.absolute())
+        if pull_up_config.save_frames and pull_up_config.debug_dir:
+            debug_info[KEY_DEBUG_DIR] = str(pull_up_config.debug_dir.absolute())
 
         response_data[KEY_DEBUG] = debug_info
 
@@ -474,7 +478,7 @@ async def analyze_frame(file: UploadFile = File(...), exercise: str = "No Select
             status = "no_person"
 
             # Save debug frame even when no person detected
-            if config.save_frames:
+            if pull_up_config.save_frames:
                 debug_service.save_debug_frame(
                     contents, counter.frame_count, DEFAULT_DIFF_VALUE,
                     status, rep_count, None
@@ -543,19 +547,19 @@ async def get_status() -> Dict[str, Any]:
     response_data = {
         KEY_STATUS: "online",
         "model_loaded": pose_service.model is not None,
-        KEY_MODE: config.debug_mode,
-        "mode_description": config.mode_description,
-        KEY_SAVING_FRAMES: config.save_frames,
+        KEY_MODE: pull_up_config.debug_mode,
+        "mode_description": pull_up_config.mode_description,
+        KEY_SAVING_FRAMES: pull_up_config.save_frames,
         KEY_TIMESTAMP: time.time()
     }
 
     # Add debug frame statistics if saving frames
-    if config.save_frames and config.debug_dir:
+    if pull_up_config.save_frames and pull_up_config.debug_dir:
         # Count saved debug frames in the directory
-        frame_files = list(config.debug_dir.glob("frame_*.jpg"))
+        frame_files = list(pull_up_config.debug_dir.glob("frame_*.jpg"))
         response_data.update({
             "debug_frames_saved": len(frame_files),
-            "debug_directory": str(config.debug_dir.absolute())
+            "debug_directory": str(pull_up_config.debug_dir.absolute())
         })
 
     return response_data
@@ -615,17 +619,17 @@ async def reset_session(exercise: str) -> Dict[str, Any]:
         # This discards all accumulated state from the previous workout
         match exercise:
             case "Pull Ups":
-                workout_sessions[session_id] = PullUpCounter(config, logger)
+                workout_sessions[session_id] = PullUpCounter(pull_up_config, logger)
             case "Bicep Curls":
-                workout_sessions[session_id] = BicepCurlCounter(config, logger)
+                workout_sessions[session_id] = BicepCurlCounter(bicep_curl_config, logger)
             case "Jumping Jacks":
-                workout_sessions[session_id] = JumpingJackCounter(config, logger)
+                workout_sessions[session_id] = JumpingJackCounter(jumping_jack_config, logger)
             case "Push Ups":
-                workout_sessions[session_id] = PushUpCounter(config, logger)
+                workout_sessions[session_id] = PushUpCounter(push_up_config, logger)
             case "Sit Ups":
-                workout_sessions[session_id] = SitUpCounter(config, logger)
+                workout_sessions[session_id] = SitUpCounter(sit_up_config, logger)
             case "Squats":
-                workout_sessions[session_id] = SquatCounter(config, logger)
+                workout_sessions[session_id] = SquatCounter(squat_config, logger)
             case x:
                 UNKOWN_EXERCISE_ERROR = f"Attempted to Create Session With Unknown Exercise. \
                 Got: {x}. Expected one of: (Pull Ups, Bicep Curls, Jumping Jacks, Push Ups, Sit Ups, Squats)."
@@ -723,14 +727,14 @@ async def debug() -> Dict[str, Any]:
             KEY_STATUS: counter.status,
             "current_direction": counter.current_direction,
             KEY_FRAME_COUNT: counter.frame_count,
-            KEY_MODE: config.debug_mode,
-            KEY_SAVING_FRAMES: config.save_frames
+            KEY_MODE: pull_up_config.debug_mode,
+            KEY_SAVING_FRAMES: pull_up_config.save_frames
         }
 
         # Add debug frame information if saving frames
-        if config.save_frames and config.debug_dir:
+        if pull_up_config.save_frames and pull_up_config.debug_dir:
             # Get all saved frame files
-            frame_files = list(config.debug_dir.glob("frame_*.jpg"))
+            frame_files = list(pull_up_config.debug_dir.glob("frame_*.jpg"))
 
             # Sort by filename to get chronological order
             sorted_frames = sorted(frame_files)
@@ -740,7 +744,7 @@ async def debug() -> Dict[str, Any]:
 
             response_data.update({
                 "debug_frames_saved": len(frame_files),
-                "debug_directory": str(config.debug_dir.absolute()),
+                "debug_directory": str(pull_up_config.debug_dir.absolute()),
                 "latest_frames": [f.name for f in latest_frames]
             })
 
@@ -749,5 +753,5 @@ async def debug() -> Dict[str, Any]:
     # No session found - return minimal info
     return {
         KEY_MESSAGE: "No session found",
-        KEY_MODE: config.debug_mode
+        KEY_MODE: pull_up_config.debug_mode
     }

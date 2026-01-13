@@ -11,11 +11,11 @@ Logging levels by mode:
 """
 
 import logging
-from config.pull_up_config import config, DebugMode
+from config.pull_up_config import pull_up_config, DebugMode
 
 def setup_logging() -> logging.Logger:
     """Setup logging based on debug mode"""
-    if config.debug_mode == DebugMode.NON_DEBUG:
+    if pull_up_config.debug_mode == DebugMode.NON_DEBUG:
         logging.basicConfig(level=logging.WARNING)
     else:
         logging.basicConfig(level=logging.INFO)

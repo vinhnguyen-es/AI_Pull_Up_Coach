@@ -10,14 +10,14 @@ Usage:
 
 import uvicorn
 from main import app
-from config.pull_up_config import config
+from config.pull_up_config import pull_up_config
 
 if __name__ == "__main__":
     # Print usage information
     print("\n" + "="*60)
     print("🏋️  AI Pull-Up Coach Backend")
     print("="*60)
-    print(f"Debug Mode: {config.mode_description}")
+    print(f"Debug Mode: {pull_up_config.mode_description}")
     print("\nAvailable modes:")
     print("  python run.py --mode debug        # Debug with frame saving")
     print("  python run.py --mode debug_no_save  # Debug without frame saving") 
