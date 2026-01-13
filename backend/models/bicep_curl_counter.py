@@ -307,9 +307,9 @@ class BicepCurlCounter(Counter):
             direction: Current confirmed direction (up/down/stable/starting)
         """
         if direction == self.DIRECTION_UP:
-            self.status = self.STATUS_LOWERING_DOWN
-        elif direction == self.DIRECTION_DOWN:
             self.status = self.STATUS_PULLING_UP
+        elif direction == self.DIRECTION_DOWN:
+            self.status = self.STATUS_LOWERING_DOWN
         else:
             self.status = self.STATUS_STABLE
 
