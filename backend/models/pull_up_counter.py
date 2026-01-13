@@ -45,6 +45,7 @@ without thorough testing, as it affects rep counting accuracy.
 
 import time
 import numpy as np
+from collections import deque
 from typing import Tuple, Optional
 from config.pull_up_config import config, DebugMode
 from utils.logging_utils import logger
@@ -93,8 +94,7 @@ class PullUpCounter(Counter):
 
         # Log direction changes in debug mode for troubleshooting
         if config.debug_mode != DebugMode.NON_DEBUG:
-            logger.info(f"Direction change: {self.current_direction.upper()} (diff: {current_diff:.1f})", extra={"tag": "debugLogging"})
-
+            logger.info(f"Direction change: {self.current_direction.upper()} (diff: {current_diff:.1f})")
 
     def detect_direction_change(self, current_diff: float) -> Tuple[str, float]:
         """
@@ -126,17 +126,14 @@ class PullUpCounter(Counter):
         """
         # Step 1: Store this position in our sliding window
         self.position_history.append(current_diff)
-        logger.info(f"Pos History: {self.position_history}", extra={"tag": "debugLogging"})
 
         # Step 2: Check if we have enough history to analyze
         movement = self._calculate_movement_from_history()
         if movement is None:
-            logger.info(f"Movement is None", extra={"tag": "debugLogging"})
             return self.DIRECTION_STARTING, 0
 
         # Step 3: Classify the movement direction based on threshold
         detected_direction = self._classify_movement_direction(movement)
-        logger.info(f"Direction Moved: {detected_direction}", extra={"tag": "debugLogging"})
 
         # Step 4: Update consecutive frame counters for confirmation
         self._update_consecutive_frame_counters(detected_direction)
@@ -146,13 +143,7 @@ class PullUpCounter(Counter):
 
         # Step 6: If direction changed, record it in history
         if confirmed_direction != self.current_direction:
-            logger.info(f"Found Direction Change", extra={"tag": "debugLogging"})
             self._record_direction_change(confirmed_direction, current_diff)
-        else:
-            logger.info(f"No Direction Change", extra={"tag": "debugLogging"})
-
-        if config.debug_mode != DebugMode.NON_DEBUG:
-            logger.info(f"Checking for direction change", extra={"tag": "debugLogging"})
 
         return confirmed_direction, abs(movement)
 
@@ -192,7 +183,6 @@ class PullUpCounter(Counter):
         wrist_shoulder_diff = calculate_wrist_shoulder_diff(
             left_shoulder, right_shoulder, left_wrist, right_wrist
         )
-        logger.info(f"Wrist Shoulder Diff found to be: {wrist_shoulder_diff}", extra={"tag": "debugLogging"})
 
         return True, None, wrist_shoulder_diff
 
@@ -237,12 +227,9 @@ class PullUpCounter(Counter):
         prev_direction = recent_changes[0][0]
         curr_direction = recent_changes[1][0]
 
-        # Check for the Up -> DOWN pattern (the rep signature)
+        # Check for the DOWN -> UP pattern (the rep signature)
         if not (prev_direction == self.DIRECTION_UP and curr_direction == self.DIRECTION_DOWN):
-            logger.info(f"Movement was Up -> Down", extra={"tag": "debugLogging"})
             return False
-        else:
-            logger.info(f"Movement was Down -> Up (Incorrect)", extra={"tag": "debugLogging"})
 
         # Validate movement range to ensure full range of motion
         down_position = recent_changes[0][2]  # Position at bottom of rep
@@ -251,11 +238,9 @@ class PullUpCounter(Counter):
 
         # Ensure the movement was significant (prevents counting tiny bounces)
         if movement_range <= config.min_movement_range:
-            logger.info(f"Movement was too small", extra={"tag": "debugLogging"})
             return False
 
         # All criteria met - count the rep!
-        logger.info(f"Rep Counted!!!", extra={"tag": "debugLogging"})
         self._count_rep(down_position, up_position, movement_range)
         return True
 
@@ -289,7 +274,6 @@ class PullUpCounter(Counter):
         Args:
             direction: Current confirmed direction (up/down/stable/starting)
         """
-        logger.info(f"Movement Direction Detected: {direction}", extra={"tag": "debugLogging"})
         if direction == self.DIRECTION_UP:
             self.status = self.STATUS_PULLING_UP
         elif direction == self.DIRECTION_DOWN:
@@ -331,9 +315,7 @@ class PullUpCounter(Counter):
             # Step 1: Validate and extract keypoint data
             is_valid, error_status, wrist_shoulder_diff = self._validate_keypoints(keypoints)
             if not is_valid:
-                logger.info(f"Error detecting valid keypoints", extra={"tag": "debugLogging"})
                 return self.count, error_status
-            logger.info(f"No Immediate issue detecting keypoints", extra={"tag": "debugLogging"})
 
             # Step 2: Analyze movement direction over time
             direction, magnitude = self.detect_direction_change(wrist_shoulder_diff)
@@ -380,4 +362,3 @@ class PullUpCounter(Counter):
         self.frame_count = 0
 
         logger.info("Pull-up counter reset to initial state")
-        logger.info(f"Resetting State", extra={"tag": "debugLogging"})
