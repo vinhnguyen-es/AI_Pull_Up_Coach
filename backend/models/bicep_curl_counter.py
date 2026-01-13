@@ -72,6 +72,10 @@ class BicepCurlCounter(Counter):
     last_rep_time: Timestamp of last counted rep (for cooldown enforcement)
     """
 
+    def __init__(self, config, logger):
+        super().__init__(config, logger)
+        logger.info("Bicep curl counter initialized")
+
     def _record_direction_change(self, new_direction: str, current_diff: dict[str, float]) -> None:
         """
         Record a confirmed direction change in the history.

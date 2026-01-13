@@ -72,6 +72,9 @@ class PullUpCounter(Counter):
     consecutive_down_frames: Counter for consecutive downward movement frames
     last_rep_time: Timestamp of last counted rep (for cooldown enforcement)
     """
+    def __init__(self, config, logger):
+        super().__init__(config, logger)
+        logger.info("Pull up counter initialized")
 
     def _record_direction_change(self, new_direction: str, current_diff: float) -> None:
         """
