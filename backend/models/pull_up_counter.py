@@ -74,7 +74,7 @@ class PullUpCounter(Counter):
     """
     def __init__(self, config, logger):
         super().__init__(config, logger)
-        logger.info("Pull up counter initialized")
+        logger.info("Pullup counter initialized")
 
     def _record_direction_change(self, new_direction: str, current_diff: float) -> None:
         """

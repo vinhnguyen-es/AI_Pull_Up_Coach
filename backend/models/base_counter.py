@@ -66,7 +66,6 @@ class Counter:
         elif (left_sum > right_sum): return "left"
         else: return "both"
 
-
     def _calculate_movement_from_history(self, arm: str) -> Optional[float]:
             """
             Calculate vertical movement by comparing recent positions.
@@ -82,6 +81,7 @@ class Counter:
                 return None
 
             recent_positions = list(self.position_history)[-self.LOOKBACK_FRAMES:]
+
             logger.warning(recent_positions)
             movement = recent_positions[-1] - recent_positions[0]
             return movement

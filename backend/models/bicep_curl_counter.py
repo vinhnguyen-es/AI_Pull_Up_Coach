@@ -279,7 +279,6 @@ class BicepCurlCounter(Counter):
                 logger.log(INVALID_MOVING_ARM_MSG)
                 raise ValueError(INVALID_MOVING_ARM_MSG)
 
-
     def _count_rep(self, down_position: float, up_position: float, movement_range: float) -> None:
         """
         Increment rep count and update state after detecting a valid rep.
@@ -400,3 +399,59 @@ class BicepCurlCounter(Counter):
         self.frame_count = 0
 
         logger.info("Pull-up counter reset to initial state")
+
+def _calculate_movement_from_history(self, moving_arm: str = None) -> Optional[float]:
+    """
+    Calculate vertical movement by comparing recent positions.
+    
+    For bicep curls, we need to handle dict positions differently.
+    
+    Returns:
+        float: Movement amount (positive = moving up, negative = moving down)
+        None: If not enough history yet
+    """
+    if len(self.position_history) < self.LOOKBACK_FRAMES:
+        return None
+
+    recent_positions = list(self.position_history)[-self.LOOKBACK_FRAMES:]
+    
+    # Determine which arm to track
+    if moving_arm is None:
+        moving_arm = self.arm_movement_type()
+    
+    if moving_arm is None:
+        return None
+    
+    # Extract the relevant arm's position from each dict
+    if moving_arm == "both":
+        # Average both arms
+        first_pos = (recent_positions[0]["left"] + recent_positions[0]["right"]) / 2
+        last_pos = (recent_positions[-1]["left"] + recent_positions[-1]["right"]) / 2
+    else:
+        # Use the specified arm
+        first_pos = recent_positions[0][moving_arm]
+        last_pos = recent_positions[-1][moving_arm]
+    
+    movement = last_pos - first_pos
+    return movement
+
+def arm_movement_type(self):
+    """Determine which arm is moving based on recent position history."""
+    if len(self.position_history) < self.LOOKBACK_FRAMES:
+        return None
+        
+    recent_positions = list(self.position_history)[-self.LOOKBACK_FRAMES:]
+
+    left_sum = sum(abs(pos["left"]) for pos in recent_positions)
+    right_sum = sum(abs(pos["right"]) for pos in recent_positions)
+
+    if left_sum < bicep_curl_config.min_arm_movement_threshold and right_sum < bicep_curl_config.min_arm_movement_threshold:
+        return None
+    elif left_sum < right_sum:
+        return "right"
+    elif left_sum > right_sum:
+        return "left"
+    else:
+        return "both"
+
+
