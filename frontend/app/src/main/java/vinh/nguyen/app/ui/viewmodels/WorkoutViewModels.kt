@@ -86,7 +86,7 @@ class WorkoutViewModel : ViewModel() {
             // Reset backend session
             viewModelScope.launch {
                 try {
-                    val response = NetworkClient.apiService.resetSession()
+                    val response = NetworkClient.apiService.resetSession(exercise)
                     if (response.isSuccessful) {
                         Log.i(TAG, "Backend session reset successfully")
                     } else {

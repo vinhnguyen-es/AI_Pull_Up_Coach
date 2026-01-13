@@ -561,7 +561,7 @@ async def get_status() -> Dict[str, Any]:
     return response_data
 
 @app.post("/reset_session")
-async def reset_session() -> Dict[str, Any]:
+async def reset_session(exercise: str) -> Dict[str, Any]:
     """
     Reset the workout session to start a fresh workout.
 
@@ -613,7 +613,25 @@ async def reset_session() -> Dict[str, Any]:
 
         # Create a fresh counter instance (replaces existing session)
         # This discards all accumulated state from the previous workout
-        workout_sessions[session_id] = PullUpCounter()
+        match exercise:
+            case "Pull Ups":
+                workout_sessions[session_id] = PullUpCounter(config, logger)
+            case "Bicep Curls":
+                workout_sessions[session_id] = BicepCurlCounter(config, logger)
+            case "Jumping Jacks":
+                workout_sessions[session_id] = JumpingJackCounter(config, logger)
+            case "Push Ups":
+                workout_sessions[session_id] = PushUpCounter(config, logger)
+            case "Sit Ups":
+                workout_sessions[session_id] = SitUpCounter(config, logger)
+            case "Squats":
+                workout_sessions[session_id] = SquatCounter(config, logger)
+            case x:
+                UNKOWN_EXERCISE_ERROR = f"Attempted to Create Session With Unknown Exercise. \
+                Got: {x}. Expected one of: (Pull Ups, Bicep Curls, Jumping Jacks, Push Ups, Sit Ups, Squats)."
+
+                logger.error(UNKOWN_EXERCISE_ERROR)
+                raise ValueError(UNKOWN_EXERCISE_ERROR)
 
         logger.info(f"Session '{session_id}' reset successfully")
 

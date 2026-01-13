@@ -37,7 +37,7 @@ interface ApiService {
     suspend fun getStatus(): Response<Map<String, Any>>
 
     @POST("reset_session")
-    suspend fun resetSession(): Response<ResetResponse>
+    suspend fun resetSession(exercise: String): Response<ResetResponse>
 }
 
 object NetworkClient {
