@@ -25,6 +25,9 @@ ARM_MOVEMENT_LEFT = "LEFT"
 ARM_MOVEMENT_RIGHT = "RIGHT"
 ARM_MOVEMENT_NEITHER = None
 
+HORIZONTAL_MOVEMENT_INDEX = 0
+VERTICAL_MOVEMENT_INDEX = 1
+
 def extract_shoulder_wrist_keypoints(
     keypoints: np.ndarray,
 ) -> Tuple[Optional[np.ndarray], Optional[np.ndarray], Optional[np.ndarray], Optional[np.ndarray], Optional[float]]:
@@ -103,7 +106,8 @@ def calculate_wrist_shoulder_diff(
         ...     print("Person is in pulled-up position")
     """
     # Obtain shoulder and wrist positions
-    index = 1 if direction == "horizontal" else 0
+    index = HORIZONTAL_MOVEMENT_INDEX if direction == "horizontal" else VERTICAL_MOVEMENT_INDEX
+    logger.warning(f"Case: {arm}")
     match arm:
         case "right":
             shoulder = right_shoulder[index]
@@ -117,6 +121,7 @@ def calculate_wrist_shoulder_diff(
         case _:
             logger.log(f"Arm was: {arm}. Expected one of (both, left, right).")
             raise ValueError(f"Arm was: {arm}. Expected one of (both, left, right).")
+    logger.warning(f"Wrist: {wrist}, Shoulder: {shoulder}")
     return wrist - shoulder
 
 
