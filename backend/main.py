@@ -93,7 +93,6 @@ from utils.logging_utils import logger
 from utils.keypoint_utils import extract_shoulder_wrist_keypoints, calculate_wrist_shoulder_diff
 from services.pose_service import pose_service
 from services.debug_service import debug_service
-
 from models.pull_up_counter import PullUpCounter
 
 # ============================================================================
