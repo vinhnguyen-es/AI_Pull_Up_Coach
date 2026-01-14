@@ -256,7 +256,6 @@ def _get_or_create_session(session_id: str, exercise: str) -> Counter:
     """
     if session_id not in workout_sessions:
         logger.info(f"Creating new workout session: {session_id}")
-        logger.warning(f"Received Exercise: {exercise}")
         match exercise:
             case "Pull Ups":
                 workout_sessions[session_id] = PullUpCounter(pull_up_config, logger)

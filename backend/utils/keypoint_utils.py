@@ -104,7 +104,6 @@ def calculate_wrist_shoulder_diff(
     """
     # Obtain shoulder and wrist positions
     index = HORIZONTAL_MOVEMENT_INDEX if direction == "horizontal" else VERTICAL_MOVEMENT_INDEX
-    logger.warning(f"Case: {arm}")
     match arm:
         case "right":
             shoulder = right_shoulder[index]
@@ -118,7 +117,6 @@ def calculate_wrist_shoulder_diff(
         case _:
             logger.log(f"Arm was: {arm}. Expected one of (both, left, right).")
             raise ValueError(f"Arm was: {arm}. Expected one of (both, left, right).")
-    logger.warning(f"Wrist: {wrist}, Shoulder: {shoulder}")
     return wrist - shoulder
 
 

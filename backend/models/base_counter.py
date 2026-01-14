@@ -66,7 +66,7 @@ class Counter:
         elif (left_sum > right_sum): return "left"
         else: return "both"
 
-    def _calculate_movement_from_history(self, arm: str) -> Optional[float]:
+    def _calculate_movement_from_history(self, moving_arm: str, exercise: str = "Pull Ups") -> Optional[float]:
             """
             Calculate vertical movement by comparing recent positions.
 
@@ -77,14 +77,41 @@ class Counter:
                 float: Movement amount (positive = moving up, negative = moving down)
                 None: If not enough history yet
             """
-            if len(self.position_history) < self.LOOKBACK_FRAMES:
-                return None
+            match exercise:
+                case "Pull Ups":
+                    if len(self.position_history) < self.LOOKBACK_FRAMES:
+                        return None
 
-            recent_positions = list(self.position_history)[-self.LOOKBACK_FRAMES:]
+                    recent_positions = list(self.position_history)[-self.LOOKBACK_FRAMES:]
 
-            logger.warning(recent_positions)
-            movement = recent_positions[-1] - recent_positions[0]
-            return movement
+                    logger.warning(recent_positions)
+                    movement = recent_positions[-1] - recent_positions[0]
+                    return movement
+                case "Bicep Curls":
+                    if len(self.position_history) < self.LOOKBACK_FRAMES:
+                        return None
+
+                    recent_positions = list(self.position_history)[-self.LOOKBACK_FRAMES:]
+
+                    # Determine which arm to track
+                    if moving_arm is None:
+                        moving_arm = self.arm_movement_type()
+
+                    if moving_arm is None:
+                        return None
+
+                        # Extract the relevant arm's position from each dict
+                    if moving_arm == "both":
+                        # Average both arms
+                        first_pos = (recent_positions[0]["left"] + recent_positions[0]["right"]) / 2
+                        last_pos = (recent_positions[-1]["left"] + recent_positions[-1]["right"]) / 2
+                    else:
+                        # Use the specified arm
+                        first_pos = recent_positions[0][moving_arm]
+                        last_pos = recent_positions[-1][moving_arm]
+
+                    movement = last_pos - first_pos
+                    return movement
 
     def _classify_movement_direction(self, movement: float) -> str:
         """

@@ -45,6 +45,7 @@ without thorough testing, as it affects rep counting accuracy.
 
 import time
 import numpy as np
+import traceback
 from typing import Tuple, Optional
 from config.bicep_curl_config import bicep_curl_config, DebugMode
 from models.base_counter import Counter
@@ -76,7 +77,7 @@ class BicepCurlCounter(Counter):
         super().__init__(config, logger)
         logger.info("Bicep curl counter initialized")
 
-    def _record_direction_change(self, new_direction: str, current_diff: dict[str, float]) -> None:
+    def _record_direction_change(self, new_direction: str, current_diff: dict[str, float], arm: str) -> None:
         """
         Record a confirmed direction change in the history.
 
@@ -94,9 +95,9 @@ class BicepCurlCounter(Counter):
 
         # Log direction changes in debug mode for troubleshooting
         if bicep_curl_config.debug_mode != DebugMode.NON_DEBUG:
-            logger.info(f"Direction change: {self.current_direction.upper()} (diff: {current_diff:.1f})")
+            logger.info(f"Direction change: {self.current_direction.upper()} (diff: {str(current_diff)}, moving_arm: {arm})")
 
-    def detect_direction_change(self, current_diff: dict[str, float]) -> Tuple[str, float]:
+    def detect_direction_change(self, current_diff: dict[str, float], arm: str) -> Tuple[str, float]:
         """
         Detect and confirm direction changes in vertical movement.
 
@@ -128,7 +129,7 @@ class BicepCurlCounter(Counter):
         self.position_history.append(current_diff)
 
         # Step 2: Check if we have enough history to analyze
-        movement = self._calculate_movement_from_history(self.arm_movement_type())
+        movement = self._calculate_movement_from_history(self.arm_movement_type(), "Bicep Curls")
         if movement is None:
             return self.DIRECTION_STARTING, 0
 
@@ -143,7 +144,7 @@ class BicepCurlCounter(Counter):
 
         # Step 6: If direction changed, record it in history
         if confirmed_direction != self.current_direction:
-            self._record_direction_change(confirmed_direction, current_diff)
+            self._record_direction_change(confirmed_direction, current_diff, arm)
 
         return confirmed_direction, abs(movement)
 
@@ -361,7 +362,7 @@ class BicepCurlCounter(Counter):
             arm = self.arm_movement_type()
 
             # Step 2: Analyze movement direction over time
-            direction, magnitude = self.detect_direction_change(wrist_shoulder_diff)
+            direction, magnitude = self.detect_direction_change(wrist_shoulder_diff, arm)
 
             # Step 3: Check if we've completed a rep (DOWN -> UP pattern)
             self._check_for_rep_completion(arm)
@@ -372,7 +373,8 @@ class BicepCurlCounter(Counter):
             return self.count, self.status
 
         except Exception as e:
-            logger.error(f"Error in rep analysis: {e}")
+            logger.error(traceback.format_exc())
+            logger.error(f"Error in rep analysis: {e.__traceback__.tb_lasti}")
             return self.count, self.STATUS_ERROR
 
     def reset(self) -> None:
@@ -405,41 +407,6 @@ class BicepCurlCounter(Counter):
         self.frame_count = 0
 
         logger.info("Pull-up counter reset to initial state")
-
-def _calculate_movement_from_history(self, moving_arm: str = None) -> Optional[float]:
-    """
-    Calculate vertical movement by comparing recent positions.
-    
-    For bicep curls, we need to handle dict positions differently.
-    
-    Returns:
-        float: Movement amount (positive = moving up, negative = moving down)
-        None: If not enough history yet
-    """
-    if len(self.position_history) < self.LOOKBACK_FRAMES:
-        return None
-
-    recent_positions = list(self.position_history)[-self.LOOKBACK_FRAMES:]
-    
-    # Determine which arm to track
-    if moving_arm is None:
-        moving_arm = self.arm_movement_type()
-    
-    if moving_arm is None:
-        return None
-    
-    # Extract the relevant arm's position from each dict
-    if moving_arm == "both":
-        # Average both arms
-        first_pos = (recent_positions[0]["left"] + recent_positions[0]["right"]) / 2
-        last_pos = (recent_positions[-1]["left"] + recent_positions[-1]["right"]) / 2
-    else:
-        # Use the specified arm
-        first_pos = recent_positions[0][moving_arm]
-        last_pos = recent_positions[-1][moving_arm]
-    
-    movement = last_pos - first_pos
-    return movement
 
 def arm_movement_type(self):
     """Determine which arm is moving based on recent position history."""

@@ -44,6 +44,8 @@ without thorough testing, as it affects rep counting accuracy.
 """
 
 import time
+import traceback
+
 import numpy as np
 from typing import Tuple, Optional
 from config.pull_up_config import pull_up_config, DebugMode
@@ -330,7 +332,8 @@ class PullUpCounter(Counter):
             return self.count, self.status
 
         except Exception as e:
-            logger.error(f"Error in rep analysis: {e}")
+            logger.error(traceback.format_exc())
+            logger.error(f"Error in rep analysis: {e.__traceback__.tb_lasti}")
             return self.count, self.STATUS_ERROR
 
     def reset(self) -> None:
