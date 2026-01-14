@@ -15,6 +15,7 @@ class SquatCounter(Counter):
         super().__init__(config, logger)
         logger.info("Squat counter initialized")
 
+#dont change
     def _record_direction_change(self, new_direction: str, current_diff: float) -> None:
         """
         Record a confirmed direction change in the history.
@@ -35,6 +36,7 @@ class SquatCounter(Counter):
         if squat_config.debug_mode != DebugMode.NON_DEBUG:
             logger.info(f"Direction change: {self.current_direction.upper()} (diff: {current_diff:.1f})")
 
+#dont change probably
     def detect_direction_change(self, current_diff: float) -> Tuple[str, float]:
         """
         Detect and confirm direction changes in vertical movement.
@@ -86,6 +88,7 @@ class SquatCounter(Counter):
 
         return confirmed_direction, abs(movement)
 
+#big changes REMEMBER WRIST-SHOULDER_DIF
     def _validate_keypoints(self, keypoints: Optional[np.ndarray]) -> Tuple[bool, Optional[str], Optional[float]]:
         """
         Validate keypoint data quality and extract relevant points.
@@ -125,6 +128,7 @@ class SquatCounter(Counter):
 
         return True, None, wrist_shoulder_diff
 
+#big changes
     def _check_for_rep_completion(self) -> bool:
         """
         Check if recent direction changes indicate a completed rep.
@@ -183,6 +187,7 @@ class SquatCounter(Counter):
         self._count_rep(down_position, up_position, movement_range)
         return True
 
+#dont change
     def _count_rep(self, down_position: float, up_position: float, movement_range: float) -> None:
         """
         Increment rep count and update state after detecting a valid rep.
@@ -203,6 +208,7 @@ class SquatCounter(Counter):
         # Clear direction history to prevent this same pattern from being counted again
         self.direction_history.clear()
 
+#dont change
     def _update_display_status(self, direction: str) -> None:
         """
         Update the display status based on current movement direction.
@@ -219,6 +225,7 @@ class SquatCounter(Counter):
             self.status = self.STATUS_LOWERING_DOWN
         else:
             self.status = self.STATUS_STABLE
+
 
     def analyze_pose(self, keypoints: Optional[np.ndarray]) -> Tuple[int, str]:
         """
@@ -272,6 +279,7 @@ class SquatCounter(Counter):
             logger.error(f"Error in rep analysis: {e.__traceback__.tb_lasti}")
             return self.count, self.STATUS_ERROR
 
+#dont change
     def reset(self) -> None:
         """
         Reset all counter state to initial values.
@@ -302,3 +310,31 @@ class SquatCounter(Counter):
         self.frame_count = 0
 
         logger.info("Squat counter reset to initial state")
+
+
+        """
+        Classify movement into up/down/stable based on threshold.
+
+        Uses hysteresis (threshold) to prevent jitter from small movements.
+        Remember: wrist_y - shoulder_y gives us negative values when hanging.
+
+        Args:
+            movement: The movement amount (positive = up, negative = down)
+
+        Returns:
+            str: One of DIRECTION_UP, DIRECTION_DOWN, or DIRECTION_STABLE
+
+        Example:
+            If movement = +15 pixels and threshold = 8:
+                -> DIRECTION_UP (wrists moving closer to shoulders)
+            If movement = -15 pixels:
+                -> DIRECTION_DOWN (wrists moving away from shoulders)
+            If movement = +3 pixels:
+                -> DIRECTION_STABLE (below threshold, ignore)
+        """
+        if movement > self.config.movement_threshold:
+            return self.DIRECTION_UP
+        elif movement < -self.config.movement_threshold:
+            return self.DIRECTION_DOWN
+        else:
+            return self.DIRECTION_STABLE

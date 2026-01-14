@@ -112,6 +112,15 @@ class Counter:
 
                     movement = last_pos - first_pos
                     return movement
+                case "Squants": #TODO#                    
+                    if len(self.position_history) < self.LOOKBACK_FRAMES:
+                        return None
+
+                    recent_positions = list(self.position_history)[-self.LOOKBACK_FRAMES:]
+
+                    logger.warning(recent_positions)#either moving up or down#
+                    movement = recent_positions[-1] - recent_positions[0]
+                    return movement
 
     def _classify_movement_direction(self, movement: float) -> str:
         """

@@ -33,6 +33,9 @@ class SquatConfig:
         self.image_width_limit: int = 640
         self.model_conf_threshold: float = 0.4
         self.min_arm_movement_threashold = 10 #####TODO########
+        ######################
+        self.min_knee_movement_threashold = 10 #TODO#
+        
 
         # Mode descriptions
         self.mode_descriptions: Dict[DebugMode, str] = {
