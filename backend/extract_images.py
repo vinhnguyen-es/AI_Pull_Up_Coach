@@ -125,6 +125,7 @@ async def main(video_arg: str, exercise):
 
     paused = False
     frame_num = 0
+    previous_count = 0
 
     # -----------------------------------------------------------------
     # Main loop
@@ -144,6 +145,12 @@ async def main(video_arg: str, exercise):
             if keypoints is not None:
                 draw_pose(frame, keypoints)
                 reps, status = counter.analyze_pose(keypoints)
+                
+                # Check if count changed
+                if counter.count != previous_count:
+                    print(f"Rep completed! Count: {previous_count} -> {counter.count}")
+                    previous_count = counter.count
+                
                 if frame_num % 30 == 0:
                     print(f"Frame {frame_num}: Pose detected | Reps: {reps} | Status: {status}")
             else:
