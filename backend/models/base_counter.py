@@ -1,6 +1,9 @@
 from collections import deque
 from typing import Optional, Tuple
 
+import numpy as np
+
+from utils.keypoint_utils import calculate_wrist_positions
 from utils.logging_utils import logger
 
 
@@ -66,7 +69,7 @@ class Counter:
         elif (left_sum > right_sum): return "left"
         else: return "both"
 
-    def _calculate_movement_from_history(self, moving_arm: str, exercise: str = "Pull Ups") -> Optional[float]:
+    def _calculate_movement_from_history(self, moving_arm: str = None, exercise: str = "Pull Ups") -> Tuple[Optional[float], ...]:
             """
             Calculate vertical movement by comparing recent positions.
 
@@ -84,7 +87,6 @@ class Counter:
 
                     recent_positions = list(self.position_history)[-self.LOOKBACK_FRAMES:]
 
-                    logger.warning(recent_positions)
                     movement = recent_positions[-1] - recent_positions[0]
                     return movement
                 case "Bicep Curls":
@@ -112,7 +114,27 @@ class Counter:
 
                     movement = last_pos - first_pos
                     return movement
-                case "Squats": #TODO#                    
+                case "Jumping Jacks":
+                    if len(self.position_history) < self.LOOKBACK_FRAMES:
+                        return None
+
+                    recent_positions = list(self.position_history)[-self.LOOKBACK_FRAMES:]
+
+                    def ankle_x_movement(x, y):
+                        return x[0] - y[0]
+
+                    def wrist_y_movement(x, y):
+                        return x[1] - y[1]
+
+                    def left_ankle_positions_diff(left_pos, prev_left_pos):
+                        return ankle_x_movement(left_pos, prev_left_pos)
+
+                    def right_ankle_positions_diff(right_pos, prev_right_pos):
+                        return ankle_x_movement(right_pos, prev_right_pos)
+
+                    def left_wrist_positions_diff(left_pos, prev_left_pos):
+                        return wrist_y_movement(left_pos, prev_left_pos)
+                case "Squats": #TODO#
                     if len(self.position_history) < self.LOOKBACK_FRAMES:
                         return None
 
@@ -122,7 +144,17 @@ class Counter:
                     movement = recent_positions[-1] - recent_positions[0]
                     return movement
 
-    def _classify_movement_direction(self, movement: float) -> str:
+                    def right_wrist_positions_diff(right_pos, prev_right_pos):
+                        return wrist_y_movement(right_pos, prev_right_pos)
+
+                    l_movement = left_ankle_positions_diff(recent_positions[-1][0], recent_positions[0][0])
+                    r_movement = right_ankle_positions_diff(recent_positions[-1][1], recent_positions[0][1])
+
+                    arm_movement = left_wrist_positions_diff(recent_positions[-1][2], recent_positions[0][2])
+
+                    return l_movement, r_movement, arm_movement
+
+    def _classify_movement_direction(self, movement: Tuple[Optional[float], ...]) -> str:
         """
         Classify movement into up/down/stable based on threshold.
 
@@ -143,9 +175,21 @@ class Counter:
             If movement = +3 pixels:
                 -> DIRECTION_STABLE (below threshold, ignore)
         """
-        if movement > self.config.movement_threshold:
+        LEFT = 0
+        RIGHT = 1
+        ARM = 2
+
+        print("-"*20)
+        print("LEFT:", movement[LEFT], self.config.left_movement_threshold)
+        print("RIGHT:", movement[RIGHT], self.config.right_movement_threshold)
+        print("ARM:", movement[ARM], self.config.arm_movement_threshold)
+        if (movement[LEFT] < -self.config.left_movement_threshold
+                and movement[RIGHT] > self.config.right_movement_threshold
+                and movement[ARM] > self.config.arm_movement_threshold):
             return self.DIRECTION_UP
-        elif movement < -self.config.movement_threshold:
+        elif (movement[LEFT] > self.config.left_movement_threshold
+                and movement[RIGHT] < -self.config.right_movement_threshold
+                and movement[ARM] < -self.config.arm_movement_threshold):
             return self.DIRECTION_DOWN
         else:
             return self.DIRECTION_STABLE
