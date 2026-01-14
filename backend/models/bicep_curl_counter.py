@@ -234,13 +234,18 @@ class BicepCurlCounter(Counter):
             return False
 
         # Examine the last two direction changes
-        recent_changes = list(self.direction_history)[-2:]
+        recent_changes = list(self.direction_history)[-3:]
 
         # Extract direction states from history entries
         # Each entry is (direction, timestamp, position)
-        """TODO"""
-        prev_direction = recent_changes[0][0]
-        curr_direction = recent_changes[1][0]
+        if len(recent_changes) >= 3:
+            prev_prev_direction = recent_changes[0][0]
+            prev_direction = recent_changes[1][0] if recent_changes[1][0] != self.DIRECTION_STABLE else prev_prev_direction
+            curr_direction = recent_changes[2][0]
+        else:
+            prev_direction = recent_changes[0][0]
+            curr_direction = recent_changes[1][0]
+
         # Check for the DOWN -> UP pattern (the rep signature)
         if not (prev_direction == self.DIRECTION_DOWN and curr_direction == self.DIRECTION_UP):
             return False

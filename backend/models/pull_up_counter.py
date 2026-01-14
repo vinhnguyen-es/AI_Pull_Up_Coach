@@ -95,8 +95,8 @@ class PullUpCounter(Counter):
         self.current_direction = new_direction
 
         # Log direction changes in debug mode for troubleshooting
-        # if pull_up_config.debug_mode != DebugMode.NON_DEBUG:
-        #     logger.info(f"Direction change: {self.current_direction.upper()} (diff: {current_diff:.1f})")
+        if pull_up_config.debug_mode != DebugMode.NON_DEBUG:
+            logger.info(f"Direction change: {self.current_direction.upper()} (diff: {current_diff:.1f})")
 
     def detect_direction_change(self, current_diff: float) -> Tuple[str, float]:
         """
@@ -131,7 +131,6 @@ class PullUpCounter(Counter):
 
         # Step 2: Check if we have enough history to analyze
         movement = self._calculate_movement_from_history(self)
-        logger.info(f"Diff: {movement}")
         if movement is None:
             return self.DIRECTION_STARTING, 0
 
@@ -216,12 +215,10 @@ class PullUpCounter(Counter):
 
         # Check cooldown: prevent counting multiple reps too quickly
         if current_time - self.last_rep_time <= pull_up_config.rep_cooldown:
-            logger.warning("Repped too quickly, not counted")
             return False
 
         # Need at least 2 direction changes to form a pattern
         if len(self.direction_history) < 2:
-            logger.warning("Need at least 2 direction changes, not counted")
             return False
 
         # Examine the last two direction changes
@@ -234,7 +231,6 @@ class PullUpCounter(Counter):
 
         # Check for the DOWN -> UP pattern (the rep signature)
         if not (prev_direction == self.DIRECTION_UP and curr_direction == self.DIRECTION_DOWN):
-            logger.warning("Went Down -> Up not Up -> Down, not counted")
             return False
 
         # Validate movement range to ensure full range of motion
@@ -244,12 +240,10 @@ class PullUpCounter(Counter):
 
         # Ensure the movement was significant (prevents counting tiny bounces)
         if movement_range <= pull_up_config.min_movement_range:
-            logger.warning("Not enough total movement, not counted")
             return False
 
         # All criteria met - count the rep!
         self._count_rep(down_position, up_position, movement_range)
-        logger.warning("Rep COUNTED!!!")
         return True
 
     def _count_rep(self, down_position: float, up_position: float, movement_range: float) -> None:
