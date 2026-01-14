@@ -86,8 +86,11 @@ async def main(video_arg: str, exercise):
     # -----------------------------------------------------------------
     # Initialize services
     # -----------------------------------------------------------------
+    print("Initializing pose detection service...")
     await pose_service.initialize()
+    print("Pose service initialized successfully")
 
+    print(f"Setting up counter for exercise: {exercise}")
     match exercise:
         case "Pull Ups":
             counter = PullUpCounter(pull_up_config, logger)
@@ -108,13 +111,20 @@ async def main(video_arg: str, exercise):
             logger.error(UNKOWN_EXERCISE_ERROR)
             raise ValueError(UNKOWN_EXERCISE_ERROR)
 
+    print(f"Counter initialized: {counter.__class__.__name__}")
+
     cap = cv2.VideoCapture(str(video_path))
     if not cap.isOpened():
         raise RuntimeError(f"Cannot open video: {video_path}")
 
+    fps = cap.get(cv2.CAP_PROP_FPS)
+    frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    print(f"Video loaded: {frame_count} frames @ {fps:.2f} FPS")
     print("Controls: ESC = quit | SPACE = pause")
+    print("-" * 50)
 
     paused = False
+    frame_num = 0
 
     # -----------------------------------------------------------------
     # Main loop
@@ -123,7 +133,10 @@ async def main(video_arg: str, exercise):
         if not paused:
             ret, frame = cap.read()
             if not ret:
+                print("End of video reached")
                 break
+
+            frame_num += 1
 
             # Pose detection
             keypoints = pose_service.detect_pose(frame)
@@ -131,8 +144,12 @@ async def main(video_arg: str, exercise):
             if keypoints is not None:
                 draw_pose(frame, keypoints)
                 reps, status = counter.analyze_pose(keypoints)
+                if frame_num % 30 == 0:
+                    print(f"Frame {frame_num}: Pose detected | Reps: {reps} | Status: {status}")
             else:
                 reps, status = counter.count, "no_person"
+                if frame_num % 30 == 0:
+                    print(f"Frame {frame_num}: No person detected")
 
             # Overlay info
             cv2.putText(
@@ -154,10 +171,13 @@ async def main(video_arg: str, exercise):
 
         key = cv2.waitKey(1) & 0xFF
         if key == 27:      # ESC
+            print("ESC pressed - exiting")
             break
         elif key == 32:    # SPACE
             paused = not paused
+            print(f"Playback {'paused' if paused else 'resumed'}")
 
+    print(f"Final rep count: {counter.count}")
     cap.release()
     cv2.destroyAllWindows()
 
