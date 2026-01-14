@@ -8,7 +8,7 @@ from config.squat_config import squat_config, DebugMode
 from utils.logging_utils import logger
 
 from models.base_counter import Counter
-from utils.keypoint_utils import extract_shoulder_wrist_keypoints, calculate_wrist_shoulder_diff
+from utils.keypoint_utils import extract_hip_knee_keypoints, calculate_hip_knee_diff
 
 class SquatCounter(Counter):
     def __init__(self, config, logger):
@@ -89,6 +89,7 @@ class SquatCounter(Counter):
         return confirmed_direction, abs(movement)
 
 #big changes REMEMBER WRIST-SHOULDER_DIF
+#DONE
     def _validate_keypoints(self, keypoints: Optional[np.ndarray]) -> Tuple[bool, Optional[str], Optional[float]]:
         """
         Validate keypoint data quality and extract relevant points.
@@ -111,9 +112,9 @@ class SquatCounter(Counter):
             return False, self.STATUS_NO_PERSON, None
 
         # Extract shoulder and wrist keypoints
-        left_shoulder, right_shoulder, left_wrist, right_wrist, min_confidence = \
-            extract_shoulder_wrist_keypoints(keypoints)
-
+        left_hip, right_hip, left_knee, right_knee, min_confidence = \
+            extract_hip_knee_keypoints(keypoints)
+        
         if min_confidence is None:
             return False, self.STATUS_INVALID_KEYPOINTS, None
 
@@ -122,13 +123,12 @@ class SquatCounter(Counter):
             return False, self.STATUS_LOW_CONFIDENCE, None
 
         # Calculate vertical position metric (wrist_y - shoulder_y)
-        wrist_shoulder_diff = calculate_wrist_shoulder_diff(
-            left_shoulder, right_shoulder, left_wrist, right_wrist
+        hip_knee_diff = calculate_hip_knee_diff(
+            left_hip, right_hip, left_knee, right_knee
         )
 
-        return True, None, wrist_shoulder_diff
+        return True, None, hip_knee_diff
 
-#big changes
     def _check_for_rep_completion(self) -> bool:
         """
         Check if recent direction changes indicate a completed rep.
@@ -163,14 +163,22 @@ class SquatCounter(Counter):
             return False
 
         # Examine the last two direction changes
-        recent_changes = list(self.direction_history)[-2:]
+        recent_changes = list(self.direction_history)[-3:]
 
-        # Extract direction states from history entries
-        # Each entry is (direction, timestamp, position)
-        prev_direction = recent_changes[0][0]
-        curr_direction = recent_changes[1][0]
+        if len(recent_changes) >= 3:
+            prev_prev_direction = recent_changes[0][0]
+            prev_direction = recent_changes[1][0] if recent_changes[1][0] != self.DIRECTION_STABLE else prev_prev_direction
+            curr_direction = recent_changes[2][0]
+        else:
+            prev_direction = recent_changes[0][0]
+            curr_direction = recent_changes[1][0]
+        # # Extract direction states from history entries
+        # # Each entry is (direction, timestamp, position)
+        # prev_direction = recent_changes[0][0]
+        # curr_direction = recent_changes[1][0]
 
         # Check for the DOWN -> UP pattern (the rep signature)
+        #SQUAT SPECIFIC
         if not (prev_direction == self.DIRECTION_UP and curr_direction == self.DIRECTION_DOWN):
             return False
 
@@ -259,12 +267,12 @@ class SquatCounter(Counter):
         """
         try:
             # Step 1: Validate and extract keypoint data
-            is_valid, error_status, wrist_shoulder_diff = self._validate_keypoints(keypoints)
+            is_valid, error_status, hip_knee_diff = self._validate_keypoints(keypoints)
             if not is_valid:
                 return self.count, error_status
 
             # Step 2: Analyze movement direction over time
-            direction, magnitude = self.detect_direction_change(wrist_shoulder_diff)
+            direction, magnitude = self.detect_direction_change(hip_knee_diff)
 
             # Step 3: Check if we've completed a rep (DOWN -> UP pattern)
             self._check_for_rep_completion()
@@ -311,30 +319,3 @@ class SquatCounter(Counter):
 
         logger.info("Squat counter reset to initial state")
 
-
-        """
-        Classify movement into up/down/stable based on threshold.
-
-        Uses hysteresis (threshold) to prevent jitter from small movements.
-        Remember: wrist_y - shoulder_y gives us negative values when hanging.
-
-        Args:
-            movement: The movement amount (positive = up, negative = down)
-
-        Returns:
-            str: One of DIRECTION_UP, DIRECTION_DOWN, or DIRECTION_STABLE
-
-        Example:
-            If movement = +15 pixels and threshold = 8:
-                -> DIRECTION_UP (wrists moving closer to shoulders)
-            If movement = -15 pixels:
-                -> DIRECTION_DOWN (wrists moving away from shoulders)
-            If movement = +3 pixels:
-                -> DIRECTION_STABLE (below threshold, ignore)
-        """
-        if movement > self.config.movement_threshold:
-            return self.DIRECTION_UP
-        elif movement < -self.config.movement_threshold:
-            return self.DIRECTION_DOWN
-        else:
-            return self.DIRECTION_STABLE

@@ -112,7 +112,7 @@ class Counter:
 
                     movement = last_pos - first_pos
                     return movement
-                case "Squants": #TODO#                    
+                case "Squats": #TODO#                    
                     if len(self.position_history) < self.LOOKBACK_FRAMES:
                         return None
 

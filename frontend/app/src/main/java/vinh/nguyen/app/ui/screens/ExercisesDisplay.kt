@@ -68,16 +68,6 @@ fun ExercisesDisplay(navController: NavController,
                 onToggle = onToggleTheme
             )
         }
-//        ThemeSwitch(darkTheme = darkTheme,
-//            onToggle = onToggleTheme)
-//        Text(
-//            text = stringResource(R.string.title),
-//            modifier = modifier.padding(20.dp).fillMaxWidth(),
-//            textAlign = TextAlign.Center,
-//            fontWeight = Bold,
-//            fontSize = 30.sp
-//        )
-
 
         Column(
             //the background
