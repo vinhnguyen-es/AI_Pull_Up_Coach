@@ -25,6 +25,9 @@ KEYPOINT_RIGHT_HIP = 12
 KEYPOINT_LEFT_KNEE = 13
 KEYPOINT_RIGHT_KNEE = 14
 
+KEYPOINT_LEFT_ANKLE = 15
+KEYPOINT_RIGHT_ANKLE = 16
+
 ARM_MOVEMENT_BOTH = "BOTH"
 ARM_MOVEMENT_LEFT = "LEFT"
 ARM_MOVEMENT_RIGHT = "RIGHT"
@@ -33,7 +36,9 @@ ARM_MOVEMENT_NEITHER = None
 HORIZONTAL_MOVEMENT_INDEX = 0
 VERTICAL_MOVEMENT_INDEX = 1
 
-
+############################
+####FOR PULL UPS/BICEPS####
+############################
 def extract_shoulder_wrist_keypoints(
     keypoints: np.ndarray,
 ) -> Tuple[Optional[np.ndarray], Optional[np.ndarray], Optional[np.ndarray], Optional[np.ndarray], Optional[float]]:
@@ -124,7 +129,9 @@ def calculate_wrist_shoulder_diff(
             raise ValueError(f"Arm was: {arm}. Expected one of (both, left, right).")
     return wrist - shoulder
 
-
+############################
+#########FOR SQUATS#########
+############################
 def extract_hip_knee_keypoints(
     keypoints: np.ndarray,
 ) -> Tuple[Optional[np.ndarray], Optional[np.ndarray], Optional[np.ndarray], Optional[np.ndarray], Optional[float]]:
@@ -201,7 +208,7 @@ def calculate_hip_knee_diff(
     index = HORIZONTAL_MOVEMENT_INDEX if direction == "horizontal" else VERTICAL_MOVEMENT_INDEX
 
     hip_y = (left_hip[1] + right_hip[1]) / 2
-    knee_y = (left_knee[1] + left_knee[1]) / 2
+    knee_y = (left_knee[1] + right_knee[1]) / 2
     #squat down = hip y increases
     #stand up = hip y decreases
 
@@ -213,3 +220,172 @@ def calculate_hip_knee_diff(
     
     #return wrist - shoulder
     return answer
+
+############################
+########FOR SIT UPS#########
+############################
+
+def extract_knee_keypoints(
+    keypoints: np.ndarray,
+) -> Tuple[Optional[np.ndarray], Optional[np.ndarray], Optional[float]]:
+    """Extract shoulder keypoints with confidence values.
+
+    Args:
+        keypoints: YOLO pose keypoints array of shape (17, 3) where each keypoint
+                  has [x, y, confidence]
+
+    Returns:
+        Tuple of (left_shoulder, right_shoulder, left_wrist, right_wrist, min_confidence)
+        where each keypoint is array [x, y, confidence], or (None, None, None, None, None)
+        if keypoints array is invalid or has insufficient shape.
+
+    Example:
+        >>> keypoints = np.array([[x, y, conf], ...])  # 17 keypoints
+        >>> ls, rs, lw, rw, min_conf = extract_shoulder_wrist_keypoints(keypoints)
+        >>> if min_conf is not None and min_conf > 0.3:
+        ...     # Use the keypoints
+    """
+    if keypoints is None or len(keypoints) < 17:
+        return None, None, None
+
+    try:
+        left_knee = keypoints[KEYPOINT_LEFT_KNEE]
+        right_knee = keypoints[KEYPOINT_RIGHT_KNEE]
+
+        # Calculate minimum confidence among these 2 keypoints
+        min_confidence = min(
+            left_knee[2],
+            right_knee[2]
+        )
+
+        return left_knee, right_knee, min_confidence
+    
+    except (IndexError, TypeError):
+        return None, None, None
+    
+
+def extract_shoulder_keypoints(
+    keypoints: np.ndarray,
+) -> Tuple[Optional[np.ndarray], Optional[np.ndarray], Optional[float]]:
+    """Extract shoulder keypoints with confidence values.
+
+    Args:
+        keypoints: YOLO pose keypoints array of shape (17, 3) where each keypoint
+                  has [x, y, confidence]
+
+    Returns:
+        Tuple of (left_shoulder, right_shoulder, left_wrist, right_wrist, min_confidence)
+        where each keypoint is array [x, y, confidence], or (None, None, None, None, None)
+        if keypoints array is invalid or has insufficient shape.
+
+    Example:
+        >>> keypoints = np.array([[x, y, conf], ...])  # 17 keypoints
+        >>> ls, rs, lw, rw, min_conf = extract_shoulder_wrist_keypoints(keypoints)
+        >>> if min_conf is not None and min_conf > 0.3:
+        ...     # Use the keypoints
+    """
+    if keypoints is None or len(keypoints) < 17:
+        return None, None, None
+
+    try:
+        left_shoulder = keypoints[KEYPOINT_LEFT_SHOULDER]
+        right_shoulder = keypoints[KEYPOINT_RIGHT_SHOULDER]
+
+        # Calculate minimum confidence among these 2 keypoints
+        min_confidence = min(
+            left_shoulder[2],
+            right_shoulder[2]
+        )
+
+        return left_shoulder, right_shoulder, min_confidence
+    
+    except (IndexError, TypeError):
+        return None, None, None
+    
+
+def extract_ankle_keypoints(
+    keypoints: np.ndarray,
+) -> Tuple[Optional[np.ndarray], Optional[np.ndarray], Optional[float]]:
+    if keypoints is None or len(keypoints) < 17:
+        return None, None, None
+
+    try:
+        left_ankle = keypoints[KEYPOINT_LEFT_ANKLE]
+        right_ankle = keypoints[KEYPOINT_RIGHT_ANKLE]
+
+        # Calculate minimum confidence among these 2 keypoints
+        min_confidence = min(
+            left_ankle[2],
+            right_ankle[2]
+        )
+
+        return left_ankle, right_ankle, min_confidence
+    
+    except (IndexError, TypeError):
+        return None, None, None
+    
+
+#SHOULDER KNEE Y 
+#SHOULD BE STABLE
+def calculate_ankle_knee_diff(
+    left_ankle: np.ndarray,
+    right_ankle: np.ndarray,
+    left_knee: np.ndarray,
+    right_knee: np.ndarray,
+    direction: str = "vertical"
+) -> float:
+
+    index = HORIZONTAL_MOVEMENT_INDEX if direction == "horizontal" else VERTICAL_MOVEMENT_INDEX
+
+    #WILL THERE BE AN ISSUE IF ITS ON THE SIDE IDK
+    ankle_y = (left_ankle[1] + left_ankle[1]) / 2
+    knee_y = (left_knee[1] + right_knee[1]) / 2
+
+    answer = abs(ankle_y - knee_y)
+    logger.info(f"Hip y avg: {ankle_y}. Knee y avg: {knee_y}. Difference: {answer}")
+    
+    return answer
+
+#ANKLE SHOULDER X
+#become level at some point
+def calculate_shoulder_ankle_diff(
+    left_shoulder: np.ndarray,
+    right_shoulder: np.ndarray,
+    left_ankle: np.ndarray,
+    right_ankle: np.ndarray,
+    direction: str = "vertical"
+) -> float:
+    # Obtain shoulder and wrist positions
+    index = HORIZONTAL_MOVEMENT_INDEX if direction == "horizontal" else VERTICAL_MOVEMENT_INDEX
+
+    #WILL THERE BE AN ISSUE IF ITS ON THE SIDE IDK
+    shoulder_x = (left_shoulder[0] + right_shoulder[0]) / 2
+    ankle_x = (left_ankle[0] + right_ankle[0]) / 2
+
+    answer = abs(shoulder_x - ankle_x)
+    logger.info(f"Hip y avg: {shoulder_x}. Knee y avg: {ankle_x}. Difference: {answer}")
+    
+    return answer
+
+#SHOULDER KNEE Y 
+#should approach then go away form eachother 
+def calculate_shoulder_knee_diff(
+    left_shoulder: np.ndarray,
+    right_shoulder: np.ndarray,
+    left_knee: np.ndarray,
+    right_knee: np.ndarray,
+    direction: str = "vertical"
+) -> float:
+
+    # Obtain shoulder and wrist positions
+    index = HORIZONTAL_MOVEMENT_INDEX if direction == "horizontal" else VERTICAL_MOVEMENT_INDEX
+
+    #WILL THERE BE AN ISSUE IF ITS ON THE SIDE IDK
+    shoulder_y = (left_shoulder[1] + right_shoulder[1]) / 2
+    knee_y = (left_knee[1] + right_knee[1]) / 2
+
+    answer = abs(shoulder_y - knee_y)
+    logger.info(f"Hip y avg: {shoulder_y}. Knee y avg: {knee_y}. Difference: {answer}")
+    
+    return answer
+

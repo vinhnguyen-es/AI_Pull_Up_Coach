@@ -32,11 +32,9 @@ class SquatCounter(Counter):
         self.direction_history.append((new_direction, time.time(), current_diff))
         self.current_direction = new_direction
 
-        # Log direction changes in debug mode for troubleshooting
         if squat_config.debug_mode != DebugMode.NON_DEBUG:
             logger.info(f"Direction change: {self.current_direction.upper()} (diff: {current_diff:.1f})")
 
-#dont change probably
     def detect_direction_change(self, current_diff: float) -> Tuple[str, float]:
         """
         Detect and confirm direction changes in vertical movement.
@@ -88,8 +86,6 @@ class SquatCounter(Counter):
 
         return confirmed_direction, abs(movement)
 
-#big changes REMEMBER WRIST-SHOULDER_DIF
-#DONE
     def _validate_keypoints(self, keypoints: Optional[np.ndarray]) -> Tuple[bool, Optional[str], Optional[float]]:
         """
         Validate keypoint data quality and extract relevant points.
@@ -172,10 +168,6 @@ class SquatCounter(Counter):
         else:
             prev_direction = recent_changes[0][0]
             curr_direction = recent_changes[1][0]
-        # # Extract direction states from history entries
-        # # Each entry is (direction, timestamp, position)
-        # prev_direction = recent_changes[0][0]
-        # curr_direction = recent_changes[1][0]
 
         # Check for the DOWN -> UP pattern (the rep signature)
         #SQUAT SPECIFIC
@@ -195,7 +187,6 @@ class SquatCounter(Counter):
         self._count_rep(down_position, up_position, movement_range)
         return True
 
-#dont change
     def _count_rep(self, down_position: float, up_position: float, movement_range: float) -> None:
         """
         Increment rep count and update state after detecting a valid rep.
@@ -216,7 +207,6 @@ class SquatCounter(Counter):
         # Clear direction history to prevent this same pattern from being counted again
         self.direction_history.clear()
 
-#dont change
     def _update_display_status(self, direction: str) -> None:
         """
         Update the display status based on current movement direction.
@@ -233,7 +223,6 @@ class SquatCounter(Counter):
             self.status = self.STATUS_LOWERING_DOWN
         else:
             self.status = self.STATUS_STABLE
-
 
     def analyze_pose(self, keypoints: Optional[np.ndarray]) -> Tuple[int, str]:
         """
@@ -287,7 +276,6 @@ class SquatCounter(Counter):
             logger.error(f"Error in rep analysis: {e.__traceback__.tb_lasti}")
             return self.count, self.STATUS_ERROR
 
-#dont change
     def reset(self) -> None:
         """
         Reset all counter state to initial values.
