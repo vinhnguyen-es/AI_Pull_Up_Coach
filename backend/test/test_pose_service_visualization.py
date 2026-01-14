@@ -20,7 +20,9 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent))
 
 from services.pose_service import pose_service
-from config.pull_up_config import config
+# from config.pull_up_config import config
+# from config.pull_up_config import config
+from config.pull_up_config import pull_up_config
 
 # COCO pose skeleton connections (which keypoints connect to form the skeleton)
 SKELETON_CONNECTIONS = [
@@ -156,9 +158,9 @@ async def test_pose_service_visualization():
     print("\n[1/3] Initializing pose_service...")
     await pose_service.initialize()
     print(f"✅ Model loaded successfully!")
-    print(f"   Config mode: {config.mode_description}")
-    print(f"   Min confidence: {config.min_confidence}")
-    print(f"   Image width limit: {config.image_width_limit}px (matches tablet processing)")
+    print(f"   Config mode: {pull_up_config.mode_description}")
+    print(f"   Min confidence: {pull_up_config.min_confidence}")
+    print(f"   Image width limit: {pull_up_config.image_width_limit}px (matches tablet processing)")
 
     # Step 2: Try to open webcam
     print("\n[2/3] Opening video source...")
@@ -171,7 +173,7 @@ async def test_pose_service_visualization():
     else:
         print("✅ Webcam opened successfully")
         print("   Press ESC to quit, SPACE to pause/print keypoint details")
-        print(f"   Note: Frames will be resized to {config.image_width_limit}px width (same as tablet)")
+        print(f"   Note: Frames will be resized to {pull_up_config.image_width_limit}px width (same as tablet)")
 
     # Step 3: Process frames
     print("\n[3/3] Processing frames...")
@@ -193,8 +195,8 @@ async def test_pose_service_visualization():
                     # This matches what pose_service.detect_pose() does internally
                     height, width = frame.shape[:2]
                     original_size = f"{width}x{height}"
-                    if width > config.image_width_limit:
-                        scale = config.image_width_limit / width
+                    if width > pull_up_config.image_width_limit:
+                        scale = pull_up_config.image_width_limit / width
                         new_width = int(width * scale)
                         new_height = int(height * scale)
                         frame = cv2.resize(frame, (new_width, new_height))
@@ -219,7 +221,7 @@ async def test_pose_service_visualization():
 
                     # Visualize the pose
                     annotated_frame = draw_pose_on_frame(frame, keypoints,
-                                                         min_confidence=config.min_confidence)
+                                                         min_confidence=pull_up_config.min_confidence)
 
                     # Add frame info overlay
                     h, w = annotated_frame.shape[:2]
