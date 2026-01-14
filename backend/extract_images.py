@@ -126,6 +126,11 @@ async def main(video_arg: str, exercise):
     paused = False
     frame_num = 0
 
+    TARGET_FPS = 5.0
+    SAMPLE_INTERVAL_MS = 1000.0 / TARGET_FPS  # 200 ms
+
+    last_sample_time_ms = -1.0
+
     # -----------------------------------------------------------------
     # Main loop
     # -----------------------------------------------------------------
@@ -140,6 +145,21 @@ async def main(video_arg: str, exercise):
 
             # Pose detection
             keypoints = pose_service.detect_pose(frame)
+            current_time_ms = cap.get(cv2.CAP_PROP_POS_MSEC)
+
+            # Only analyze if enough time has passed (for 5 fps)
+            if last_sample_time_ms < 0 or (
+                    current_time_ms - last_sample_time_ms >= SAMPLE_INTERVAL_MS
+            ):
+                last_sample_time_ms = current_time_ms
+
+                keypoints = pose_service.detect_pose(frame)
+
+                if keypoints is not None:
+                    draw_pose(frame, keypoints)
+                    reps, status = counter.analyze_pose(keypoints)
+                else:
+                    reps, status = counter.count, "no_person"
 
             if keypoints is not None:
                 draw_pose(frame, keypoints)
