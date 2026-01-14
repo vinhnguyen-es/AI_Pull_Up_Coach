@@ -145,7 +145,6 @@ async def main(video_arg: str, exercise):
             frame_num += 1
 
             # Pose detection
-            keypoints = pose_service.detect_pose(frame)
             current_time_ms = cap.get(cv2.CAP_PROP_POS_MSEC)
 
             # Only analyze if enough time has passed (for 5 fps)
