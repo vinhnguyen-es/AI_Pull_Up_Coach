@@ -134,7 +134,7 @@ class BicepCurlCounter(Counter):
             return self.DIRECTION_STARTING, 0
 
         # Step 3: Classify the movement direction based on threshold
-        detected_direction = self._classify_movement_direction(movement)
+        detected_direction = self._classify_movement_direction(movement, exercise="Bicep Curls")
 
         # Step 4: Update consecutive frame counters for confirmation
         self._update_consecutive_frame_counters(detected_direction)
@@ -247,7 +247,7 @@ class BicepCurlCounter(Counter):
             curr_direction = recent_changes[1][0]
 
         # Check for the DOWN -> UP pattern (the rep signature)
-        if not (prev_direction == self.DIRECTION_DOWN and curr_direction == self.DIRECTION_UP):
+        if not (prev_direction == self.DIRECTION_UP and curr_direction == self.DIRECTION_DOWN):
             return False
 
         # Validate movement range to ensure full range of motion

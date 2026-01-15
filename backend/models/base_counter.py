@@ -116,7 +116,6 @@ class Counter:
                     return movement
                 case "Jumping Jacks":
                     if len(self.position_history) < self.LOOKBACK_FRAMES:
-                        print("returning None")
                         return None
 
                     recent_positions = list(self.position_history)[-self.LOOKBACK_FRAMES:]
@@ -179,24 +178,29 @@ class Counter:
             If movement = +3 pixels:
                 -> DIRECTION_STABLE (below threshold, ignore)
         """
-        LEFT = 0
-        RIGHT = 1
-        ARM = 2
+        match exercise:
+            case "Jumping Jacks":
+                LEFT = 0
+                RIGHT = 1
+                ARM = 2
 
-        print("-"*20)
-        print("LEFT:", movement[LEFT], self.config.left_movement_threshold)
-        print("RIGHT:", movement[RIGHT], self.config.right_movement_threshold)
-        print("ARM:", movement[ARM], self.config.arm_movement_threshold)
-        if (movement[LEFT] < -self.config.left_movement_threshold
-                and movement[RIGHT] > self.config.right_movement_threshold
-                and movement[ARM] > self.config.arm_movement_threshold):
-            return self.DIRECTION_UP
-        elif (movement[LEFT] > self.config.left_movement_threshold
-                and movement[RIGHT] < -self.config.right_movement_threshold
-                and movement[ARM] < -self.config.arm_movement_threshold):
-            return self.DIRECTION_DOWN
-        else:
-            return self.DIRECTION_STABLE
+                if (movement[LEFT] < -self.config.left_movement_threshold
+                        and movement[RIGHT] > self.config.right_movement_threshold
+                        and movement[ARM] > self.config.arm_movement_threshold):
+                    return self.DIRECTION_UP
+                elif (movement[LEFT] > self.config.left_movement_threshold
+                        and movement[RIGHT] < -self.config.right_movement_threshold
+                        and movement[ARM] < -self.config.arm_movement_threshold):
+                    return self.DIRECTION_DOWN
+                else:
+                    return self.DIRECTION_STABLE
+            case _:
+                if movement > self.config.movement_threshold:
+                    return self.DIRECTION_UP
+                elif movement < -self.config.movement_threshold:
+                    return self.DIRECTION_DOWN
+                else:
+                    return self.DIRECTION_STABLE
 
     def _update_consecutive_frame_counters(self, detected_direction: str) -> None:
         """

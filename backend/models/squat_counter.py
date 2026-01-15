@@ -74,7 +74,7 @@ class SquatCounter(Counter):
             return self.DIRECTION_STARTING, 0
 
         # Step 3: Classify the movement direction based on threshold
-        detected_direction = self._classify_movement_direction(movement)
+        detected_direction = self._classify_movement_direction(movement, exercise="Squats")
 
         # Step 4: Update consecutive frame counters for confirmation
         self._update_consecutive_frame_counters(detected_direction)
