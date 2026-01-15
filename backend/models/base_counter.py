@@ -19,6 +19,7 @@ class Counter:
     DIRECTION_STARTING = "starting"
 
     STATUS_PULLING_UP = "pulling_up"
+    STATUS_PUSHING_UP = "pushing_up"
     STATUS_LOWERING_DOWN = "lowering_down"
     STATUS_ARMS_OUT = "arms_out"
     STATUS_ARMS_IN = "arms_in"
@@ -147,9 +148,7 @@ class Counter:
                     arm_movement = left_wrist_positions_diff(recent_positions[-1][2], recent_positions[0][2])
 
                     return l_movement, r_movement, arm_movement
-
-
-                case "Squats": #TODO#
+                case "Squats":
                     if len(self.position_history) < self.LOOKBACK_FRAMES:
                         return None
 
@@ -158,7 +157,14 @@ class Counter:
                     logger.warning(recent_positions)#either moving up or down#
                     movement = recent_positions[-1] - recent_positions[0]
                     return movement
+                case "Push Ups":
+                    if len(self.position_history) < self.LOOKBACK_FRAMES:
+                        return None
 
+                    recent_positions = list(self.position_history)[-self.LOOKBACK_FRAMES:]
+
+                    movement = recent_positions[-1] - recent_positions[0]
+                    return movement
 
     def _classify_movement_direction(self, movement: Tuple[Optional[float], ...], exercise = "Pull Ups") -> str:
         """
