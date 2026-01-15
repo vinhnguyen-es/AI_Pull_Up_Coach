@@ -178,7 +178,7 @@ class SquatCounter(Counter):
         down_position = recent_changes[0][2]  # Position at bottom of rep
         up_position = recent_changes[1][2]    # Position at top of rep
         movement_range = abs(up_position - down_position)
-        movement_range = movement_range if not self.test_script else 6 * movement_range
+        movement_range = 6 * movement_range
 
         # Ensure the movement was significant (prevents counting tiny bounces)
         if movement_range <= squat_config.min_movement_range:

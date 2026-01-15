@@ -1,5 +1,6 @@
 package vinh.nguyen.app.ui.viewmodels
 
+import android.R
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -56,6 +57,43 @@ class WorkoutViewModel : ViewModel() {
     fun stopWorkout() {
         Log.i(TAG, "Stopping workout (lifecycle)")
         _state.value = _state.value.copy(isWorkoutActive = false)
+    }
+
+    fun reset() {
+        if (_state.value.isWorkoutActive) {
+            // Reset: Stop workout and clear all data
+            Log.i(TAG, "Resetting workout session")
+
+            // Reset local state
+            framesSentCount = 0
+            consecutiveFailures = 0
+
+            // Reset UI state to idle
+            _state.value = WorkoutState(
+                repCount = 0,
+                status = "ready",
+                isWorkoutActive = false, // Stop the workout
+                isConnected = _state.value.isConnected, // Keep connection state
+                errorMessage = null,
+                framesSent = 0,
+                lastRepTime = 0L
+            )
+
+            // Reset backend session
+            viewModelScope.launch {
+                try {
+                    val response = NetworkClient.apiService.resetSession(exercise)
+                    if (response.isSuccessful) {
+                        Log.i(TAG, "Backend session reset successfully")
+                    } else {
+                        Log.w(TAG, "Backend reset failed, but continuing with local reset")
+                    }
+                } catch (e: Exception) {
+                    Log.w(TAG, "Could not reset backend session: ${e.message}")
+                    // Continue anyway since local reset is more important
+                }
+            }
+        }
     }
 
     /**

@@ -1,0 +1,51 @@
+(np.float32(-0.5849304), np.float32(0.27996826), np.float32(-2.575058))
+(np.float32(0.5927124), np.float32(-0.16769409), np.float32(-0.7386627))
+(np.float32(2.508789), np.float32(-1.0364075), np.float32(-0.9710541))
+(np.float32(2.836792), np.float32(-3.6163025), np.float32(-45.811264))
+(np.float32(11.896179), np.float32(-6.363159), np.float32(-93.81873))
+(np.float32(17.438568), np.float32(-15.618164), np.float32(-134.02902))
+Frame 30: Pose detected | Reps: 0 | Status: stable
+(np.float32(38.79666), np.float32(-34.328278), np.float32(-162.80379))
+INFO:pullup_coach:Direction change: UP
+(np.float32(48.490814), np.float32(-40.82904), np.float32(-96.64441))
+(np.float32(37.589874), np.float32(-40.788696), np.float32(-41.422585))
+(np.float32(24.894653), np.float32(-26.068665), np.float32(5.1940002))
+(np.float32(-21.700348), np.float32(8.429504), np.float32(60.238922))
+(np.float32(-59.95395), np.float32(38.355194), np.float32(103.642715))
+INFO:pullup_coach:Direction change: DOWN
+(np.float32(-58.76709), np.float32(45.4433), np.float32(132.78568))
+INFO:pullup_coach:REP COMPLETED! Count: 1
+Rep completed! Count: 0 -> 1
+(np.float32(-50.701294), np.float32(39.350586), np.float32(122.110725))
+(np.float32(-16.758087), np.float32(19.746033), np.float32(56.38745))
+(np.float32(24.836487), np.float32(-10.085999), np.float32(-55.075317))
+Frame 60: Pose detected | Reps: 1 | Status: arms_in
+(np.float32(54.654633), np.float32(-35.0838), np.float32(-143.84949))
+INFO:pullup_coach:Direction change: UP
+(np.float32(59.430603), np.float32(-43.574432), np.float32(-136.91792))
+(np.float32(51.207), np.float32(-40.158813), np.float32(-81.27045))
+(np.float32(37.26834), np.float32(-28.607788), np.float32(-39.303764))
+(np.float32(-14.270294), np.float32(6.1570435), np.float32(35.874992))
+(np.float32(-45.44409), np.float32(39.0813), np.float32(92.69841))
+(np.float32(-59.539948), np.float32(48.305725), np.float32(115.782776))
+INFO:pullup_coach:Direction change: DOWN
+(np.float32(-58.87668), np.float32(48.20038), np.float32(137.76779))
+INFO:pullup_coach:REP COMPLETED! Count: 2
+Rep completed! Count: 1 -> 2
+(np.float32(-29.134338), np.float32(24.115326), np.float32(80.933105))
+(np.float32(12.405701), np.float32(-12.655823), np.float32(-23.544647))
+Frame 90: Pose detected | Reps: 2 | Status: arms_in
+(np.float32(47.391266), np.float32(-39.976837), np.float32(-116.34667))
+INFO:pullup_coach:Direction change: UP
+(np.float32(60.721497), np.float32(-53.267395), np.float32(-138.76541))
+(np.float32(57.207184), np.float32(-43.51303), np.float32(-90.84523))
+(np.float32(36.979004), np.float32(-31.132202), np.float32(-55.016098))
+(np.float32(-7.744995), np.float32(5.9351196), np.float32(13.418976))
+(np.float32(-45.394287), np.float32(40.26703), np.float32(76.571976))
+(np.float32(-60.68103), np.float32(50.684296), np.float32(100.31242))
+INFO:pullup_coach:Direction change: DOWN
+(np.float32(-66.79379), np.float32(50.854736), np.float32(137.57101))
+INFO:pullup_coach:REP COMPLETED! Count: 3
+Rep completed! Count: 2 -> 3
+ESC pressed - exiting
+Final rep count: 3

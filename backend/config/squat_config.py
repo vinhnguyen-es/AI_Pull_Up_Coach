@@ -29,7 +29,7 @@ class SquatConfig:
         self.rep_cooldown: float = 1.0
         self.min_consecutive_frames: int = 3
         self.movement_threshold: int = 8
-        self.min_movement_range: int = 10
+        self.min_movement_range: int = 0
         self.image_width_limit: int = 640
         self.model_conf_threshold: float = 0.4
         self.min_arm_movement_threashold = 10 

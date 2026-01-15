@@ -193,6 +193,7 @@ class Counter:
                 RIGHT = 1
                 ARM = 2
 
+                movement = tuple(map(lambda x : 6 * x, movement))
                 if (movement[LEFT] < -self.config.left_movement_threshold
                         and movement[RIGHT] > self.config.right_movement_threshold
                         and movement[ARM] > self.config.arm_movement_threshold):

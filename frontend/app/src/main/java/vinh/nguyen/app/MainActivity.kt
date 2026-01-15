@@ -56,7 +56,8 @@ class MainActivity : ComponentActivity() {
                         WorkoutScreen(
                             viewModel = viewModel,
                             onFrameCapture = ::handleFrameCapture,
-                            onCameraReady = ::handleCameraReady
+                            onCameraReady = ::handleCameraReady,
+                            navController = navController
                         )
                     }
                 }

@@ -230,7 +230,7 @@ class PullUpCounter(Counter):
         curr_direction = recent_changes[1][0]
 
         # Check for the DOWN -> UP pattern (the rep signature)
-        if not (prev_direction == self.DIRECTION_DOWN and curr_direction == self.DIRECTION_UP):
+        if not (prev_direction == self.DIRECTION_UP and curr_direction == self.DIRECTION_DOWN):
             return False
 
         # Validate movement range to ensure full range of motion

@@ -2,6 +2,7 @@ package vinh.nguyen.app.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -15,6 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import vinh.nguyen.app.ui.viewmodels.WorkoutState
 import vinh.nguyen.app.ui.viewmodels.WorkoutViewModel
 
@@ -106,8 +108,10 @@ fun ControlPanel(
     modifier: Modifier = Modifier,
     state: WorkoutState,
     onStartReset: () -> Unit,
+    onReset: () -> Unit,
     onReconnect: () -> Unit,
-    viewModel: WorkoutViewModel
+    viewModel: WorkoutViewModel,
+    navController: NavController
 ) {
     Card(
         modifier = modifier,
@@ -119,7 +123,7 @@ fun ControlPanel(
                 .fillMaxSize()
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceEvenly
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
             // Title
             PanelTitle(viewModel)
@@ -132,7 +136,9 @@ fun ControlPanel(
                 isConnected = state.isConnected,
                 isWorkoutActive = state.isWorkoutActive,
                 onStartReset = onStartReset,
-                onReconnect = onReconnect
+                onReset = onReset,
+                onReconnect = onReconnect,
+                navController = navController
             )
         }
     }
@@ -147,7 +153,8 @@ private fun PanelTitle(viewModel: WorkoutViewModel) {
         fontSize = 18.sp,
         fontWeight = FontWeight.Bold,
         textAlign = TextAlign.Center,
-        color = MaterialTheme.colorScheme.secondary
+        color = MaterialTheme.colorScheme.secondary,
+        modifier = Modifier.padding(top = 50.dp)
     )
 }
 
@@ -207,7 +214,9 @@ private fun ControlButtons(
     isConnected: Boolean,
     isWorkoutActive: Boolean,
     onStartReset: () -> Unit,
-    onReconnect: () -> Unit
+    onReset: () -> Unit,
+    onReconnect: () -> Unit,
+    navController: NavController
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -217,8 +226,15 @@ private fun ControlButtons(
         } else {
             StartResetButton(isWorkoutActive, onStartReset)
         }
+        BackButton(
+            onClick = {
+                navController.navigate("ExercisesDisplay")
+                onReset()
+            }
+        )
     }
 }
+
 
 @Composable
 private fun ReconnectButton(onClick: () -> Unit) {
@@ -263,6 +279,27 @@ private fun StartResetButton(
     ) {
         Text(
             text = if (isWorkoutActive) "RESET" else "START",
+            fontWeight = FontWeight.Bold,
+            fontSize = 16.sp
+        )
+    }
+}
+@Composable
+private fun BackButton(
+    onClick: () -> Unit
+) {
+    Button(
+        onClick = onClick,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(60.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.primary
+        ),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        Text(
+            text = "BACK",
             fontWeight = FontWeight.Bold,
             fontSize = 16.sp
         )

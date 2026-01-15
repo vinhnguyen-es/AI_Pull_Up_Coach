@@ -413,7 +413,7 @@ class BicepCurlCounter(Counter):
         self.consecutive_down_frames = 0
         self.frame_count = 0
 
-        logger.info("Pull-up counter reset to initial state")
+        logger.info("Bicep counter reset to initial state")
 
 def arm_movement_type(self):
     """Determine which arm is moving based on recent position history."""

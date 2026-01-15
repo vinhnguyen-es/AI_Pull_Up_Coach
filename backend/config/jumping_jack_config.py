@@ -26,12 +26,12 @@ class JumpingJackConfig:
         self.save_frames: bool = False
         self.debug_dir: Optional[Path] = None
         self.min_confidence: float = 0.3
-        self.rep_cooldown: float = 0.75
+        self.rep_cooldown: float = 0
         self.min_consecutive_frames: int = 3
         self.left_movement_threshold: int = 8
         self.right_movement_threshold: int = 8
         self.arm_movement_threshold: int = 8
-        self.min_movement_range: int = 10
+        self.min_movement_range: int = 30
         self.image_width_limit: int = 640
         self.model_conf_threshold: float = 0.4
 

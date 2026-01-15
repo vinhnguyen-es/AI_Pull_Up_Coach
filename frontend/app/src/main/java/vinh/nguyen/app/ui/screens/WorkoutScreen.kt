@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import vinh.nguyen.app.ui.components.CameraPermissionScreen
 import vinh.nguyen.app.ui.components.ConnectionStatusCard
 import vinh.nguyen.app.ui.components.ControlPanel
@@ -28,7 +29,8 @@ import vinh.nguyen.app.utils.CameraHelper
 fun WorkoutScreen(
     viewModel: WorkoutViewModel,
     onFrameCapture: (ByteArray) -> Unit,
-    onCameraReady: (CameraHelper) -> Unit
+    onCameraReady: (CameraHelper) -> Unit,
+    navController: NavController
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
@@ -63,8 +65,10 @@ fun WorkoutScreen(
                 .padding(8.dp),
             state = state,
             onStartReset = { viewModel.startOrReset() },
+            onReset = { viewModel.reset() },
             onReconnect = { viewModel.testConnection() },
-            viewModel = viewModel
+            viewModel = viewModel,
+            navController = navController
         )
     }
 }

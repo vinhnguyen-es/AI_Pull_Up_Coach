@@ -80,7 +80,7 @@ class JumpingJackCounter(Counter):
 
     def __init__(self, config, logger, test_script=False):
         super().__init__(config, logger, test_script)
-        logger.info("Pullup counter initialized")
+        logger.info("Jumping jacks counter initialized")
 
     def _record_direction_change(self, new_direction: str, ankle_positions: tuple[tuple[float, float], ...],
                                  wrist_positions: tuple[tuple[float, float], ...]) -> None:
@@ -137,7 +137,6 @@ class JumpingJackCounter(Counter):
 
         # Step 2: Check if we have enough history to analyze
         movement = self._calculate_movement_from_history(None, "Jumping Jacks")
-        print(f"Movement: {movement}")
         if movement is None:
             return self.DIRECTION_STARTING, 0
 
@@ -154,6 +153,7 @@ class JumpingJackCounter(Counter):
         if confirmed_direction != self.current_direction:
             self._record_direction_change(confirmed_direction, ankle_positions, wrist_positions)
 
+        print(movement)
         return confirmed_direction, tuple(map(abs, movement))
 
     def _validate_keypoints(self, keypoints: Optional[np.ndarray]) -> tuple[bool, str, None] | tuple[
@@ -253,6 +253,7 @@ class JumpingJackCounter(Counter):
             movement_range: Total vertical range of motion
         """
         self.count += 1
+        logger.info("Jumping jamie rep counted")
         self.last_rep_time = time.time()
 
         # Log rep details for debugging and verification
@@ -360,4 +361,4 @@ class JumpingJackCounter(Counter):
         self.consecutive_down_frames = 0
         self.frame_count = 0
 
-        logger.info("Pull-up counter reset to initial state")
+        logger.info("Jumping jack counter reset to initial state")

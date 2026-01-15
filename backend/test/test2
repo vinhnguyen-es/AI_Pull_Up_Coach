@@ -1,0 +1,88 @@
+INFO:pullup_coach:Jumping jacks counter initialized
+INFO:pullup_coach:Session 'default' reset successfully
+INFO:     192.168.1.88:37544 - "POST /reset_session?exercise=Jumping%20Jacks HTTP/1.1" 200 OK
+INFO:     192.168.1.88:45150 - "POST /analyze_frame?exercise=Jumping%20Jacks HTTP/1.1" 200 OK
+INFO:     192.168.1.88:45150 - "POST /analyze_frame?exercise=Jumping%20Jacks HTTP/1.1" 200 OK
+INFO:     192.168.1.88:45150 - "POST /analyze_frame?exercise=Jumping%20Jacks HTTP/1.1" 200 OK
+INFO:     192.168.1.88:45150 - "POST /analyze_frame?exercise=Jumping%20Jacks HTTP/1.1" 200 OK
+(np.float32(-22.022919), np.float32(-19.95401), np.float32(4.5095215))
+INFO:     192.168.1.88:45150 - "POST /analyze_frame?exercise=Jumping%20Jacks HTTP/1.1" 200 OK
+(np.float32(7.1243896), np.float32(-0.37322998), np.float32(-37.33554))
+INFO:     192.168.1.88:45150 - "POST /analyze_frame?exercise=Jumping%20Jacks HTTP/1.1" 200 OK
+(np.float32(26.769684), np.float32(-17.246704), np.float32(-188.63843))
+INFO:     192.168.1.88:45150 - "POST /analyze_frame?exercise=Jumping%20Jacks HTTP/1.1" 200 OK
+(np.float32(80.42819), np.float32(-68.2699), np.float32(-204.58093))
+INFO:     192.168.1.88:45150 - "POST /analyze_frame?exercise=Jumping%20Jacks HTTP/1.1" 200 OK
+INFO:pullup_coach:Direction change: UP
+(np.float32(43.777374), np.float32(-56.820557), np.float32(-190.9603))
+INFO:     192.168.1.88:45150 - "POST /analyze_frame?exercise=Jumping%20Jacks HTTP/1.1" 200 OK
+(np.float32(-28.25177), np.float32(-11.617737), np.float32(10.217041))
+INFO:     192.168.1.88:45150 - "POST /analyze_frame?exercise=Jumping%20Jacks HTTP/1.1" 200 OK
+(np.float32(-30.66095), np.float32(2.9586487), np.float32(114.62204))
+INFO:     192.168.1.88:45150 - "POST /analyze_frame?exercise=Jumping%20Jacks HTTP/1.1" 200 OK
+(np.float32(-36.95993), np.float32(26.581726), np.float32(-10.059494))
+INFO:     192.168.1.88:45150 - "POST /analyze_frame?exercise=Jumping%20Jacks HTTP/1.1" 200 OK
+(np.float32(33.256256), np.float32(-16.499664), np.float32(-21.981522))
+INFO:     192.168.1.88:45150 - "POST /analyze_frame?exercise=Jumping%20Jacks HTTP/1.1" 200 OK
+(np.float32(41.21039), np.float32(-7.5180054), np.float32(-98.2442))
+INFO:     192.168.1.88:45158 - "POST /analyze_frame?exercise=Jumping%20Jacks HTTP/1.1" 200 OK
+(np.float32(-6.5167847), np.float32(17.068604), np.float32(49.757507))
+INFO:     192.168.1.88:45168 - "POST /analyze_frame?exercise=Jumping%20Jacks HTTP/1.1" 200 OK
+(np.float32(-21.653534), np.float32(23.284515), np.float32(85.34343))
+INFO:     192.168.1.88:45150 - "POST /analyze_frame?exercise=Jumping%20Jacks HTTP/1.1" 200 OK
+(np.float32(-4.2800293), np.float32(5.114685), np.float32(-18.463593))
+INFO:     192.168.1.88:45150 - "POST /analyze_frame?exercise=Jumping%20Jacks HTTP/1.1" 200 OK
+(np.float32(41.56537), np.float32(-40.70227), np.float32(-78.63867))
+INFO:     192.168.1.88:45150 - "POST /analyze_frame?exercise=Jumping%20Jacks HTTP/1.1" 200 OK
+(np.float32(6.8768005), np.float32(-13.152588), np.float32(-39.703735))
+INFO:     192.168.1.88:45150 - "POST /analyze_frame?exercise=Jumping%20Jacks HTTP/1.1" 200 OK
+(np.float32(-42.681305), np.float32(13.234222), np.float32(119.27869))
+INFO:     192.168.1.88:45150 - "POST /analyze_frame?exercise=Jumping%20Jacks HTTP/1.1" 200 OK
+(np.float32(-56.541992), np.float32(40.321075), np.float32(74.6772))
+INFO:     192.168.1.88:45150 - "POST /analyze_frame?exercise=Jumping%20Jacks HTTP/1.1" 200 OK
+INFO:pullup_coach:Direction change: DOWN
+(np.float32(-42.806732), np.float32(35.204803), np.float32(49.112732))
+INFO:pullup_coach:REP COMPLETED! Count: 1
+INFO:     192.168.1.88:45158 - "POST /analyze_frame?exercise=Jumping%20Jacks HTTP/1.1" 200 OK
+(np.float32(23.140472), np.float32(-14.039642), np.float32(-99.63089))
+INFO:     192.168.1.88:45150 - "POST /analyze_frame?exercise=Jumping%20Jacks HTTP/1.1" 200 OK
+(np.float32(36.29663), np.float32(-23.583496), np.float32(-152.01166))
+INFO:     192.168.1.88:45150 - "POST /analyze_frame?exercise=Jumping%20Jacks HTTP/1.1" 200 OK
+(np.float32(7.1519165), np.float32(5.137268), np.float32(-21.323639))
+INFO:     192.168.1.88:45150 - "POST /analyze_frame?exercise=Jumping%20Jacks HTTP/1.1" 200 OK
+(np.float32(9.373444), np.float32(9.162537), np.float32(-18.581482))
+INFO:     192.168.1.88:45150 - "POST /analyze_frame?exercise=Jumping%20Jacks HTTP/1.1" 200 OK
+(np.float32(4.727234), np.float32(1.945343), np.float32(-13.312988))
+INFO:     192.168.1.88:45150 - "POST /analyze_frame?exercise=Jumping%20Jacks HTTP/1.1" 200 OK
+INFO:pullup_coach:Direction change: STABLE
+(np.float32(2.7049866), np.float32(3.449646), np.float32(-15.272522))
+INFO:     192.168.1.88:45150 - "POST /analyze_frame?exercise=Jumping%20Jacks HTTP/1.1" 200 OK
+(np.float32(-3.9904175), np.float32(-2.5360718), np.float32(-4.1148376))
+INFO:     192.168.1.88:45150 - "POST /analyze_frame?exercise=Jumping%20Jacks HTTP/1.1" 200 OK
+(np.float32(-4.92749), np.float32(-6.5921326), np.float32(-25.356972))
+INFO:     192.168.1.88:45150 - "POST /analyze_frame?exercise=Jumping%20Jacks HTTP/1.1" 200 OK
+(np.float32(4.831543), np.float32(9.038666), np.float32(-22.721031))
+INFO:     192.168.1.88:45150 - "POST /analyze_frame?exercise=Jumping%20Jacks HTTP/1.1" 200 OK
+(np.float32(9.523621), np.float32(10.832581), np.float32(-22.878967))
+INFO:     192.168.1.88:45150 - "POST /analyze_frame?exercise=Jumping%20Jacks HTTP/1.1" 200 OK
+(np.float32(6.699524), np.float32(9.806305), np.float32(-16.987785))
+INFO:     192.168.1.88:45150 - "POST /analyze_frame?exercise=Jumping%20Jacks HTTP/1.1" 200 OK
+(np.float32(2.91214), np.float32(5.508972), np.float32(-2.4178925))
+INFO:     192.168.1.88:45150 - "POST /analyze_frame?exercise=Jumping%20Jacks HTTP/1.1" 200 OK
+(np.float32(-8.152893), np.float32(-14.543915), np.float32(-12.43071))
+INFO:     192.168.1.88:45150 - "POST /analyze_frame?exercise=Jumping%20Jacks HTTP/1.1" 200 OK
+(np.float32(-29.951477), np.float32(-30.1427), np.float32(-34.934135))
+INFO:     192.168.1.88:45150 - "POST /analyze_frame?exercise=Jumping%20Jacks HTTP/1.1" 200 OK
+(np.float32(-7.2509766), np.float32(-11.006989), np.float32(-62.211983))
+INFO:     192.168.1.88:45158 - "POST /analyze_frame?exercise=Jumping%20Jacks HTTP/1.1" 200 OK
+(np.float32(7.476654), np.float32(8.396149), np.float32(-77.318596))
+INFO:     192.168.1.88:45168 - "POST /analyze_frame?exercise=Jumping%20Jacks HTTP/1.1" 200 OK
+(np.float32(-0.033203125), np.float32(23.06192), np.float32(4.8750534))
+INFO:     192.168.1.88:45150 - "POST /analyze_frame?exercise=Jumping%20Jacks HTTP/1.1" 200 OK
+(np.float32(44.22516), np.float32(52.6268), np.float32(25.671623))
+INFO:     192.168.1.88:45150 - "POST /analyze_frame?exercise=Jumping%20Jacks HTTP/1.1" 200 OK
+(np.float32(39.62216), np.float32(37.975677), np.float32(52.09475))
+INFO:     192.168.1.88:45150 - "POST /analyze_frame?exercise=Jumping%20Jacks HTTP/1.1" 200 OK
+INFO:pullup_coach:Jumping jacks counter initialized
+INFO:pullup_coach:Session 'default' reset successfully
+INFO:     192.168.1.88:45150 - "POST /reset_session?exercise=Jumping%20Jacks HTTP/1.1" 200 OK
