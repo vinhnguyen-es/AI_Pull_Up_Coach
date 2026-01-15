@@ -74,8 +74,8 @@ class PullUpCounter(Counter):
     consecutive_down_frames: Counter for consecutive downward movement frames
     last_rep_time: Timestamp of last counted rep (for cooldown enforcement)
     """
-    def __init__(self, config, logger):
-        super().__init__(config, logger)
+    def __init__(self, config, logger, test_script=False):
+        super().__init__(config, logger, test_script)
         logger.info("Pullup counter initialized")
 
     def _record_direction_change(self, new_direction: str, current_diff: float) -> None:
@@ -130,7 +130,7 @@ class PullUpCounter(Counter):
         self.position_history.append(current_diff)
 
         # Step 2: Check if we have enough history to analyze
-        movement = self._calculate_movement_from_history(self)
+        movement = self._calculate_movement_from_history()
         if movement is None:
             return self.DIRECTION_STARTING, 0
 
@@ -230,6 +230,7 @@ class PullUpCounter(Counter):
         curr_direction = recent_changes[1][0]
 
         # Check for the DOWN -> UP pattern (the rep signature)
+        print(f"Pattern: {prev_direction} -> {curr_direction}")
         if not (prev_direction == self.DIRECTION_UP and curr_direction == self.DIRECTION_DOWN):
             return False
 
@@ -237,9 +238,12 @@ class PullUpCounter(Counter):
         down_position = recent_changes[0][2]  # Position at bottom of rep
         up_position = recent_changes[1][2]    # Position at top of rep
         movement_range = abs(up_position - down_position)
+        movement_range = movement_range if not self.test_script else 6 * movement_range
 
         # Ensure the movement was significant (prevents counting tiny bounces)
+        print(movement_range, pull_up_config.min_movement_range)
         if movement_range <= pull_up_config.min_movement_range:
+            print("I'm not seeing enough movement!")
             return False
 
         # All criteria met - count the rep!

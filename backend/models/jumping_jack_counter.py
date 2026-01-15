@@ -78,8 +78,8 @@ class JumpingJackCounter(Counter):
 
     LOOKBACK_FRAMES = 5
 
-    def __init__(self, config, logger):
-        super().__init__(config, logger)
+    def __init__(self, config, logger, test_script=False):
+        super().__init__(config, logger, test_script)
         logger.info("Pullup counter initialized")
 
     def _record_direction_change(self, new_direction: str, ankle_positions: tuple[tuple[float, float], ...],

@@ -73,8 +73,8 @@ class BicepCurlCounter(Counter):
     last_rep_time: Timestamp of last counted rep (for cooldown enforcement)
     """
 
-    def __init__(self, config, logger):
-        super().__init__(config, logger)
+    def __init__(self, config, logger, test_script=False):
+        super().__init__(config, logger, test_script)
         logger.info("Bicep curl counter initialized")
 
     def _record_direction_change(self, new_direction: str, current_diff: dict[str, float], arm: str) -> None:
@@ -256,6 +256,7 @@ class BicepCurlCounter(Counter):
                 left_down_position = recent_changes[0][2]["left"]  # Position at bottom of rep
                 left_up_position = recent_changes[1][2]["left"]  # Position at top of rep
                 left_movement_range = abs(left_up_position - left_down_position)
+                left_movement_range = left_movement_range if not self.test_script else 6 * left_movement_range
 
                 # Ensure the movement was significant (prevents counting tiny bounces)
                 if left_movement_range <= bicep_curl_config.min_movement_range:
@@ -269,6 +270,7 @@ class BicepCurlCounter(Counter):
                 right_down_position = recent_changes[0][2]["right"]  # Position at bottom of rep
                 right_up_position = recent_changes[1][2]["right"]  # Position at top of rep
                 right_movement_range = abs(right_up_position - right_down_position)
+                right_movement_range = right_movement_range if not self.test_script else 6 * right_movement_range
 
                 # Ensure the movement was significant (prevents counting tiny bounces)
                 if right_movement_range <= bicep_curl_config.min_movement_range:

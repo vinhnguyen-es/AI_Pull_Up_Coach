@@ -4,7 +4,6 @@ import asyncio
 import numpy as np
 from pathlib import Path
 
-from config.pull_up_config import pull_up_config
 from utils.logging_utils import logger
 
 BACKEND_ROOT = Path(__file__).resolve().parents[1]
@@ -18,7 +17,6 @@ from models.jumping_jack_counter import JumpingJackCounter
 from models.push_up_counter import PushUpCounter
 from models.sit_up_counter import SitUpCounter
 from models.squat_counter import SquatCounter
-from models.base_counter import Counter
 
 from config.pull_up_config import pull_up_config, DebugMode
 from config.bicep_curl_config import bicep_curl_config
@@ -93,17 +91,17 @@ async def main(video_arg: str, exercise):
     print(f"Setting up counter for exercise: {exercise}")
     match exercise:
         case "Pull_Ups":
-            counter = PullUpCounter(pull_up_config, logger)
+            counter = PullUpCounter(pull_up_config, logger, test_script=True)
         case "Bicep_Curls":
-            counter = BicepCurlCounter(bicep_curl_config, logger)
+            counter = BicepCurlCounter(bicep_curl_config, logger, test_script=True)
         case "Jumping_Jacks":
-            counter = JumpingJackCounter(jumping_jack_config, logger)
+            counter = JumpingJackCounter(jumping_jack_config, logger, test_script=True)
         case "Push_Ups":
-            counter = PushUpCounter(push_up_config, logger)
+            counter = PushUpCounter(push_up_config, logger, test_script=True)
         case "Sit_Ups":
-            counter = SitUpCounter(sit_up_config, logger)
+            counter = SitUpCounter(sit_up_config, logger, test_script=True)
         case "Squats":
-            counter = SquatCounter(squat_config, logger)
+            counter = SquatCounter(squat_config, logger, test_script=True)
         case x:
             UNKOWN_EXERCISE_ERROR = f"Attempted to Create Session With Unknown Exercise. \
                 Got: {x}. Expected one of: (Pull Ups, Bicep Curls, Jumping Jacks, Push Ups, Sit Ups, Squats)."

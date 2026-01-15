@@ -27,9 +27,10 @@ class Counter:
     STATUS_LOW_CONFIDENCE = "low_confidence"
     STATUS_ERROR = "error"
 
-    def __init__(self, config, logger):
+    def __init__(self, config, logger, test_script):
         self.config = config
         self.logger = logger
+        self.test_script = test_script
 
         self.count = 0
         self.status = self.STATUS_NEUTRAL

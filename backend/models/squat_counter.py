@@ -11,8 +11,8 @@ from models.base_counter import Counter
 from utils.keypoint_utils import extract_hip_knee_keypoints, calculate_hip_knee_diff
 
 class SquatCounter(Counter):
-    def __init__(self, config, logger):
-        super().__init__(config, logger)
+    def __init__(self, config, logger, test_script=False):
+        super().__init__(config, logger, test_script)
         logger.info("Squat counter initialized")
 
 #dont change
