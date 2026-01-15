@@ -131,13 +131,11 @@ class PushUpCounter(Counter):
 
         # Step 2: Check if we have enough history to analyze
         movement = self._calculate_movement_from_history()
-        print(f"{movement=}")
         if movement is None:
             return self.DIRECTION_STARTING, 0
 
         # Step 3: Classify the movement direction based on threshold
         detected_direction = self._classify_movement_direction(movement, exercise="Push Ups")
-        print(f"{detected_direction=}")
 
         # Step 4: Update consecutive frame counters for confirmation
         self._update_consecutive_frame_counters(detected_direction)
@@ -239,9 +237,11 @@ class PushUpCounter(Counter):
         down_position = recent_changes[0][2]  # Position at bottom of rep
         up_position = recent_changes[1][2]    # Position at top of rep
         movement_range = abs(up_position - down_position)
-        movement_range = movement_range if not self.test_script else 7 * movement_range
+        movement_range = movement_range if not self.test_script else 6 * movement_range
 
         # Ensure the movement was significant (prevents counting tiny bounces)
+        print(f"{movement_range=}")
+        print(f"{push_up_config.min_movement_range=}")
         if movement_range <= push_up_config.min_movement_range:
             return False
 
