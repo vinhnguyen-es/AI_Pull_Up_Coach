@@ -20,6 +20,8 @@ class Counter:
 
     STATUS_PULLING_UP = "pulling_up"
     STATUS_LOWERING_DOWN = "lowering_down"
+    STATUS_ARMS_OUT = "arms_out"
+    STATUS_ARMS_IN = "arms_in"
     STATUS_STABLE = "stable"
     STATUS_NEUTRAL = "neutral"
     STATUS_NO_PERSON = "no_person"
@@ -188,11 +190,11 @@ class Counter:
                 if (movement[LEFT] < -self.config.left_movement_threshold
                         and movement[RIGHT] > self.config.right_movement_threshold
                         and movement[ARM] > self.config.arm_movement_threshold):
-                    return self.DIRECTION_UP
+                    return self.DIRECTION_DOWN
                 elif (movement[LEFT] > self.config.left_movement_threshold
                         and movement[RIGHT] < -self.config.right_movement_threshold
                         and movement[ARM] < -self.config.arm_movement_threshold):
-                    return self.DIRECTION_DOWN
+                    return self.DIRECTION_UP
                 else:
                     return self.DIRECTION_STABLE
             case _:

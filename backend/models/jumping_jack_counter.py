@@ -236,7 +236,7 @@ class JumpingJackCounter(Counter):
         curr_direction = recent_changes[1][0]
 
         # Check for the DOWN -> UP pattern (the rep signature)
-        if not (prev_direction == self.DIRECTION_DOWN and curr_direction == self.DIRECTION_UP):
+        if not (prev_direction == self.DIRECTION_UP and curr_direction == self.DIRECTION_DOWN):
             return False
 
         # All criteria met - count the rep!
@@ -273,9 +273,9 @@ class JumpingJackCounter(Counter):
             direction: Current confirmed direction (up/down/stable/starting)
         """
         if direction == self.DIRECTION_UP:
-            self.status = self.STATUS_PULLING_UP
+            self.status = self.STATUS_ARMS_OUT
         elif direction == self.DIRECTION_DOWN:
-            self.status = self.STATUS_LOWERING_DOWN
+            self.status = self.STATUS_ARMS_IN
         else:
             self.status = self.STATUS_STABLE
 
