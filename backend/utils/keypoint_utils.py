@@ -305,19 +305,12 @@ def calculate_hip_knee_diff(
         >>> elif diff < -30:
         ...     print("Person is in pulled-up position")
     """
-    # Obtain shoulder and wrist positions
-    index = HORIZONTAL_MOVEMENT_INDEX if direction == "horizontal" else VERTICAL_MOVEMENT_INDEX
 
-    hip_y = (left_hip[1] + right_hip[1]) / 2
-    knee_y = (left_knee[1] + left_knee[1]) / 2
     # squat down = hip y increases
     # stand up = hip y decreases
+    hip_y = (left_hip[1] + right_hip[1]) / 2
+    knee_y = (left_knee[1] + left_knee[1]) / 2
 
     answer = abs(hip_y - knee_y)
 
-    # logger.log(f"Arm was: {arm}. Expected one of (both, left, right).")
-    # raise ValueError(f"Arm was: {arm}. Expected one of (both, left, right).")
-    logger.info(f"Hip y avg: {hip_y}. Knee y avg: {knee_y}. Difference: {answer}")
-
-    # return wrist - shoulder
     return answer
