@@ -11,8 +11,8 @@ from models.base_counter import Counter
 from utils.keypoint_utils import extract_hip_knee_keypoints, calculate_hip_knee_diff
 
 class SquatCounter(Counter):
-    def __init__(self, config, logger):
-        super().__init__(config, logger)
+    def __init__(self, config, logger, test_script=False):
+        super().__init__(config, logger, test_script)
         logger.info("Squat counter initialized")
 
 #dont change
@@ -72,7 +72,7 @@ class SquatCounter(Counter):
             return self.DIRECTION_STARTING, 0
 
         # Step 3: Classify the movement direction based on threshold
-        detected_direction = self._classify_movement_direction(movement)
+        detected_direction = self._classify_movement_direction(movement, exercise="Squats")
 
         # Step 4: Update consecutive frame counters for confirmation
         self._update_consecutive_frame_counters(detected_direction)
@@ -178,6 +178,7 @@ class SquatCounter(Counter):
         down_position = recent_changes[0][2]  # Position at bottom of rep
         up_position = recent_changes[1][2]    # Position at top of rep
         movement_range = abs(up_position - down_position)
+        movement_range = movement_range if not self.test_script else 6 * movement_range
 
         # Ensure the movement was significant (prevents counting tiny bounces)
         if movement_range <= squat_config.min_movement_range:

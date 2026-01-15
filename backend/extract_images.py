@@ -4,7 +4,6 @@ import asyncio
 import numpy as np
 from pathlib import Path
 
-from config.pull_up_config import pull_up_config
 from utils.logging_utils import logger
 
 BACKEND_ROOT = Path(__file__).resolve().parents[1]
@@ -18,7 +17,6 @@ from models.jumping_jack_counter import JumpingJackCounter
 from models.push_up_counter import PushUpCounter
 from models.sit_up_counter import SitUpCounter
 from models.squat_counter import SquatCounter
-from models.base_counter import Counter
 
 from config.pull_up_config import pull_up_config, DebugMode
 from config.bicep_curl_config import bicep_curl_config
@@ -93,17 +91,17 @@ async def main(video_arg: str, exercise):
     print(f"Setting up counter for exercise: {exercise}")
     match exercise:
         case "Pull_Ups":
-            counter = PullUpCounter(pull_up_config, logger)
+            counter = PullUpCounter(pull_up_config, logger, test_script=True)
         case "Bicep_Curls":
-            counter = BicepCurlCounter(bicep_curl_config, logger)
-        case "Jumping _acks":
-            counter = JumpingJackCounter(jumping_jack_config, logger)
+            counter = BicepCurlCounter(bicep_curl_config, logger, test_script=True)
+        case "Jumping_Jacks":
+            counter = JumpingJackCounter(jumping_jack_config, logger, test_script=True)
         case "Push_Ups":
-            counter = PushUpCounter(push_up_config, logger)
+            counter = PushUpCounter(push_up_config, logger, test_script=True)
         case "Sit_Ups":
-            counter = SitUpCounter(sit_up_config, logger)
+            counter = SitUpCounter(sit_up_config, logger, test_script=True)
         case "Squats":
-            counter = SquatCounter(squat_config, logger)
+            counter = SquatCounter(squat_config, logger, test_script=True)
         case x:
             UNKOWN_EXERCISE_ERROR = f"Attempted to Create Session With Unknown Exercise. \
                 Got: {x}. Expected one of: (Pull Ups, Bicep Curls, Jumping Jacks, Push Ups, Sit Ups, Squats)."
@@ -127,10 +125,15 @@ async def main(video_arg: str, exercise):
     frame_num = 0
     previous_count = 0
 
-    TARGET_FPS = 5.0
-    SAMPLE_INTERVAL_MS = 1000.0 / TARGET_FPS  # 200 ms
+    TARGET_FPS = 10.0
+    SAMPLE_INTERVAL_MS = 1000.0 / TARGET_FPS
 
     last_sample_time_ms = -1.0
+
+    # Keep last results to display between samples
+    last_keypoints = None
+    last_reps = 0
+    last_status = "no_person"
 
     # -----------------------------------------------------------------
     # Main loop
@@ -144,37 +147,39 @@ async def main(video_arg: str, exercise):
 
             frame_num += 1
 
-            # Pose detection
             current_time_ms = cap.get(cv2.CAP_PROP_POS_MSEC)
 
-            # Only analyze if enough time has passed (for 5 fps)
-            if last_sample_time_ms < 0 or (
-                    current_time_ms - last_sample_time_ms >= SAMPLE_INTERVAL_MS
-            ):
+            # Only analyze if enough video-time has passed (5 fps)
+            if last_sample_time_ms < 0 or (current_time_ms - last_sample_time_ms >= SAMPLE_INTERVAL_MS):
                 last_sample_time_ms = current_time_ms
 
                 keypoints = pose_service.detect_pose(frame)
 
                 if keypoints is not None:
-                    draw_pose(frame, keypoints)
                     reps, status = counter.analyze_pose(keypoints)
                 else:
                     reps, status = counter.count, "no_person"
 
-            if keypoints is not None:
-                draw_pose(frame, keypoints)
-                reps, status = counter.analyze_pose(keypoints)
-                
-                # Check if count changed
+                # Update "last known" results
+                last_keypoints = keypoints
+                last_reps = reps
+                last_status = status
+
+                # Count-change logging only when we actually re-analyze
                 if counter.count != previous_count:
                     print(f"Rep completed! Count: {previous_count} -> {counter.count}")
                     previous_count = counter.count
-                
-                if frame_num % 30 == 0:
+
+            # Draw using last known keypoints (even on in-between frames)
+            if last_keypoints is not None:
+                draw_pose(frame, last_keypoints)
+
+            reps, status = last_reps, last_status
+
+            if frame_num % 30 == 0:
+                if last_keypoints is not None:
                     print(f"Frame {frame_num}: Pose detected | Reps: {reps} | Status: {status}")
-            else:
-                reps, status = counter.count, "no_person"
-                if frame_num % 30 == 0:
+                else:
                     print(f"Frame {frame_num}: No person detected")
 
             # Overlay info

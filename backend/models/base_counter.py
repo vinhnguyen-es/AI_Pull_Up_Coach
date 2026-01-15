@@ -1,6 +1,9 @@
 from collections import deque
 from typing import Optional, Tuple
 
+import numpy as np
+
+#from utils.keypoint_utils import calculate_wrist_positions
 from utils.logging_utils import logger
 
 
@@ -17,6 +20,8 @@ class Counter:
 
     STATUS_PULLING_UP = "pulling_up"
     STATUS_LOWERING_DOWN = "lowering_down"
+    STATUS_ARMS_OUT = "arms_out"
+    STATUS_ARMS_IN = "arms_in"
     STATUS_STABLE = "stable"
     STATUS_NEUTRAL = "neutral"
     STATUS_NO_PERSON = "no_person"
@@ -24,9 +29,10 @@ class Counter:
     STATUS_LOW_CONFIDENCE = "low_confidence"
     STATUS_ERROR = "error"
 
-    def __init__(self, config, logger):
+    def __init__(self, config, logger, test_script):
         self.config = config
         self.logger = logger
+        self.test_script = test_script
 
         self.count = 0
         self.status = self.STATUS_NEUTRAL
@@ -66,7 +72,7 @@ class Counter:
         elif (left_sum > right_sum): return "left"
         else: return "both"
 
-    def _calculate_movement_from_history(self, moving_arm: str, exercise: str = "Pull Ups") -> Optional[float]:
+    def _calculate_movement_from_history(self, moving_arm: str = None, exercise: str = "Pull Ups") -> Tuple[Optional[float], ...]:
             """
             Calculate vertical movement by comparing recent positions.
 
@@ -84,7 +90,6 @@ class Counter:
 
                     recent_positions = list(self.position_history)[-self.LOOKBACK_FRAMES:]
 
-                    logger.warning(recent_positions)
                     movement = recent_positions[-1] - recent_positions[0]
                     return movement
                 case "Bicep Curls":
@@ -112,7 +117,39 @@ class Counter:
 
                     movement = last_pos - first_pos
                     return movement
-                case "Squats": #TODO#                    
+                case "Jumping Jacks":
+                    if len(self.position_history) < self.LOOKBACK_FRAMES:
+                        return None
+
+                    recent_positions = list(self.position_history)[-self.LOOKBACK_FRAMES:]
+
+                    def ankle_x_movement(x, y):
+                        return x[0] - y[0]
+
+                    def wrist_y_movement(x, y):
+                        return x[1] - y[1]
+
+                    def left_ankle_positions_diff(left_pos, prev_left_pos):
+                        return ankle_x_movement(left_pos, prev_left_pos)
+
+                    def right_ankle_positions_diff(right_pos, prev_right_pos):
+                        return ankle_x_movement(right_pos, prev_right_pos)
+
+                    def left_wrist_positions_diff(left_pos, prev_left_pos):
+                        return wrist_y_movement(left_pos, prev_left_pos)
+
+                    def right_wrist_positions_diff(right_pos, prev_right_pos):
+                        return wrist_y_movement(right_pos, prev_right_pos)
+
+                    l_movement = left_ankle_positions_diff(recent_positions[-1][0], recent_positions[0][0])
+                    r_movement = right_ankle_positions_diff(recent_positions[-1][1], recent_positions[0][1])
+
+                    arm_movement = left_wrist_positions_diff(recent_positions[-1][2], recent_positions[0][2])
+
+                    return l_movement, r_movement, arm_movement
+
+
+                case "Squats": #TODO#
                     if len(self.position_history) < self.LOOKBACK_FRAMES:
                         return None
 
@@ -122,7 +159,8 @@ class Counter:
                     movement = recent_positions[-1] - recent_positions[0]
                     return movement
 
-    def _classify_movement_direction(self, movement: float) -> str:
+
+    def _classify_movement_direction(self, movement: Tuple[Optional[float], ...], exercise = "Pull Ups") -> str:
         """
         Classify movement into up/down/stable based on threshold.
 
@@ -143,12 +181,38 @@ class Counter:
             If movement = +3 pixels:
                 -> DIRECTION_STABLE (below threshold, ignore)
         """
-        if movement > self.config.movement_threshold:
-            return self.DIRECTION_UP
-        elif movement < -self.config.movement_threshold:
-            return self.DIRECTION_DOWN
-        else:
-            return self.DIRECTION_STABLE
+        match exercise:
+            case "Jumping Jacks":
+                LEFT = 0
+                RIGHT = 1
+                ARM = 2
+
+                if (movement[LEFT] < -self.config.left_movement_threshold
+                        and movement[RIGHT] > self.config.right_movement_threshold
+                        and movement[ARM] > self.config.arm_movement_threshold):
+                    return self.DIRECTION_DOWN
+                elif (movement[LEFT] > self.config.left_movement_threshold
+                        and movement[RIGHT] < -self.config.right_movement_threshold
+                        and movement[ARM] < -self.config.arm_movement_threshold):
+                    return self.DIRECTION_UP
+                else:
+                    return self.DIRECTION_STABLE
+            
+            case "Sit_Ups":
+                if movement > self.config.movement_threshold:
+                    return self.DIRECTION_UP
+                elif movement < -self.config.movement_threshold:
+                    return self.DIRECTION_DOWN
+                else:
+                    return self.DIRECTION_STABLE
+                
+            case _:
+                if movement > self.config.movement_threshold:
+                    return self.DIRECTION_UP
+                elif movement < -self.config.movement_threshold:
+                    return self.DIRECTION_DOWN
+                else:
+                    return self.DIRECTION_STABLE
 
     def _update_consecutive_frame_counters(self, detected_direction: str) -> None:
         """
