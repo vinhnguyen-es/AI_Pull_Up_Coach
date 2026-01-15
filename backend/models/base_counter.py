@@ -116,6 +116,7 @@ class Counter:
                     return movement
                 case "Jumping Jacks":
                     if len(self.position_history) < self.LOOKBACK_FRAMES:
+                        print("returning None")
                         return None
 
                     recent_positions = list(self.position_history)[-self.LOOKBACK_FRAMES:]
@@ -134,15 +135,6 @@ class Counter:
 
                     def left_wrist_positions_diff(left_pos, prev_left_pos):
                         return wrist_y_movement(left_pos, prev_left_pos)
-                case "Squats": #TODO#
-                    if len(self.position_history) < self.LOOKBACK_FRAMES:
-                        return None
-
-                    recent_positions = list(self.position_history)[-self.LOOKBACK_FRAMES:]
-
-                    logger.warning(recent_positions)#either moving up or down#
-                    movement = recent_positions[-1] - recent_positions[0]
-                    return movement
 
                     def right_wrist_positions_diff(right_pos, prev_right_pos):
                         return wrist_y_movement(right_pos, prev_right_pos)
@@ -154,7 +146,19 @@ class Counter:
 
                     return l_movement, r_movement, arm_movement
 
-    def _classify_movement_direction(self, movement: Tuple[Optional[float], ...]) -> str:
+
+                case "Squats": #TODO#
+                    if len(self.position_history) < self.LOOKBACK_FRAMES:
+                        return None
+
+                    recent_positions = list(self.position_history)[-self.LOOKBACK_FRAMES:]
+
+                    logger.warning(recent_positions)#either moving up or down#
+                    movement = recent_positions[-1] - recent_positions[0]
+                    return movement
+
+
+    def _classify_movement_direction(self, movement: Tuple[Optional[float], ...], exercise = "Pull Ups") -> str:
         """
         Classify movement into up/down/stable based on threshold.
 

@@ -137,6 +137,7 @@ class JumpingJackCounter(Counter):
 
         # Step 2: Check if we have enough history to analyze
         movement = self._calculate_movement_from_history(None, "Jumping Jacks")
+        print(f"Movement: {movement}")
         if movement is None:
             return self.DIRECTION_STARTING, 0
 

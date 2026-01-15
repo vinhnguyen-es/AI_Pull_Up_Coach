@@ -96,7 +96,7 @@ async def main(video_arg: str, exercise):
             counter = PullUpCounter(pull_up_config, logger)
         case "Bicep_Curls":
             counter = BicepCurlCounter(bicep_curl_config, logger)
-        case "Jumping _acks":
+        case "Jumping_Jacks":
             counter = JumpingJackCounter(jumping_jack_config, logger)
         case "Push_Ups":
             counter = PushUpCounter(push_up_config, logger)
