@@ -230,8 +230,7 @@ class PullUpCounter(Counter):
         curr_direction = recent_changes[1][0]
 
         # Check for the DOWN -> UP pattern (the rep signature)
-        print(f"Pattern: {prev_direction} -> {curr_direction}")
-        if not (prev_direction == self.DIRECTION_UP and curr_direction == self.DIRECTION_DOWN):
+        if not (prev_direction == self.DIRECTION_DOWN and curr_direction == self.DIRECTION_UP):
             return False
 
         # Validate movement range to ensure full range of motion
@@ -241,9 +240,7 @@ class PullUpCounter(Counter):
         movement_range = movement_range if not self.test_script else 6 * movement_range
 
         # Ensure the movement was significant (prevents counting tiny bounces)
-        print(movement_range, pull_up_config.min_movement_range)
         if movement_range <= pull_up_config.min_movement_range:
-            print("I'm not seeing enough movement!")
             return False
 
         # All criteria met - count the rep!
