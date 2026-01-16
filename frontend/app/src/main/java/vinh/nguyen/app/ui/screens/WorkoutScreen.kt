@@ -87,7 +87,8 @@ private fun CameraSection(
         CameraPermissionScreen(
             onFrameCapture = onFrameCapture,
             onCameraReady = onCameraReady,
-            lifecycleOwner = activity
+            lifecycleOwner = activity,
+            viewModel = viewModel
         )
 
         // Connection Status - Top Right

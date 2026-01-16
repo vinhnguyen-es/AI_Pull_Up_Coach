@@ -30,6 +30,8 @@ class WorkoutViewModel : ViewModel() {
     private var consecutiveFailures = 0
     private val maxConsecutiveFailures = 5
 
+    var captureInterval = 200L // Capture every 200ms (5 FPS)
+
     var exerciseType = ""
 
     companion object {
@@ -43,6 +45,12 @@ class WorkoutViewModel : ViewModel() {
     fun chooseExercise(chosenExercise: String) {
         exercise = chosenExercise
         exerciseType = chosenExercise
+
+        if (exercise == "Jumping Jacks") {
+            captureInterval = 100L
+        } else {
+            captureInterval = 200L
+        }
         Log.i(TAG, "Selected exercise: $exercise")
     }
     fun returnExercise(): String {

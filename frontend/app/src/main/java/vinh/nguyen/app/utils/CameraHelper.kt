@@ -10,6 +10,7 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.lifecycle.LifecycleOwner
+import vinh.nguyen.app.ui.viewmodels.WorkoutViewModel
 import java.io.ByteArrayOutputStream
 import java.nio.ByteBuffer
 import java.util.concurrent.ExecutorService
@@ -28,13 +29,12 @@ class CameraHelper(
     // High-frequency capture settings
     private var isProcessingFrame = false
     private var lastCaptureTime = 0L
-    private val captureInterval = 200L // Capture every 200ms (5 FPS)
 
     companion object {
         private const val TAG = "CameraHelper"
     }
 
-    fun startCamera() {
+    fun startCamera(viewModel: WorkoutViewModel) {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
 
         cameraProviderFuture.addListener({
@@ -58,7 +58,7 @@ class CameraHelper(
                             val currentTime = System.currentTimeMillis()
 
                             // High-frequency capture with time control
-                            if (!isProcessingFrame && (currentTime - lastCaptureTime) >= captureInterval) {
+                            if (!isProcessingFrame && (currentTime - lastCaptureTime) >= viewModel.captureInterval) {
                                 isProcessingFrame = true
                                 lastCaptureTime = currentTime
 
@@ -98,7 +98,7 @@ class CameraHelper(
                         imageAnalyzer
                     )
 
-                    Log.i(TAG, "Camera started with RGBA output - capturing every ${captureInterval}ms (simplified pipeline)")
+                    Log.i(TAG, "Camera started with RGBA output - capturing every ${viewModel.captureInterval}ms (simplified pipeline)")
 
                 } catch (exc: Exception) {
                     Log.e(TAG, "Camera binding failed", exc)

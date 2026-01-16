@@ -18,10 +18,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
+import vinh.nguyen.app.ui.viewmodels.WorkoutViewModel
 import vinh.nguyen.app.utils.CameraHelper
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -29,7 +31,8 @@ import vinh.nguyen.app.utils.CameraHelper
 fun CameraPermissionScreen(
     onFrameCapture: (ByteArray) -> Unit,
     onCameraReady: (CameraHelper) -> Unit,
-    lifecycleOwner: ComponentActivity
+    lifecycleOwner: ComponentActivity,
+    viewModel: WorkoutViewModel
 ) {
     val cameraPermissionState = rememberPermissionState(Manifest.permission.CAMERA)
 
@@ -38,7 +41,8 @@ fun CameraPermissionScreen(
             CameraPreview(
                 onFrameCapture = onFrameCapture,
                 onCameraReady = onCameraReady,
-                lifecycleOwner = lifecycleOwner
+                lifecycleOwner = lifecycleOwner,
+                viewModel = viewModel
             )
         }
         cameraPermissionState.status.shouldShowRationale -> {
@@ -119,7 +123,8 @@ private fun CameraPermissionPending() {
 fun CameraPreview(
     onFrameCapture: (ByteArray) -> Unit,
     onCameraReady: (CameraHelper) -> Unit,
-    lifecycleOwner: ComponentActivity
+    lifecycleOwner: ComponentActivity,
+    viewModel: WorkoutViewModel
 ) {
     val context = LocalContext.current
 
@@ -136,7 +141,7 @@ fun CameraPreview(
                         previewView = previewView,
                         onFrameCapture = onFrameCapture
                     )
-                    cameraHelper.startCamera()
+                    cameraHelper.startCamera(viewModel)
                     onCameraReady(cameraHelper)
                 } catch (e: Exception) {
                     Log.e("CameraPreview", "Error starting camera", e)
