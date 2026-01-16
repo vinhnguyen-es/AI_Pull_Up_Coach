@@ -147,6 +147,7 @@ class WorkoutViewModel : ViewModel() {
             // Start: Begin workout
             Log.i(TAG, "Starting workout")
 
+            // Ensures the counter is initialised on Start and not only on Reset
             viewModelScope.launch {
                 val response = NetworkClient.apiService.resetSession(exercise)
             }

@@ -289,16 +289,9 @@ def calculate_hip_knee_diff(
     # stand up = hip y decreases
     hip_y = (left_hip[1] + right_hip[1]) / 2
     knee_y = (left_knee[1] + right_knee[1]) / 2
-    #squat down = hip y increases
-    #stand up = hip y decreases
 
     answer = abs(hip_y - knee_y)
 
-    #logger.log(f"Arm was: {arm}. Expected one of (both, left, right).")
-    #raise ValueError(f"Arm was: {arm}. Expected one of (both, left, right).")
-    logger.info(f"Hip y avg: {hip_y}. Knee y avg: {knee_y}. Difference: {answer}")
-    
-    #return wrist - shoulder
     return answer
 
 ############################
@@ -367,8 +360,7 @@ def calculate_shoulder_knee_diff(
     knee_y = (left_knee[1] + right_knee[1]) / 2
 
     answer = abs(shoulder_y - knee_y)
-    logger.info(f"Hip y avg: {shoulder_y}. Knee y avg: {knee_y}. Difference: {answer}")
-    
+
     return answer
 
 
@@ -383,8 +375,7 @@ def shoulder_ankle_equal_y(
     shoulder_y = (left_shoulder[1] + right_shoulder[1]) / 2
     ankle_y = (left_ankle[1] + right_ankle[1]) / 2
     answer = abs(shoulder_y - ankle_y)
-    logger.info(f"Hip y avg: {shoulder_y}. Knee y avg: {ankle_y}. Difference: {answer}")
-    
+
     return answer
  ####Up is equal if this is close enough###
 
@@ -398,56 +389,8 @@ def shoulder_knee_equal_y(
     shoulder_y = (left_shoulder[1] + right_shoulder[1]) / 2
     knee_y = (left_knee[1] + right_knee[1]) / 2
     answer = abs(shoulder_y - knee_y)
-    logger.info(f"Hip y avg: {shoulder_y}. Knee y avg: {knee_y}. Difference: {answer}")
-    
+
     return answer
-
-
-
-"""
-#SHOULDER KNEE Y 
-#SHOULD BE STABLE
-def calculate_ankle_knee_diff(
-    left_ankle: np.ndarray,
-    right_ankle: np.ndarray,
-    left_knee: np.ndarray,
-    right_knee: np.ndarray,
-    direction: str = "vertical"
-) -> float:
-
-    index = HORIZONTAL_MOVEMENT_INDEX if direction == "horizontal" else VERTICAL_MOVEMENT_INDEX
-
-    #WILL THERE BE AN ISSUE IF ITS ON THE SIDE IDK
-    ankle_y = (left_ankle[1] + left_ankle[1]) / 2
-    knee_y = (left_knee[1] + right_knee[1]) / 2
-
-    answer = abs(ankle_y - knee_y)
-    logger.info(f"Hip y avg: {ankle_y}. Knee y avg: {knee_y}. Difference: {answer}")
-    
-    return answer
-
-#ANKLE SHOULDER X
-#become level at some point
-def calculate_shoulder_ankle_diff(
-    left_shoulder: np.ndarray,
-    right_shoulder: np.ndarray,
-    left_ankle: np.ndarray,
-    right_ankle: np.ndarray,
-    direction: str = "vertical"
-) -> float:
-    # Obtain shoulder and wrist positions
-    index = HORIZONTAL_MOVEMENT_INDEX if direction == "horizontal" else VERTICAL_MOVEMENT_INDEX
-
-    #WILL THERE BE AN ISSUE IF ITS ON THE SIDE IDK
-    shoulder_x = (left_shoulder[0] + right_shoulder[0]) / 2
-    ankle_x = (left_ankle[0] + right_ankle[0]) / 2
-
-    answer = abs(shoulder_x - ankle_x)
-    logger.info(f"Hip y avg: {shoulder_x}. Knee y avg: {ankle_x}. Difference: {answer}")
-    
-    return answer
-
-"""
 
 def calculate_ankle_positions(
         left_ankle,
