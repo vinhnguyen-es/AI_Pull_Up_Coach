@@ -22,7 +22,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import vinh.nguyen.app.database.Workout
 import vinh.nguyen.app.database.WorkoutRepository
-import java.text.NumberFormat
 
 /**
  * ViewModel to validate and insert workouts in the Room database.
@@ -69,7 +68,7 @@ data class WorkoutDetails(
     val id: Int = 0,
     val exercise: String = "",
     val reps: Int = 0,
-    val length: Int = 0,
+    val length: Long = 0,
 )
 
 /**

@@ -9,6 +9,7 @@ import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import vinh.nguyen.app.database.Workout
 import vinh.nguyen.app.utils.NetworkClient
 
 class WorkoutViewModel : ViewModel() {
@@ -22,6 +23,8 @@ class WorkoutViewModel : ViewModel() {
     private var framesSentCount = 0
     private var lastLogTime = 0L
     private val logInterval = 3000L // Log every 3 seconds
+
+    private var lastResetTime = 0L
 
     // Network state
     private var lastSuccessfulConnection = 0L
@@ -38,7 +41,7 @@ class WorkoutViewModel : ViewModel() {
         private const val TAG = "WorkoutViewModel"
     }
 
-    fun setWorkoutEntryViewModel(entryViewModel: WorkoutEntryViewModel) {
+    fun initialiseWorkoutEntryViewModel(entryViewModel: WorkoutEntryViewModel) {
         workoutEntryViewModel = entryViewModel
     }
 
@@ -73,6 +76,17 @@ class WorkoutViewModel : ViewModel() {
 
     fun reset() {
         if (_state.value.isWorkoutActive) {
+            // Store Rep Count For Session
+            viewModelScope.launch {
+                println("${returnExercise()}, $_state.value.repCount, ${System.currentTimeMillis() - lastResetTime}")
+                workoutEntryViewModel?.updateUiState(Workout(
+                    exercise = returnExercise(),
+                    reps = _state.value.repCount,
+                    length = System.currentTimeMillis() - lastResetTime
+                    ).toWorkoutDetails()
+                )
+            }
+
             // Reset: Stop workout and clear all data
             Log.i(TAG, "Resetting workout session")
 
@@ -106,6 +120,8 @@ class WorkoutViewModel : ViewModel() {
                 }
             }
         }
+
+        val lastResetTime = System.currentTimeMillis()
     }
 
     /**
@@ -153,7 +169,17 @@ class WorkoutViewModel : ViewModel() {
 
             // Ensures the counter is initialised on Start and not only on Reset
             viewModelScope.launch {
-                val response = NetworkClient.apiService.resetSession(exercise)
+                try {
+                    val response = NetworkClient.apiService.resetSession(exercise)
+                    if (response.isSuccessful) {
+                        Log.i(TAG, "Backend session reset (on start) successfully")
+                    } else {
+                        Log.w(TAG, "Backend reset failed, but continuing with local reset")
+                    }
+                } catch (e: Exception) {
+                    Log.w(TAG, "Could not reset backend session: ${e.message}")
+                    // Continue anyway since local reset is more important
+                }
             }
 
             _state.value = _state.value.copy(

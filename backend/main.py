@@ -136,6 +136,7 @@ KEY_SAVING_FRAMES = "saving_frames"
 KEY_DEBUG_DIR = "debug_dir"
 KEY_MESSAGE = "message"
 KEY_SESSION_ID = "session_id"
+VALUE_NO_SESSION_YET = -1
 
 # ============================================================================
 # GLOBAL STATE
@@ -144,7 +145,7 @@ KEY_SESSION_ID = "session_id"
 # Global workout sessions storage (in-memory)
 # Maps session_id -> Counter instance
 # Simple dictionary works great for single-user development/testing
-workout_sessions: Dict[str, Counter] = {}
+workout_sessions: Dict[int, Counter] = {}
 
 # ============================================================================
 # APPLICATION SETUP
@@ -615,7 +616,7 @@ async def reset_session(exercise: str) -> Dict[str, Any]:
         session_id = DEFAULT_SESSION_ID
 
         # Create a fresh counter instance (replaces existing session)
-        # This discards all accumulated state from the previous workout
+        # This discards all accumulated state from the previous workout (except saves are made in the frontend db)
         match exercise:
             case "Pull Ups":
                 workout_sessions[session_id] = PullUpCounter(pull_up_config, logger)

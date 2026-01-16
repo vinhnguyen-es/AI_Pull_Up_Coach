@@ -21,6 +21,6 @@ interface WorkoutEntryDao {
     @Query("SELECT * from workouts WHERE id = :id")
     fun getWorkoutStream(id: Int): Flow<Workout?>
 
-    @Query("SELECT * from workouts ORDER BY name ASC")
+    @Query("SELECT * from workouts ORDER BY exercise ASC")
     fun getAllWorkoutsStream(): Flow<List<Workout>>
 }

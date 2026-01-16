@@ -28,12 +28,6 @@ import kotlin.getValue
 
 class MainActivity : ComponentActivity() {
     private val viewModel: WorkoutViewModel by viewModels()
-    private var workoutEntryViewModel = WorkoutEntryViewModel(
-        OfflineWorkoutRepository(
-            WorkoutDatabase.getDatabase(this).workoutEntryDao()
-        )
-    )
-
     private var cameraHelper: CameraHelper? = null
 
     companion object {
@@ -47,7 +41,13 @@ class MainActivity : ComponentActivity() {
         setupOrientation()
         initializeHelpers()
 
-        viewModel.setWorkoutEntryViewModel(workoutEntryViewModel)
+        val workoutEntryViewModel = WorkoutEntryViewModel(
+            OfflineWorkoutRepository(
+                WorkoutDatabase.getDatabase(this).workoutEntryDao()
+            )
+        )
+
+        viewModel.initialiseWorkoutEntryViewModel(workoutEntryViewModel)
 
         enableEdgeToEdge()
         setContent {

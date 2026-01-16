@@ -29,5 +29,5 @@ data class Workout(
     val id: Int = 0,
     val exercise: String,
     val reps: Int,
-    val length: Int
+    val length: Long
 )

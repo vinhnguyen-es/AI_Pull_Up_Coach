@@ -4,8 +4,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    id("com.google.devtools.ksp") version "2.3.0"
-}
+    id("com.google.devtools.ksp") version "2.3.0"}
 
 android {
     namespace = "vinh.nguyen.app"
@@ -46,7 +45,6 @@ android {
 }
 
 dependencies {
-
     // Core
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -57,7 +55,6 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.compose.material.icons.extended)
-
 
     // Camera
     implementation(libs.androidx.camera.core)
@@ -76,16 +73,17 @@ dependencies {
     // ViewModel
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 
-    // Coroutines
+    // Coroutines / Navigation
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
-    implementation(libs.androidx.room.compiler)
 
-    val roomVersion = "2.6.1"
+    val roomVersion = "2.8.4"
 
-    // Room
+    // Room (runtime libs)
     implementation("androidx.room:room-runtime:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
+
+    // Room compiler (processor only)
     ksp("androidx.room:room-compiler:$roomVersion")
 }
