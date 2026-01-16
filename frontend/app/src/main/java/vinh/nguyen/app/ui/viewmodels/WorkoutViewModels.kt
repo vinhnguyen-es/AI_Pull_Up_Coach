@@ -32,9 +32,14 @@ class WorkoutViewModel : ViewModel() {
     var captureInterval = 200L // Capture every 200ms (5 FPS)
 
     var exerciseType = ""
+    var workoutEntryViewModel: WorkoutEntryViewModel? = null
 
     companion object {
         private const val TAG = "WorkoutViewModel"
+    }
+
+    fun setWorkoutEntryViewModel(entryViewModel: WorkoutEntryViewModel) {
+        workoutEntryViewModel = entryViewModel
     }
 
     /**
@@ -45,10 +50,10 @@ class WorkoutViewModel : ViewModel() {
         exercise = chosenExercise
         exerciseType = chosenExercise
 
-        if (exercise == "Jumping Jacks") {
+        if (exercise == "Jumping Jacks") { // Jumping Jacks need more frames as they are quick
             captureInterval = 100L
         } else {
-            captureInterval = 200L
+            captureInterval = 200L // Others mess up if they get too many frames
         }
         Log.i(TAG, "Selected exercise: $exercise")
     }

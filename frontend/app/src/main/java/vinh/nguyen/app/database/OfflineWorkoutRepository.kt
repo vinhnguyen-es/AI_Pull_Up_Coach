@@ -17,14 +17,14 @@ package vinh.nguyen.app.database
 
 import kotlinx.coroutines.flow.Flow
 
-class OfflineWorkoutRepository(private val workoutDao: WorkoutDao) : WorkoutRepository {
-    override fun getAllWorkoutsStream(): Flow<List<Workout>> = workoutDao.getAllWorkoutsStream()
+class OfflineWorkoutRepository(private val workoutEntryDao: WorkoutEntryDao) : WorkoutRepository {
+    override fun getAllWorkoutsStream(): Flow<List<Workout>> = workoutEntryDao.getAllWorkoutsStream()
 
-    override fun getWorkoutStream(id: Int): Flow<Workout?> = workoutDao.getWorkoutStream(id)
+    override fun getWorkoutStream(id: Int): Flow<Workout?> = workoutEntryDao.getWorkoutStream(id)
 
-    override suspend fun insertWorkout(workout: Workout) = workoutDao.insertWorkout(workout)
+    override suspend fun insertWorkout(workout: Workout) = workoutEntryDao.insertWorkout(workout)
 
-    override suspend fun deleteWorkout(workout: Workout) = workoutDao.deleteWorkout(workout)
+    override suspend fun deleteWorkout(workout: Workout) = workoutEntryDao.deleteWorkout(workout)
 
-    override suspend fun updateWorkout(workout: Workout) = workoutDao.updateWorkout(workout)
+    override suspend fun updateWorkout(workout: Workout) = workoutEntryDao.updateWorkout(workout)
 }

@@ -8,7 +8,7 @@ import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface WorkoutDao {
+interface WorkoutEntryDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertWorkout(workout: Workout)
 

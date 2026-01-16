@@ -10,7 +10,7 @@ import androidx.room.RoomDatabase
 @Database(entities = [Workout::class], version = 1, exportSchema = false)
 abstract class WorkoutDatabase : RoomDatabase() {
 
-    abstract fun workoutDao(): WorkoutDao
+    abstract fun workoutEntryDao(): WorkoutEntryDao
 
     companion object {
         @Volatile
