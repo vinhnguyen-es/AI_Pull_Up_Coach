@@ -25,6 +25,7 @@ import kotlin.getValue
 
 class MainActivity : ComponentActivity() {
     private val viewModel: WorkoutViewModel by viewModels()
+    private val viewModel: WorkoutViewModel by viewModels()
     private var cameraHelper: CameraHelper? = null
 
     companion object {
