@@ -1,6 +1,5 @@
 package vinh.nguyen.app.ui.viewmodels
 
-import android.R
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
