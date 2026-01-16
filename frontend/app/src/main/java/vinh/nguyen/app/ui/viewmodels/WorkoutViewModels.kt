@@ -147,6 +147,10 @@ class WorkoutViewModel : ViewModel() {
             // Start: Begin workout
             Log.i(TAG, "Starting workout")
 
+            viewModelScope.launch {
+                val response = NetworkClient.apiService.resetSession(exercise)
+            }
+
             _state.value = _state.value.copy(
                 isWorkoutActive = true,
                 errorMessage = null,
