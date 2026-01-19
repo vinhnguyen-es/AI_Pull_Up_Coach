@@ -18,10 +18,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -69,68 +65,107 @@ fun ExercisesDisplay(navController: NavController,
             )
         }
 
-        Column(
-            //the background
-            modifier.background(MaterialTheme.colorScheme.background),
-            verticalArrangement = Arrangement.SpaceEvenly,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            for (row in 0..2) {
-                Row(
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = modifier.weight(1f)
-                ) {
-                    for (column in 0..1) {
-                        var resource = when (2 * row + column) {
-                            0 -> R.drawable.pull_ups
-                            1 -> R.drawable.bicep_curls
-                            2 -> R.drawable.jumping_jacks
-                            3 -> R.drawable.push_ups
-                            4 -> R.drawable.sit_ups
-                            5 -> R.drawable.squats
-                            else -> R.drawable.pull_ups
-                        }
-                        var text = when (2 * row + column) {
-                            0 -> "Pull Ups"
-                            1 -> "Bicep Curls"
-                            2 -> "Jumping Jacks"
-                            3 -> "Push Ups"
-                            4 -> "Sit Ups"
-                            5 -> "Squats"
-                            else -> "Pull Up"
-                        }
-                        val resourceDescription = text + " Image"
+        // The row below the top banner
+        Row() {
+            Column(
+                //the background
+                modifier.background(MaterialTheme.colorScheme.background),
+                verticalArrangement = Arrangement.SpaceEvenly,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                for (row in 0..2) {
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = modifier.weight(1f)
+                    ) {
+                        for (column in 0..1) {
+                            var resource = when (2 * row + column) {
+                                0 -> R.drawable.pull_ups
+                                1 -> R.drawable.bicep_curls
+                                2 -> R.drawable.jumping_jacks
+                                3 -> R.drawable.push_ups
+                                4 -> R.drawable.sit_ups
+                                5 -> R.drawable.squats
+                                else -> R.drawable.pull_ups
+                            }
+                            var text = when (2 * row + column) {
+                                0 -> "Pull Ups"
+                                1 -> "Bicep Curls"
+                                2 -> "Jumping Jacks"
+                                3 -> "Push Ups"
+                                4 -> "Sit Ups"
+                                5 -> "Squats"
+                                else -> "Pull Up"
+                            }
+                            val resourceDescription = text + " Image"
 
-                        ExerciseCard(
-                            navController,
-                            text = text,
-                            resource = resource,
-                            resourceDescription = resourceDescription,
-                            modifier = Modifier.weight(1f),
-                            viewModel = viewModel
-                        )
+                            IconCard(
+                                navController,
+                                text = text,
+                                resource = resource,
+                                resourceDescription = resourceDescription,
+                                modifier = Modifier.weight(1f),
+                                viewModel = viewModel
+                            )
+                        }
                     }
                 }
+            }
+
+            // The column the with the stats, summary, history and settings buttons
+            Column(
+                modifier = Modifier,
+                verticalArrangement = Arrangement.SpaceEvenly,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                // Stats
+                Text(
+                    text = "Stats: ",
+                    modifier = Modifier
+                )
+                IconCard(
+                    navController = navController,
+                    text = "Summary",
+                    resource = R.drawable.summary,
+                    resourceDescription = "Last Workout Summary",
+                    modifier = modifier.background(MaterialTheme.colorScheme.background),
+                    viewModel = viewModel,
+                    onClick =  {
+                        navController.navigate("Summary")
+                    }
+                )
+                IconCard(
+                    navController = navController,
+                    text = "History",
+                    resource = R.drawable.history,
+                    resourceDescription = "Previous Workout History",
+                    modifier = modifier.background(MaterialTheme.colorScheme.background),
+                    viewModel = viewModel,
+                    onClick =  {
+                        navController.navigate("History")
+                    }
+                )
             }
         }
     }
 }
 
 @Composable
-fun ExerciseCard(
+fun IconCard(
     navController: NavController,
     text: String,
     resource: Int,
     resourceDescription: String,
     modifier: Modifier = Modifier,
-    viewModel: WorkoutViewModel
+    viewModel: WorkoutViewModel,
+    onClick: () -> Unit = {
+        navController.navigate("WorkoutScreen")
+        viewModel.changeScreen(text)
+    }
 ) {
     Button(
-        onClick = {
-            navController.navigate("WorkoutScreen")
-            viewModel.chooseExercise(text)
-        },
+        onClick = onClick,
         modifier
             .padding(20.dp)
             .clip(RoundedCornerShape(50f))

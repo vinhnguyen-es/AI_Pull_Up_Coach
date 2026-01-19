@@ -20,6 +20,7 @@ class WorkoutViewModel : ViewModel() {
 
     // The exercise of which to count reps
     private var exercise = ""
+    private var screen = ""
 
     // Controlled frame processing
     private var framesSentCount = 0
@@ -47,11 +48,20 @@ class WorkoutViewModel : ViewModel() {
         workoutEntryViewModel = entryViewModel
     }
 
+    fun changeScreen(scr: String) {
+        screen = scr
+        if (!(scr == "Last Workout Summary" || scr == "Previous Workout History")) {
+            chooseExercise(scr)
+        }
+    }
+
     /**
      * Stores the exercise type that was selected on the home screen.
      * Used to decide which model to use for counting reps.
      */
     fun chooseExercise(chosenExercise: String) {
+        // Avoid Selecting invalid exercises
+
         exercise = chosenExercise
         exerciseType = chosenExercise
 

@@ -19,6 +19,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import vinh.nguyen.app.database.OfflineWorkoutRepository
 import vinh.nguyen.app.database.WorkoutDatabase
+import vinh.nguyen.app.ui.screens.History
+import vinh.nguyen.app.ui.screens.Summary
 import vinh.nguyen.app.ui.screens.WorkoutScreen
 import vinh.nguyen.app.ui.theme.AppTheme
 import vinh.nguyen.app.ui.viewmodels.WorkoutEntryViewModel
@@ -68,6 +70,18 @@ class MainActivity : ComponentActivity() {
                             viewModel = viewModel,
                             onFrameCapture = ::handleFrameCapture,
                             onCameraReady = ::handleCameraReady,
+                            navController = navController
+                        )
+                    }
+                    composable("History") {
+                        History(
+                            viewModel = viewModel,
+                            navController = navController
+                        )
+                    }
+                    composable("Summary") {
+                        Summary(
+                            viewModel = viewModel,
                             navController = navController
                         )
                     }
