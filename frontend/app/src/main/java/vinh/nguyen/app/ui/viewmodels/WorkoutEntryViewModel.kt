@@ -20,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.flow.Flow
 import vinh.nguyen.app.database.Workout
 import vinh.nguyen.app.database.WorkoutRepository
 
@@ -47,6 +48,10 @@ class WorkoutEntryViewModel(private val workoutsRepository: WorkoutRepository) :
         if (validateInput()) {
             workoutsRepository.insertWorkout(workoutUiState.workoutDetails.toWorkout())
         }
+    }
+
+    suspend fun getAllWorkouts(): Flow<List<Workout>> {
+        return workoutsRepository.getAllWorkoutsStream()
     }
 
     private fun validateInput(uiState: WorkoutDetails = workoutUiState.workoutDetails): Boolean {
