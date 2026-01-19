@@ -85,6 +85,7 @@ class WorkoutViewModel : ViewModel() {
                     length = System.currentTimeMillis() - lastResetTime
                     ).toWorkoutDetails()
                 )
+                workoutEntryViewModel?.saveWorkout()
             }
 
             // Reset: Stop workout and clear all data
@@ -133,6 +134,17 @@ class WorkoutViewModel : ViewModel() {
         if (_state.value.isWorkoutActive) {
             // Reset: Stop workout and clear all data
             Log.i(TAG, "Resetting workout session")
+
+            viewModelScope.launch {
+                println("${returnExercise()}, $_state.value.repCount, ${System.currentTimeMillis() - lastResetTime}")
+                workoutEntryViewModel?.updateUiState(Workout(
+                    exercise = returnExercise(),
+                    reps = _state.value.repCount,
+                    length = System.currentTimeMillis() - lastResetTime
+                ).toWorkoutDetails()
+                )
+                workoutEntryViewModel?.saveWorkout()
+            }
 
             // Reset local state
             framesSentCount = 0
