@@ -68,7 +68,7 @@ data class WorkoutDetails(
     val id: Int = 0,
     val exercise: String = "",
     val reps: Int = 0,
-    val length: Long = 0,
+    val length: String = "",
     val date: String = ""
 
 )

@@ -11,6 +11,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import vinh.nguyen.app.database.Workout
 import vinh.nguyen.app.utils.NetworkClient
+import vinh.nguyen.app.utils.formatMsToMMSS
 import java.time.LocalDate
 
 class WorkoutViewModel : ViewModel() {
@@ -86,7 +87,7 @@ class WorkoutViewModel : ViewModel() {
                 workoutEntryViewModel?.updateUiState(Workout(
                     exercise = returnExercise(),
                     reps = _state.value.repCount,
-                    length = System.currentTimeMillis() - lastResetTime,
+                    length = formatMsToMMSS(System.currentTimeMillis() - lastResetTime),
                     date = dateString
                     ).toWorkoutDetails()
                 )
@@ -127,7 +128,7 @@ class WorkoutViewModel : ViewModel() {
             }
         }
 
-        val lastResetTime = System.currentTimeMillis()
+        lastResetTime = System.currentTimeMillis()
     }
 
     /**
@@ -147,7 +148,7 @@ class WorkoutViewModel : ViewModel() {
                 workoutEntryViewModel?.updateUiState(Workout(
                     exercise = returnExercise(),
                     reps = _state.value.repCount,
-                    length = System.currentTimeMillis() - lastResetTime,
+                    length = formatMsToMMSS(System.currentTimeMillis() - lastResetTime),
                     date = dateString
                 ).toWorkoutDetails()
                 )
@@ -184,6 +185,7 @@ class WorkoutViewModel : ViewModel() {
                 }
             }
         } else {
+            lastResetTime = System.currentTimeMillis()
             // Start: Begin workout
             Log.i(TAG, "Starting workout")
 
