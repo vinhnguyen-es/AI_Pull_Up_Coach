@@ -29,6 +29,6 @@ data class Workout(
     val id: Int = 0,
     val exercise: String,
     val reps: Int,
-    val length: Long
-    val date: Long = System.currentTimeMillis() //
+    val length: Long,
+    val date: String
 )

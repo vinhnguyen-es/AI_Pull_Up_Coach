@@ -69,7 +69,7 @@ data class WorkoutDetails(
     val exercise: String = "",
     val reps: Int = 0,
     val length: Long = 0,
-    val date: Long = System.currentTimeMillis()
+    val date: String = ""
 
 )
 
@@ -82,7 +82,8 @@ fun WorkoutDetails.toWorkout(): Workout = Workout(
     id = id,
     exercise = exercise,
     reps = reps,
-    length = length
+    length = length,
+    date = date
 )
 
 /**
@@ -100,5 +101,6 @@ fun Workout.toWorkoutDetails(): WorkoutDetails = WorkoutDetails(
     id = id,
     exercise = exercise,
     reps = reps,
-    length = length
+    length = length,
+    date = date
 )

@@ -11,6 +11,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import vinh.nguyen.app.database.Workout
 import vinh.nguyen.app.utils.NetworkClient
+import java.time.LocalDate
 
 class WorkoutViewModel : ViewModel() {
     private val _state = MutableStateFlow(WorkoutState())
@@ -76,13 +77,17 @@ class WorkoutViewModel : ViewModel() {
 
     fun reset() {
         if (_state.value.isWorkoutActive) {
+            val currentDate = LocalDate.now()
+            val dateString = currentDate.toString()
+
             // Store Rep Count For Session
             viewModelScope.launch {
                 println("${returnExercise()}, $_state.value.repCount, ${System.currentTimeMillis() - lastResetTime}")
                 workoutEntryViewModel?.updateUiState(Workout(
                     exercise = returnExercise(),
                     reps = _state.value.repCount,
-                    length = System.currentTimeMillis() - lastResetTime
+                    length = System.currentTimeMillis() - lastResetTime,
+                    date = dateString
                     ).toWorkoutDetails()
                 )
                 workoutEntryViewModel?.saveWorkout()
@@ -134,13 +139,16 @@ class WorkoutViewModel : ViewModel() {
         if (_state.value.isWorkoutActive) {
             // Reset: Stop workout and clear all data
             Log.i(TAG, "Resetting workout session")
+            val currentDate = LocalDate.now()
+            val dateString = currentDate.toString()
 
             viewModelScope.launch {
                 println("${returnExercise()}, $_state.value.repCount, ${System.currentTimeMillis() - lastResetTime}")
                 workoutEntryViewModel?.updateUiState(Workout(
                     exercise = returnExercise(),
                     reps = _state.value.repCount,
-                    length = System.currentTimeMillis() - lastResetTime
+                    length = System.currentTimeMillis() - lastResetTime,
+                    date = dateString
                 ).toWorkoutDetails()
                 )
                 workoutEntryViewModel?.saveWorkout()
