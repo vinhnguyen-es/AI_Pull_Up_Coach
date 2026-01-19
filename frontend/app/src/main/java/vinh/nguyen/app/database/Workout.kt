@@ -30,4 +30,5 @@ data class Workout(
     val exercise: String,
     val reps: Int,
     val length: Long
+    val date: Long = System.currentTimeMillis() //
 )

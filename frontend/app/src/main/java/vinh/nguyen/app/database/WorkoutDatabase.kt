@@ -7,7 +7,8 @@ import androidx.room.RoomDatabase
 /**
  * Database class with a singleton Instance object.
  */
-@Database(entities = [Workout::class], version = 1, exportSchema = false)
+//CHANGE TO VERSION 2
+@Database(entities = [Workout::class], version = 2, exportSchema = false)
 abstract class WorkoutDatabase : RoomDatabase() {
 
     abstract fun workoutEntryDao(): WorkoutEntryDao
