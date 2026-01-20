@@ -284,6 +284,7 @@ private fun StartResetButton(
         )
     }
 }
+
 @Composable
 private fun BackButton(
     onClick: () -> Unit

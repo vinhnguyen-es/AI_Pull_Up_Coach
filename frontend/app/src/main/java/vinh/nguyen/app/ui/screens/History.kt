@@ -1,12 +1,17 @@
 package vinh.nguyen.app.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -14,18 +19,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
 import vinh.nguyen.app.database.Workout
 import vinh.nguyen.app.ui.viewmodels.WorkoutViewModel
+
+
 
 @Composable
 fun History(
@@ -34,13 +37,54 @@ fun History(
 ) {
     viewModel.workoutEntryViewModel?.getWorkoutsOnDate()
 
+    val TAG = "WorkoutViewModel"
+    Log.w(TAG, "Size: ${viewModel.workoutEntryViewModel?.workoutsOnDate!!.size}")
+
     if (viewModel.workoutEntryViewModel?.workoutsOnDate!!.size != 0) {
+        Log.w(TAG, "HERE 1")
         for (workouts in viewModel.workoutEntryViewModel?.workoutsOnDate!!) {
             WorkoutDateSection(3, workouts)
         }
     } else {
+        Log.w(TAG, "HERE 2")
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Bottom,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "No Workouts Logged",
+                fontSize = 50.sp,
+                modifier = Modifier.padding(350.dp)
+
+            )
+            BackButton(
+                onClick = {
+                    navController.navigate("ExercisesDisplay")
+                }
+            )
+        }
+    }
+}
+
+@Composable
+private fun BackButton(
+    onClick: () -> Unit
+) {
+    Button(
+        onClick = onClick,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(60.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.primary
+        ),
+        shape = RoundedCornerShape(12.dp)
+    ) {
         Text(
-            text = "You are a bozo"
+            text = "BACK",
+            fontWeight = FontWeight.Bold,
+            fontSize = 16.sp
         )
     }
 }

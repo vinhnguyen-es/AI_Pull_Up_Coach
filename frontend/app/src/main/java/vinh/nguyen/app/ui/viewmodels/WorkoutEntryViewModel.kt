@@ -91,19 +91,21 @@ class WorkoutEntryViewModel(private val workoutsRepository: WorkoutRepository) :
         viewModelScope.launch {
             workouts.collect {
                     workouts ->
-                var date = workouts[0].date
+                if (workouts.size != 0) {
+                    var date = workouts[0].date
 
-                var dateIndex = 0
-                for ((i, workout) in workouts.withIndex()) {
-                    if (i == 0) {
-                        workoutsOnDate.add(mutableListOf())
-                        continue
-                    }
-                    if (workout.date == date) {
-                        workoutsOnDate[dateIndex].add(workout)
-                    } else {
-                        dateIndex++
-                        workoutsOnDate[dateIndex] = mutableListOf(workout)
+                    var dateIndex = 0
+                    for ((i, workout) in workouts.withIndex()) {
+                        if (i == 0) {
+                            workoutsOnDate.add(mutableListOf())
+                            continue
+                        }
+                        if (workout.date == date) {
+                            workoutsOnDate[dateIndex].add(workout)
+                        } else {
+                            dateIndex++
+                            workoutsOnDate[dateIndex] = mutableListOf(workout)
+                        }
                     }
                 }
             }

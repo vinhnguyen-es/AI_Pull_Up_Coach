@@ -40,6 +40,11 @@ interface ApiService {
     suspend fun resetSession(
         @Query("exercise") exercise: String
     ): Response<ResetResponse>
+
+    @POST("log")
+    suspend fun log(
+        @Query("text") text: String
+    ): Response<ResetResponse>
 }
 
 object NetworkClient {
