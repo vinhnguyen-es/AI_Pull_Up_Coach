@@ -32,6 +32,8 @@ interface WorkoutRepository {
      */
     fun getWorkoutStream(id: Int): Flow<Workout?>
 
+    suspend fun getTotalReps(): Int
+
     /**
      * Insert workout in the data source
      */

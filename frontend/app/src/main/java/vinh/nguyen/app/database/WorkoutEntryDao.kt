@@ -23,4 +23,7 @@ interface WorkoutEntryDao {
 
     @Query("SELECT * from workouts ORDER BY date DESC")
     fun getAllWorkoutsStream(): Flow<List<Workout>>
+
+    @Query("SELECT SUM(reps) from workouts")
+    suspend fun getTotalReps(): Int
 }

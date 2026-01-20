@@ -18,7 +18,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -35,7 +34,9 @@ import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material3.Icon
 import androidx.compose.material3.SwitchDefaults
+import androidx.compose.ui.Alignment
 import vinh.nguyen.app.ui.viewmodels.WorkoutViewModel
+
 @Composable
 fun ExercisesDisplay(navController: NavController,
                      darkTheme: Boolean,
@@ -69,7 +70,8 @@ fun ExercisesDisplay(navController: NavController,
         Row() {
             Column(
                 //the background
-                modifier.background(MaterialTheme.colorScheme.background),
+                Modifier.background(MaterialTheme.colorScheme.background)
+                    .weight(4f),
                 verticalArrangement = Arrangement.SpaceEvenly,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -81,13 +83,13 @@ fun ExercisesDisplay(navController: NavController,
                     ) {
                         for (column in 0..1) {
                             var resource = when (2 * row + column) {
-                                0 -> R.drawable.pull_ups
-                                1 -> R.drawable.bicep_curls
-                                2 -> R.drawable.jumping_jacks
-                                3 -> R.drawable.push_ups
-                                4 -> R.drawable.sit_ups
-                                5 -> R.drawable.squats
-                                else -> R.drawable.pull_ups
+                                0 -> R.drawable.pull
+                                1 -> R.drawable.bicep_curl
+                                2 -> R.drawable.jumping_jack
+                                3 -> R.drawable.push
+                                4 -> R.drawable.sit
+                                5 -> R.drawable.squat
+                                else -> R.drawable.pull
                             }
                             var text = when (2 * row + column) {
                                 0 -> "Pull Ups"
@@ -115,21 +117,24 @@ fun ExercisesDisplay(navController: NavController,
 
             // The column the with the stats, summary, history and settings buttons
             Column(
-                modifier = Modifier,
+                modifier = Modifier.fillMaxWidth(0.3f)
+                    .weight(1f).background(MaterialTheme.colorScheme.background),
                 verticalArrangement = Arrangement.SpaceEvenly,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                var reps = viewModel.workoutEntryViewModel?.getTotalReps()
                 // Stats
-                Text(
-                    text = "Stats: ",
-                    modifier = Modifier
+                TextCard(
+                    title = "Stats",
+                    content = listOf("Total Reps: ${reps}", ""),
+                    modifier = modifier.weight(1f),
                 )
                 IconCard(
                     navController = navController,
                     text = "Summary",
                     resource = R.drawable.summary,
                     resourceDescription = "Last Workout Summary",
-                    modifier = modifier.background(MaterialTheme.colorScheme.background),
+                    modifier = modifier.weight(1f),
                     viewModel = viewModel,
                     onClick =  {
                         navController.navigate("Summary")
@@ -140,7 +145,7 @@ fun ExercisesDisplay(navController: NavController,
                     text = "History",
                     resource = R.drawable.history,
                     resourceDescription = "Previous Workout History",
-                    modifier = modifier.background(MaterialTheme.colorScheme.background),
+                    modifier = modifier.weight(1f),
                     viewModel = viewModel,
                     onClick =  {
                         navController.navigate("History")
@@ -150,6 +155,7 @@ fun ExercisesDisplay(navController: NavController,
         }
     }
 }
+
 
 @Composable
 fun IconCard(
@@ -190,6 +196,46 @@ fun IconCard(
                 textAlign = TextAlign.Center,
                 fontWeight = Bold,
                 fontSize = 25.sp,
+                color = Color.Black
+            )
+        }
+    }
+}
+
+@Composable
+fun TextCard(
+    title: String,
+    content: List<String>,
+    modifier: Modifier
+) {
+    Column(
+        modifier
+            .padding(20.dp)
+            .clip(RoundedCornerShape(50f))
+            .background(MaterialTheme.colorScheme.onSecondary),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = title,
+            modifier = Modifier
+                .fillMaxSize()
+                .weight(1f)
+                .padding(5.dp),
+            textAlign = TextAlign.Center,
+            fontWeight = Bold,
+            fontSize = 25.sp,
+            color = Color.Black
+        )
+        for (text in content) {
+            Text(
+                text = text,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(1f),
+                textAlign = TextAlign.Center,
+                fontWeight = Bold,
+                fontSize = 15.sp,
                 color = Color.Black
             )
         }

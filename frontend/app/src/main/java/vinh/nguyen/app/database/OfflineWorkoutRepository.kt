@@ -22,6 +22,8 @@ class OfflineWorkoutRepository(private val workoutEntryDao: WorkoutEntryDao) : W
 
     override fun getWorkoutStream(id: Int): Flow<Workout?> = workoutEntryDao.getWorkoutStream(id)
 
+    override suspend fun getTotalReps(): Int = workoutEntryDao.getTotalReps()
+
     override suspend fun insertWorkout(workout: Workout) = workoutEntryDao.insertWorkout(workout)
 
     override suspend fun deleteWorkout(workout: Workout) = workoutEntryDao.deleteWorkout(workout)
