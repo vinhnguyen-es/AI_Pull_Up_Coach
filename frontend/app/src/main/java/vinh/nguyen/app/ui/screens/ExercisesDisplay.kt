@@ -100,6 +100,16 @@ fun ExercisesDisplay(navController: NavController,
                                 5 -> "Squats"
                                 else -> "Pull Up"
                             }
+
+                            var buttonColor = when (2 * row + column) {
+                                0 -> Color(0xFF19CDB9)  // Purple for Pull Ups
+                                1 -> Color(0xFF75AEE4)  // Teal for Bicep Curls
+                                2 -> Color(0xFFF6BF3B)  // Red for Jumping Jacks
+                                3 -> Color(0xFFE04A4C)  // Cyan for Push Ups
+                                4 -> Color(0xFF504294)  // Yellow for Sit Ups
+                                5 -> Color(0xFFF46C83)  // Mint for Squats
+                                else -> Color.Gray
+                            }
                             val resourceDescription = text + " Image"
 
                             IconCard(
@@ -108,7 +118,8 @@ fun ExercisesDisplay(navController: NavController,
                                 resource = resource,
                                 resourceDescription = resourceDescription,
                                 modifier = Modifier.weight(1f),
-                                viewModel = viewModel
+                                viewModel = viewModel,
+                                buttonColor = buttonColor
                             )
                         }
                     }
@@ -136,6 +147,7 @@ fun ExercisesDisplay(navController: NavController,
                     resourceDescription = "Last Workout Summary",
                     modifier = modifier.weight(1f),
                     viewModel = viewModel,
+                    buttonColor = Color(0xFFEDAF6D),
                     onClick =  {
                         navController.navigate("Summary")
                     }
@@ -147,6 +159,7 @@ fun ExercisesDisplay(navController: NavController,
                     resourceDescription = "Previous Workout History",
                     modifier = modifier.weight(1f),
                     viewModel = viewModel,
+                    buttonColor = Color(0xFFF46E01),
                     onClick =  {
                         navController.navigate("History")
                     }
@@ -165,6 +178,7 @@ fun IconCard(
     resourceDescription: String,
     modifier: Modifier = Modifier,
     viewModel: WorkoutViewModel,
+    buttonColor: Color = MaterialTheme.colorScheme.onSecondary,
     onClick: () -> Unit = {
         navController.navigate("WorkoutScreen")
         viewModel.changeScreen(text)
@@ -176,8 +190,9 @@ fun IconCard(
             .padding(20.dp)
             .clip(RoundedCornerShape(50f))
             .background(Color.White),
-        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.onSecondary),
+        //colors = buttonColor//ButtonDefaults.buttonColors(MaterialTheme.colorScheme.onSecondary),
         //^^ changes colours of buttons
+        colors = ButtonDefaults.buttonColors(buttonColor),
         shape = RectangleShape
     ) {
         Column() {
@@ -212,7 +227,7 @@ fun TextCard(
         modifier
             .padding(20.dp)
             .clip(RoundedCornerShape(50f))
-            .background(MaterialTheme.colorScheme.onSecondary),
+            .background(Color(0xFF5AA846)),//MaterialTheme.colorScheme.onSecondary),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

@@ -32,6 +32,18 @@ val White = Color(0xFFFFFFFF)
 val Yellow = Color(0xFFD9A600)
 
 
+/* ---------- button Colours ---------- */
+val pullUps = Color(0xFF19CDB9)
+val bicepCurls = Color(0xFF75AEE4)
+val sitUps = Color(0xFF504294)
+val pushUps = Color(0xFFE04A4C)
+val jumpingJacks = Color(0xFFF6BF3B)
+val squats = Color(0xFFF46C83)
+val stats = Color(0xFFEDAF6D)
+val history = Color(0xFFF46E01)
+
+
+
 
 
 //package vinh.nguyen.app.ui.theme

@@ -22,7 +22,21 @@ private val LightColorScheme = lightColorScheme(
     background = PurpleGrey80,
     onSurface = Color(0xFF1A1B21),
 
-    onErrorContainer = ErrorDark
+    onErrorContainer = ErrorDark,
+
+//    onBackground = pullUps,
+//    surface = bicepCurls,
+//    surfaceVariant = sitUps,
+//    inversePrimary = pushUps,
+//    inverseSurface = jumpingJacks,
+//    error = squats,
+//    onError = stats,
+//    outline = history
+
+
+
+
+
 )
 
 private val DarkColorScheme = darkColorScheme(
@@ -37,7 +51,7 @@ private val DarkColorScheme = darkColorScheme(
     background = BluePrimaryDark,
     onSurface = Color(0xFF1A1B21),
 
-    onErrorContainer = ErrorDark
+    onErrorContainer = ErrorDark,
 )
 
 @Composable
