@@ -40,8 +40,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -71,13 +73,17 @@ fun ExercisesDisplay(navController: NavController,
                 text = stringResource(R.string.title),
                 textAlign = TextAlign.Center,
                 fontWeight = Bold,
-                fontSize = 30.sp
-            )
+                fontSize = 30.sp,
+                color = MaterialTheme.colorScheme.onBackground
 
-            ThemeSwitch(
-                darkTheme = darkTheme,
-                onToggle = onToggleTheme
             )
+            SettingsCog(onClick = { navController.navigate("Settings") })
+                //{navController.navigate("Settings")}
+
+//            ThemeSwitch(
+//                darkTheme = darkTheme,
+//                onToggle = onToggleTheme
+//            )
         }
 
         // The row below the top banner
@@ -246,7 +252,8 @@ fun IconCard(
                 textAlign = TextAlign.Center,
                 fontWeight = Bold,
                 fontSize = 25.sp,
-                color = Color.Black
+                //color = Color.Black
+                color = MaterialTheme.colorScheme.onBackground
             )
         }
     }
@@ -267,8 +274,8 @@ fun TextCard(
             )
             .clip(RoundedCornerShape(50f))
             .background(Color(0xFF5AA846)),
-        verticalArrangement = Arrangement.SpaceEvenly,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceEvenly
     ) {
         Text(
             text = title,
@@ -276,7 +283,8 @@ fun TextCard(
             textAlign = TextAlign.Center,
             fontWeight = Bold,
             fontSize = 25.sp,
-            color = Color.Black
+            //color = Color.Black
+            color = MaterialTheme.colorScheme.onBackground
         )
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
@@ -288,7 +296,8 @@ fun TextCard(
                     textAlign = TextAlign.Center,
                     fontWeight = Bold,
                     fontSize = 15.sp,
-                    color = Color.Black
+                    //color = Color.Black
+                    color = MaterialTheme.colorScheme.onBackground
                 )
             }
         }
@@ -307,34 +316,56 @@ class Toggle(){
 }
 
 @Composable
-fun ThemeSwitch(
-    darkTheme: Boolean,
-    onToggle: () -> Unit
-) {
+fun SettingsCog(onClick: () -> Unit, modifier: Modifier = Modifier){
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.padding(16.dp)
-    ) {
-
-        if (darkTheme == true){
-            Text("Dark Theme")
-        } else {
-            Text("Light Theme")
+    ){
+        IconButton(
+            onClick = onClick,
+            modifier = modifier
+        ){
+            Icon(
+                imageVector = Icons.Filled.Settings,
+                contentDescription = "Settings",
+                modifier = Modifier.size(48.dp),
+                tint = Color.Black  // or MaterialTheme.colorScheme.onBackground
+            )
         }
-        Spacer(modifier = Modifier.width(2.dp))
-        Switch(
-            checked = darkTheme,
-            onCheckedChange = { onToggle() },
-            thumbContent = {
-                if (darkTheme) {
-                    Icon(
-                        imageVector = if (darkTheme) Icons.Filled.DarkMode else Icons.Filled.WbSunny,
-                        contentDescription = null,
-                        modifier = Modifier.size(SwitchDefaults.IconSize),
-                        tint = if (darkTheme) Color.Blue else Color.Yellow  // Custom colors!
-                    )
-                }
-            }
-        )
+
     }
 }
+
+
+//
+//@Composable
+//fun ThemeSwitch(
+//    darkTheme: Boolean,
+//    onToggle: () -> Unit
+//) {
+//    Row(
+//        verticalAlignment = Alignment.CenterVertically,
+//        modifier = Modifier.padding(16.dp)
+//    ) {
+//
+//        if (darkTheme){
+//            Text("Dark Theme")
+//        } else {
+//            Text("Light Theme")
+//        }
+//        Spacer(modifier = Modifier.width(2.dp))
+//        Switch(
+//            checked = darkTheme,
+//            onCheckedChange = { onToggle() },
+//            thumbContent = {
+//                Icon(
+//                    imageVector = if (darkTheme) Icons.Filled.DarkMode else Icons.Filled.WbSunny,
+//                    contentDescription = null,
+//                    modifier = Modifier.size(SwitchDefaults.IconSize),
+//                    tint = if (darkTheme) Color.Blue else Color.Yellow  // Custom colors!
+//                )
+//            }
+//        )
+//            }
+//
+//    }

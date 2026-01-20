@@ -21,6 +21,7 @@ import vinh.nguyen.app.database.OfflineWorkoutRepository
 import vinh.nguyen.app.database.WorkoutDatabase
 import vinh.nguyen.app.ui.screens.History
 import vinh.nguyen.app.ui.screens.Summary
+import vinh.nguyen.app.ui.screens.Settings
 import vinh.nguyen.app.ui.screens.WorkoutScreen
 import vinh.nguyen.app.ui.theme.AppTheme
 import vinh.nguyen.app.ui.viewmodels.WorkoutEntryViewModel
@@ -83,6 +84,15 @@ class MainActivity : ComponentActivity() {
                         Summary(
                             viewModel = viewModel,
                             navController = navController
+                        )
+                    }
+                    composable("Settings") {
+                        Settings(
+                            viewModel = viewModel,
+                            navController = navController,
+                            darkTheme = isDarkTheme,
+                            onToggleTheme = { isDarkTheme = !isDarkTheme}
+
                         )
                     }
                 }
