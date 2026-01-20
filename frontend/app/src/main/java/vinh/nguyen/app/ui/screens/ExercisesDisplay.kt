@@ -162,14 +162,14 @@ fun ExercisesDisplay(navController: NavController,
                 )
                 IconCard(
                     navController = navController,
-                    text = "Summary",
+                    text = "Statistics",
                     resource = R.drawable.summary,
-                    resourceDescription = "Last Workout Summary",
+                    resourceDescription = "Last Workout Statistics",
                     modifier = modifier.weight(1f),
                     viewModel = viewModel,
                     buttonColor = Color(0xFFEDAF6D),
                     onClick =  {
-                        navController.navigate("Summary")
+                        navController.navigate("Statistics")
                     }
                 )
                 IconCard(
