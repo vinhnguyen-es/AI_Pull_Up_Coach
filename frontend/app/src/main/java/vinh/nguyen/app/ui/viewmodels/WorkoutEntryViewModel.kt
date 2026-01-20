@@ -37,6 +37,12 @@ class WorkoutEntryViewModel(private val workoutsRepository: WorkoutRepository) :
     var workoutUiState by mutableStateOf(WorkoutUiState())
         private set
 
+    var totalReps by mutableStateOf(0)
+        private set
+
+    var totalTimeHHMM by mutableStateOf("00:00")
+        private set
+
     /**
      * Updates the [workoutUiState] with the value provided in the argument. This method also triggers
      * a validation for input values.
@@ -46,16 +52,37 @@ class WorkoutEntryViewModel(private val workoutsRepository: WorkoutRepository) :
             WorkoutUiState(workoutDetails = workoutDetails, isEntryValid = validateInput(workoutDetails))
     }
 
-    fun getTotalReps(): Int {
-        var reps = 0
+    fun refreshStats() {
         viewModelScope.launch {
-            reps = workoutsRepository.getTotalReps()
+            totalReps = workoutsRepository.getTotalReps()
+
+            val lengths = workoutsRepository.getAllLengths()
+            totalTimeHHMM = sumLengthsToHHMMSS(lengths)
+        }
+    }
+
+    private fun sumLengthsToHHMMSS(lengths: List<String>): String {
+        var totalSeconds = 0
+
+        for (raw in lengths) {
+            val parts = raw.trim().split(":")
+            if (parts.size != 2) continue
+
+            val mm = parts[0].toIntOrNull() ?: continue
+            val ss = parts[1].toIntOrNull() ?: continue
+            if (ss !in 0..59 || mm < 0) continue
+
+            totalSeconds += mm * 60 + ss
         }
 
-        println("Reps: $reps")
+        val hh = totalSeconds / 3600
+        val mm = (totalSeconds % 3600) / 60
+        val ss = totalSeconds % 60
 
-        return reps
+        return String.format("%02d:%02d:%02d", hh, mm, ss)
     }
+
+
     suspend fun saveWorkout() {
         if (validateInput()) {
             workoutsRepository.insertWorkout(workoutUiState.workoutDetails.toWorkout())

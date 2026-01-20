@@ -35,6 +35,7 @@ import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material3.Icon
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.ui.Alignment
+import androidx.lifecycle.viewModelScope
 import vinh.nguyen.app.ui.viewmodels.WorkoutViewModel
 
 @Composable
@@ -122,11 +123,11 @@ fun ExercisesDisplay(navController: NavController,
                 verticalArrangement = Arrangement.SpaceEvenly,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                var reps = viewModel.workoutEntryViewModel?.getTotalReps()
                 // Stats
+                viewModel.workoutEntryViewModel?.refreshStats()
                 TextCard(
                     title = "Stats",
-                    content = listOf("Total Reps: ${reps}", ""),
+                    content = listOf("Total Reps: ${viewModel.workoutEntryViewModel?.totalReps}", "Total Workout Time: ${viewModel.workoutEntryViewModel?.totalTimeHHMM}"),
                     modifier = modifier.weight(1f),
                 )
                 IconCard(

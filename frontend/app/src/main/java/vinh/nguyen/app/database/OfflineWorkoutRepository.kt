@@ -24,6 +24,8 @@ class OfflineWorkoutRepository(private val workoutEntryDao: WorkoutEntryDao) : W
 
     override suspend fun getTotalReps(): Int = workoutEntryDao.getTotalReps()
 
+    override suspend fun getAllLengths(): List<String> = workoutEntryDao.getAllLengths()
+
     override suspend fun insertWorkout(workout: Workout) = workoutEntryDao.insertWorkout(workout)
 
     override suspend fun deleteWorkout(workout: Workout) = workoutEntryDao.deleteWorkout(workout)

@@ -26,4 +26,7 @@ interface WorkoutEntryDao {
 
     @Query("SELECT SUM(reps) from workouts")
     suspend fun getTotalReps(): Int
+
+    @Query("SELECT length FROM workouts")
+    suspend fun getAllLengths(): List<String>
 }
