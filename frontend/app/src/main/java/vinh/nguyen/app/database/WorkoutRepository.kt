@@ -34,6 +34,8 @@ interface WorkoutRepository {
 
     suspend fun getTotalReps(): Int
 
+    suspend fun getAllLengths(): List<String>
+
     /**
      * Insert workout in the data source
      */

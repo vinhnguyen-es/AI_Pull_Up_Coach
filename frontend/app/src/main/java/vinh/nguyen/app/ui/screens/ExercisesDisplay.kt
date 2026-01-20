@@ -10,6 +10,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -45,6 +46,7 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.lifecycle.viewModelScope
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.graphicsLayer
 import vinh.nguyen.app.ui.viewmodels.WorkoutViewModel
@@ -145,11 +147,11 @@ fun ExercisesDisplay(navController: NavController,
                 verticalArrangement = Arrangement.SpaceEvenly,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                var reps = viewModel.workoutEntryViewModel?.getTotalReps()
                 // Stats
+                viewModel.workoutEntryViewModel?.refreshStats()
                 TextCard(
                     title = "Stats",
-                    content = listOf("Total Reps: ${reps}", ""),
+                    content = listOf("Total Reps: ${viewModel.workoutEntryViewModel?.totalReps}", "Total Workout Time: ${viewModel.workoutEntryViewModel?.totalTimeHHMM}"),
                     modifier = modifier.weight(1f),
                 )
                 IconCard(
@@ -265,31 +267,30 @@ fun TextCard(
             )
             .clip(RoundedCornerShape(50f))
             .background(Color(0xFF5AA846)),
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = title,
-            modifier = Modifier
-                .fillMaxSize()
-                .weight(1f)
-                .padding(5.dp),
+            modifier = Modifier,
             textAlign = TextAlign.Center,
             fontWeight = Bold,
             fontSize = 25.sp,
             color = Color.Black
         )
-        for (text in content) {
-            Text(
-                text = text,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .weight(1f),
-                textAlign = TextAlign.Center,
-                fontWeight = Bold,
-                fontSize = 15.sp,
-                color = Color.Black
-            )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            for (text in content) {
+                Text(
+                    text = text,
+                    modifier = Modifier,
+                    textAlign = TextAlign.Center,
+                    fontWeight = Bold,
+                    fontSize = 15.sp,
+                    color = Color.Black
+                )
+            }
         }
     }
 }
