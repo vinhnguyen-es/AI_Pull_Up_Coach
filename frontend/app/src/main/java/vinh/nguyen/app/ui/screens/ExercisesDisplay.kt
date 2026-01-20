@@ -1,7 +1,15 @@
 package vinh.nguyen.app
 
+import android.R.attr.scaleX
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -34,7 +42,11 @@ import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material3.Icon
 import androidx.compose.material3.SwitchDefaults
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.graphicsLayer
 import vinh.nguyen.app.ui.viewmodels.WorkoutViewModel
 
 @Composable
@@ -184,16 +196,37 @@ fun IconCard(
         viewModel.changeScreen(text)
     }
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+
+    val scale by animateFloatAsState(
+        targetValue = if (isPressed) 0.92f else 1f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessMedium
+        )
+    )
+
+    val elevation by animateDpAsState(
+        targetValue = if (isPressed) 2.dp else 8.dp,
+        animationSpec = tween(100)
+    )
+
     Button(
         onClick = onClick,
-        modifier
+        modifier = modifier
             .padding(20.dp)
-            .clip(RoundedCornerShape(50f))
-            .background(Color.White),
-        //colors = buttonColor//ButtonDefaults.buttonColors(MaterialTheme.colorScheme.onSecondary),
-        //^^ changes colours of buttons
+            .graphicsLayer {
+                scaleX = scale
+                this.scaleY = scale
+            },
         colors = ButtonDefaults.buttonColors(buttonColor),
-        shape = RectangleShape
+        shape = RoundedCornerShape(16.dp),
+        elevation = ButtonDefaults.buttonElevation(
+            defaultElevation = elevation,
+            pressedElevation = 2.dp
+        ),
+        interactionSource = interactionSource
     ) {
         Column() {
             Image(
@@ -226,8 +259,12 @@ fun TextCard(
     Column(
         modifier
             .padding(20.dp)
+            .shadow(
+                elevation = 8.dp,
+                shape = RoundedCornerShape(50f)
+            )
             .clip(RoundedCornerShape(50f))
-            .background(Color(0xFF5AA846)),//MaterialTheme.colorScheme.onSecondary),
+            .background(Color(0xFF5AA846)),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -257,7 +294,6 @@ fun TextCard(
     }
 }
 
-
 class Toggle(){
     var isDark: Boolean = true
 
@@ -268,27 +304,6 @@ class Toggle(){
         isDark = !isDark
     }
 }
-
-//@Composable
-//fun ThemeSwitch() {
-//    val toggle = remember { Toggle() }
-//    var darkTheme by remember { mutableStateOf(toggle.isDark) }
-//
-//    Row(
-//        verticalAlignment = Alignment.CenterVertically,
-//        modifier = Modifier.padding(16.dp)
-//    ) {
-//        Text("Dark Theme")
-//        Spacer(modifier = Modifier.width(8.dp))
-//        Switch(
-//            checked = darkTheme,
-//            onCheckedChange = {
-//                toggle.switchToggle()  // Call your function
-//                darkTheme = toggle.whichToggle()  // Update the state
-//            }
-//        )
-//    }
-//}
 
 @Composable
 fun ThemeSwitch(
