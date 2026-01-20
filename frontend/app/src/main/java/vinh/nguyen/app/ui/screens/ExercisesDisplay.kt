@@ -2,6 +2,7 @@ package vinh.nguyen.app
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -214,31 +215,30 @@ fun TextCard(
             .padding(20.dp)
             .clip(RoundedCornerShape(50f))
             .background(MaterialTheme.colorScheme.onSecondary),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceEvenly
     ) {
         Text(
             text = title,
-            modifier = Modifier
-                .fillMaxSize()
-                .weight(1f)
-                .padding(5.dp),
+            modifier = Modifier,
             textAlign = TextAlign.Center,
             fontWeight = Bold,
             fontSize = 25.sp,
             color = Color.Black
         )
-        for (text in content) {
-            Text(
-                text = text,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .weight(1f),
-                textAlign = TextAlign.Center,
-                fontWeight = Bold,
-                fontSize = 15.sp,
-                color = Color.Black
-            )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            for (text in content) {
+                Text(
+                    text = text,
+                    modifier = Modifier,
+                    textAlign = TextAlign.Center,
+                    fontWeight = Bold,
+                    fontSize = 15.sp,
+                    color = Color.Black
+                )
+            }
         }
     }
 }
