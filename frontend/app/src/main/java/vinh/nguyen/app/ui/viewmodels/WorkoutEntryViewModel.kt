@@ -97,10 +97,12 @@ class WorkoutEntryViewModel(private val workoutsRepository: WorkoutRepository) :
                     var dateIndex = 0
                     for ((i, workout) in workouts.withIndex()) {
                         if (i == 0) {
-                            workoutsOnDate.add(mutableListOf())
                             continue
                         }
                         if (workout.date == date) {
+                            if (workoutsOnDate.size == 0) {
+                                workoutsOnDate.add(mutableListOf())
+                            }
                             workoutsOnDate[dateIndex].add(workout)
                         } else {
                             dateIndex++
