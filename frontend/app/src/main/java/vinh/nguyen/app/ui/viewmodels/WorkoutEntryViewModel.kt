@@ -43,6 +43,9 @@ class WorkoutEntryViewModel(private val workoutsRepository: WorkoutRepository) :
     var totalTimeHHMM by mutableStateOf("00:00")
         private set
 
+    var workoutsOnDate by mutableStateOf(mutableListOf<MutableList<Workout>>())
+        private set
+
     /**
      * Updates the [workoutUiState] with the value provided in the argument. This method also triggers
      * a validation for input values.
@@ -82,6 +85,30 @@ class WorkoutEntryViewModel(private val workoutsRepository: WorkoutRepository) :
         return String.format("%02d:%02d:%02d", hh, mm, ss)
     }
 
+
+    fun getWorkoutsOnDate() {
+        val workouts: Flow<List<Workout>> = getAllWorkouts()
+        viewModelScope.launch {
+            workouts.collect {
+                    workouts ->
+                var date = workouts[0].date
+
+                var dateIndex = 0
+                for ((i, workout) in workouts.withIndex()) {
+                    if (i == 0) {
+                        workoutsOnDate.add(mutableListOf())
+                        continue
+                    }
+                    if (workout.date == date) {
+                        workoutsOnDate[dateIndex].add(workout)
+                    } else {
+                        dateIndex++
+                        workoutsOnDate[dateIndex] = mutableListOf(workout)
+                    }
+                }
+            }
+        }
+    }
 
     suspend fun saveWorkout() {
         if (validateInput()) {
