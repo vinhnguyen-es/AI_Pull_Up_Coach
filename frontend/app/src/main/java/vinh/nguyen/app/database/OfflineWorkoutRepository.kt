@@ -18,7 +18,8 @@ package vinh.nguyen.app.database
 import kotlinx.coroutines.flow.Flow
 
 class OfflineWorkoutRepository(private val workoutEntryDao: WorkoutEntryDao) : WorkoutRepository {
-    override fun getAllWorkoutsStream(): Flow<List<Workout>> = workoutEntryDao.getAllWorkoutsStream()
+    override fun getAllWorkoutsStream(): Flow<List<Workout>> =
+        workoutEntryDao.getAllWorkoutsStream()
 
     override fun getWorkoutStream(id: Int): Flow<Workout?> = workoutEntryDao.getWorkoutStream(id)
 
@@ -31,4 +32,11 @@ class OfflineWorkoutRepository(private val workoutEntryDao: WorkoutEntryDao) : W
     override suspend fun deleteWorkout(workout: Workout) = workoutEntryDao.deleteWorkout(workout)
 
     override suspend fun updateWorkout(workout: Workout) = workoutEntryDao.updateWorkout(workout)
+
+    override suspend fun getTotalWorkouts(): Int = workoutEntryDao.getTotalWorkouts()
+
+    override suspend fun getTotalWorkoutTime(): Int = workoutEntryDao.getTotalWorkoutTime()
+
+    override suspend fun avgRepsPerWorkout(): Int = workoutEntryDao.avgRepsPerWorkout()
+
 }
