@@ -14,7 +14,7 @@ import vinh.nguyen.app.utils.NetworkClient
 import vinh.nguyen.app.utils.formatMsToMMSS
 import java.time.LocalDate
 
-class WorkoutViewModel : ViewModel() {
+class WorkoutViewModel: ViewModel() {
     private val _state = MutableStateFlow(WorkoutState())
     val state: StateFlow<WorkoutState> = _state
 
@@ -34,6 +34,8 @@ class WorkoutViewModel : ViewModel() {
     private val reconnectInterval = 5000L
     private var consecutiveFailures = 0
     private val maxConsecutiveFailures = 5
+
+    private var returningTime = "Default value"
 
     var captureInterval = 200L // Capture every 200ms (5 FPS)
 
@@ -86,6 +88,18 @@ class WorkoutViewModel : ViewModel() {
         _state.value = _state.value.copy(isWorkoutActive = false)
     }
 
+    fun setTime(time: String){
+        returningTime = time
+    }
+
+    fun getTime(): String {
+        return returningTime
+    }
+
+    fun resetTime(){
+        returningTime = "Default Value"
+    }
+
     fun reset() {
         if (_state.value.isWorkoutActive) {
             val currentDate = LocalDate.now()
@@ -111,6 +125,8 @@ class WorkoutViewModel : ViewModel() {
             framesSentCount = 0
             consecutiveFailures = 0
 
+            val workoutTime = formatMsToMMSS(System.currentTimeMillis() - lastResetTime)
+
             // Reset UI state to idle
             _state.value = WorkoutState(
                 repCount = 0,
@@ -119,8 +135,10 @@ class WorkoutViewModel : ViewModel() {
                 isConnected = _state.value.isConnected, // Keep connection state
                 errorMessage = null,
                 framesSent = 0,
-                lastRepTime = 0L
+                lastRepTime = 0L,
+                completedWorkoutTime = workoutTime
             )
+            //resetTime()
 
             // Reset backend session
             viewModelScope.launch {
@@ -141,6 +159,10 @@ class WorkoutViewModel : ViewModel() {
         lastResetTime = System.currentTimeMillis()
     }
 
+    fun clearCompletedTime() {
+        _state.value = _state.value.copy(completedWorkoutTime = null)
+    }
+
     /**
      * Single action to start workout or reset when active.
      * - If idle: Starts the workout
@@ -153,6 +175,9 @@ class WorkoutViewModel : ViewModel() {
             val currentDate = LocalDate.now()
             val dateString = currentDate.toString()
 
+            val workoutTime = formatMsToMMSS(System.currentTimeMillis() - lastResetTime)
+
+
             viewModelScope.launch {
                 println("${returnExercise()}, $_state.value.repCount, ${System.currentTimeMillis() - lastResetTime}")
                 workoutEntryViewModel?.updateUiState(Workout(
@@ -162,6 +187,7 @@ class WorkoutViewModel : ViewModel() {
                     date = dateString
                 ).toWorkoutDetails()
                 )
+                setTime(formatMsToMMSS(System.currentTimeMillis() - lastResetTime))
                 workoutEntryViewModel?.saveWorkout()
             }
 
@@ -177,7 +203,8 @@ class WorkoutViewModel : ViewModel() {
                 isConnected = _state.value.isConnected, // Keep connection state
                 errorMessage = null,
                 framesSent = 0,
-                lastRepTime = 0L
+                lastRepTime = 0L,
+                completedWorkoutTime = workoutTime
             )
 
             // Reset backend session

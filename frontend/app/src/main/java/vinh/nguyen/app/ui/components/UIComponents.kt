@@ -1,5 +1,6 @@
 package vinh.nguyen.app.ui.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
@@ -9,17 +10,25 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
+import vinh.nguyen.app.ui.components.DialogWithImage
 import vinh.nguyen.app.ui.viewmodels.WorkoutState
 import vinh.nguyen.app.ui.viewmodels.WorkoutViewModel
-
+import vinh.nguyen.app.R
 @Composable
 fun ConnectionStatusCard(
     modifier: Modifier = Modifier,
@@ -138,18 +147,18 @@ fun ControlPanel(
                 onStartReset = onStartReset,
                 onReset = onReset,
                 onReconnect = onReconnect,
-                navController = navController
+                navController = navController,
+                viewModel = viewModel
             )
         }
     }
 }
 
-//PULL UP COACH MESSAGE
-// THIS IS  GONNA HAVE TO CHANGE BASED ON WHICH ONE IT IS//
+
 @Composable
 private fun PanelTitle(viewModel: WorkoutViewModel) {
     Text(
-        text = viewModel.returnExercise() + " Coach",//"PULL-UP\nCOACH",
+        text = viewModel.returnExercise() + " Coach",
         fontSize = 18.sp,
         fontWeight = FontWeight.Bold,
         textAlign = TextAlign.Center,
@@ -157,24 +166,6 @@ private fun PanelTitle(viewModel: WorkoutViewModel) {
         modifier = Modifier.padding(top = 50.dp)
     )
 }
-
-//@Composable
-//private fun PanelTitle() {
-//    Text(
-//        text = when (x){
-//        x.PullUps -> "PULL-UP\nCOACH",
-//        x.JumpingJacks ->"JUMPING-JACK\nCOACH",}
-//        fontSize = 16.sp,//COULD CHANGE FONT SIZE BASED ON CHOSEN EXERCISE
-//        fontWeight = FontWeight.Bold,
-//        textAlign = TextAlign.Center,
-//        color = MaterialTheme.colorScheme.secondary
-//    )
-//Text(
-//text = if (isWorkoutActive) "RESET" else "START",
-//fontWeight = FontWeight.Bold,
-//fontSize = 16.sp
-//)
-//}
 
 @Composable
 private fun StatsDisplay(state: WorkoutState) {
@@ -216,9 +207,10 @@ private fun ControlButtons(
     onStartReset: () -> Unit,
     onReset: () -> Unit,
     onReconnect: () -> Unit,
-    navController: NavController
+    navController: NavController,
+    viewModel: WorkoutViewModel
 ) {
-    Column(
+        Column(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         if (!isConnected) {
@@ -230,7 +222,10 @@ private fun ControlButtons(
             onClick = {
                 navController.navigate("ExercisesDisplay")
                 onReset()
-            }
+            },
+            onReset = onReset,
+            navController = navController,
+            viewModel = viewModel
         )
     }
 }
@@ -286,10 +281,16 @@ private fun StartResetButton(
 }
 @Composable
 private fun BackButton(
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onReset: () -> Unit,
+    navController: NavController,
+    viewModel: WorkoutViewModel
 ) {
+
+    var showDialog by remember { mutableStateOf(false)}
     Button(
-        onClick = onClick,
+        onClick = {showDialog = true
+            },//onReset()
         modifier = Modifier
             .fillMaxWidth()
             .height(60.dp),
@@ -303,5 +304,98 @@ private fun BackButton(
             fontWeight = FontWeight.Bold,
             fontSize = 16.sp
         )
+    }
+    if (showDialog) {
+        DialogWithImage(
+            onDismissRequest = { onReset()
+                showDialog = false },
+            onConfirmation = { onReset()
+                showDialog = false},
+            drawableRes = when (viewModel.returnExercise()) {
+                "Pull Ups"-> R.drawable.pull
+                "Bicep Curls"-> R.drawable.bicep_curl
+                "Jumping Jacks" -> R.drawable.jumping_jack
+                "Push Ups" -> R.drawable.push
+                "Sit Ups" -> R.drawable.sit
+                "Squats"-> R.drawable.squat
+                else -> R.drawable.pull
+            },
+            imageDescription = viewModel.returnExercise(),
+            onReset = onReset,
+            navController = navController,
+            viewModel = viewModel
+        )
+    }
+}
+
+@Composable
+fun DialogWithImage(
+    onDismissRequest: () -> Unit,
+    onConfirmation: () -> Unit,
+    drawableRes: Int,  // Changed from Painter to Int (drawable resource ID)
+    imageDescription: String,
+    navController: NavController,
+    onReset: () -> Unit,
+    viewModel: WorkoutViewModel
+) {
+    Dialog(onDismissRequest = { onDismissRequest() }) {
+        // Draw a rectangle shape with rounded corners inside the dialog
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(375.dp)
+                .padding(16.dp),
+            shape = RoundedCornerShape(16.dp),
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Image(
+                    painter = painterResource(id = drawableRes),  // Changed to painterResource
+                    contentDescription = imageDescription,
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .height(160.dp)
+                )
+                Text(
+                    //text = "This is a dialog with buttons and an image.",
+//                    text = buildString {
+//                        append("Total Reps: ${viewModel.workoutEntryViewModel?.totalReps}\n")
+//                        append("Total Workout Time: ${viewModel.workoutEntryViewModel?.totalTimeHHMM}")
+//                    },
+                    text = buildString {
+                        append("Total Reps: ${viewModel.state.value.repCount}\n")
+                        //append("Total Workout Time: ${viewModel.state.value.completedWorkoutTime ?: "00:00"}")
+                        append("Total Workout Time: ${viewModel.state.value.completedWorkoutTime ?: "00:00"}")
+                    },
+                    modifier = Modifier.padding(16.dp),
+                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
+                ) {
+//                    TextButton(
+//                        onClick = { onDismissRequest() },
+//                        modifier = Modifier.padding(8.dp),
+//                    ) {
+//                        Text("Dismiss")
+//                    }
+                    TextButton(
+                        onClick = {
+                            onConfirmation()
+                            viewModel.clearCompletedTime()
+                            navController.navigate("ExercisesDisplay")
+                            },
+                        modifier = Modifier.padding(8.dp),
+                    ) {
+                        Text("Confirm")
+                    }
+                }
+            }
+        }
     }
 }

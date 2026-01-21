@@ -10,5 +10,6 @@ data class WorkoutState(
     val isConnected: Boolean = false,
     val errorMessage: String? = null,
     val framesSent: Int = 0,
-    val lastRepTime: Long = 0L
+    val lastRepTime: Long = 0L,
+    val completedWorkoutTime: String? = null //ADDED BY MB 21/01
 )
