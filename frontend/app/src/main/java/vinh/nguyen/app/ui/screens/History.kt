@@ -1,6 +1,5 @@
 package vinh.nguyen.app.ui.screens
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,6 +15,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,20 +33,27 @@ fun History(
     viewModel: WorkoutViewModel,
     navController: NavController
 ) {
-    viewModel.workoutEntryViewModel?.getWorkoutsOnDate()
-
-    val TAG = "WorkoutViewModel"
-    Log.w(TAG, "Size: ${viewModel.workoutEntryViewModel?.workoutsOnDate!!.size}")
+    LaunchedEffect(Unit) {
+        viewModel.workoutEntryViewModel?.getWorkoutsOnDate()
+    }
 
     if (viewModel.workoutEntryViewModel?.workoutsOnDate!!.size != 0) {
-        Log.w(TAG, "HERE 1")
-        Log.w(TAG, viewModel.workoutEntryViewModel?.workoutsOnDate.toString())
-        for (workouts in viewModel.workoutEntryViewModel?.workoutsOnDate!!) {
-            Log.w(TAG, workouts.toString())
-            WorkoutDateSection(3, workouts, Modifier.fillMaxSize().padding(top = 10.dp))
+        Box(
+            Modifier.fillMaxSize()
+        ) {
+            Column() {
+                for (workouts in viewModel.workoutEntryViewModel?.workoutsOnDate!!) {
+                    WorkoutDateSection(3, workouts, Modifier.padding(top = 10.dp))
+                }
+            }
+            BackButton(
+                modifier = Modifier.align(Alignment.BottomCenter),
+                onClick = {
+                    navController.popBackStack()
+                },
+            )
         }
     } else {
-        Log.w(TAG, "HERE 2")
         Box (
             Modifier.fillMaxSize(),
         ) {
@@ -102,29 +109,33 @@ fun WorkoutDateSection(
 ) {
     // Date (Section Header)
     Column(
-        modifier,
+        Modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
             text = workouts[0].date,
             modifier = Modifier
                 .padding(10.dp)
-                .fillMaxWidth()
                 .clip(RoundedCornerShape(50f))
                 .background(MaterialTheme.colorScheme.onSecondary),
             fontSize = 24.sp,
             fontWeight = Bold,
             textAlign = TextAlign.Center
         )
-        for (row in 0 until (workouts.size / cols))
+        val rowCount = (workouts.size + cols - 1) / cols
+        for (row in 0 until rowCount) {
             Row(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 for (col in 0 until cols) {
-                    WorkoutCard(workouts[row * cols + col], Modifier.weight(1f))
+                    if (row * cols + col < workouts.size) {
+                        WorkoutCard(workouts[row * cols + col], Modifier.weight(1f))
+//                        Log.w("TEST", workouts[row * cols + col].length)
+                    }
                 }
             }
+        }
     }
 }
 
