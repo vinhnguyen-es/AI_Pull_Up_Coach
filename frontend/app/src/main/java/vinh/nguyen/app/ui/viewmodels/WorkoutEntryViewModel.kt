@@ -85,7 +85,6 @@ class WorkoutEntryViewModel(private val workoutsRepository: WorkoutRepository) :
         return String.format("%02d:%02d:%02d", hh, mm, ss)
     }
 
-
     fun getWorkoutsOnDate() {
         val workouts: Flow<List<Workout>> = getAllWorkouts()
         viewModelScope.launch {
@@ -93,20 +92,19 @@ class WorkoutEntryViewModel(private val workoutsRepository: WorkoutRepository) :
                     workouts ->
                 if (workouts.size != 0) {
                     var date = workouts[0].date
-
                     var dateIndex = 0
+
                     for ((i, workout) in workouts.withIndex()) {
                         if (i == 0) {
+                            workoutsOnDate.add(mutableListOf(workout))
                             continue
                         }
                         if (workout.date == date) {
-                            if (workoutsOnDate.size == 0) {
-                                workoutsOnDate.add(mutableListOf())
-                            }
                             workoutsOnDate[dateIndex].add(workout)
                         } else {
                             dateIndex++
                             workoutsOnDate[dateIndex] = mutableListOf(workout)
+                            date = workout.date
                         }
                     }
                 }

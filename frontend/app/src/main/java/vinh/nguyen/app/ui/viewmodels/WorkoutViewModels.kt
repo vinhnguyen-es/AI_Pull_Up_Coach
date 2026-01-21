@@ -185,7 +185,7 @@ class WorkoutViewModel: ViewModel() {
                     reps = _state.value.repCount,
                     length = formatMsToMMSS(System.currentTimeMillis() - lastResetTime),
                     date = dateString
-                ).toWorkoutDetails()
+                    ).toWorkoutDetails()
                 )
                 setTime(formatMsToMMSS(System.currentTimeMillis() - lastResetTime))
                 workoutEntryViewModel?.saveWorkout()
