@@ -154,7 +154,8 @@ fun ExercisesDisplay(navController: NavController,
                 viewModel.workoutEntryViewModel?.refreshStats()
                 TextCard(
                     title = "Stats",
-                    content = listOf("Total Reps: ${viewModel.workoutEntryViewModel?.totalReps}", "Total Workout Time: ${viewModel.workoutEntryViewModel?.totalTimeHHMM}"),
+                    content = listOf("Total Reps: ${viewModel.workoutEntryViewModel?.totalReps}",
+                        "Total Workout Time: ${viewModel.workoutEntryViewModel?.totalTimeHHMM}"),
                     modifier = modifier.weight(1f),
                 )
                 IconCard(

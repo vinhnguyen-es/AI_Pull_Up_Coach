@@ -370,7 +370,15 @@ fun DialogWithImage(
                     text = buildString {
                         append("Total Reps: ${viewModel.state.value.repCount}\n")
                         //append("Total Workout Time: ${viewModel.state.value.completedWorkoutTime ?: "00:00"}")
-                        append("Total Workout Time: ${viewModel.state.value.completedWorkoutTime ?: "00:00"}")
+                        append("Total Workout Time: ${viewModel.state.value.completedWorkoutTime ?: "00:00"}\n")
+                        val presentText = when (viewModel.state.value.repCount) {
+                            0 -> "Ready to start!"
+                            in 1..5 -> "Good start!"
+                            in 6..15 -> "Great job!"
+                            in 21..30 -> "Outstanding!"
+                            else -> "You're a champion!"
+                        }
+                        append("${presentText}")
                     },
                     modifier = Modifier.padding(16.dp),
                 )
