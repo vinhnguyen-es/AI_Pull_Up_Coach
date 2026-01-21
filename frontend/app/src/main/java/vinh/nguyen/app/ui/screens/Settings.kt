@@ -80,7 +80,8 @@ fun Settings(
                 text = "Settings",
                 textAlign = TextAlign.Center,
                 fontWeight = Bold,
-                fontSize = 30.sp
+                fontSize = 30.sp,
+                color = MaterialTheme.colorScheme.onBackground
             )
         }
 
@@ -126,9 +127,11 @@ fun ThemeSwitch(
         modifier = Modifier.padding(16.dp)
     ) {
         if (darkTheme){
-            Text("Dark Theme")
+            Text("Dark Theme",
+                color = MaterialTheme.colorScheme.onBackground)
         } else {
-            Text("Light Theme")
+            Text("Light Theme",
+                color = MaterialTheme.colorScheme.onBackground)
         }
         Spacer(modifier = Modifier.width(8.dp))
         Switch(
