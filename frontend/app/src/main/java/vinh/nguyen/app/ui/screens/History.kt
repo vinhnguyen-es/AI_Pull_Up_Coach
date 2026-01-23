@@ -47,7 +47,9 @@ fun History(
     }
 
     if (viewModel.workoutEntryViewModel?.workoutsOnDate!!.size != 0) {
-        Box() {
+        Box(
+            Modifier.fillMaxSize()
+        ) {
             LazyColumn(
                 Modifier.background(MaterialTheme.colorScheme.background)
             ) {
