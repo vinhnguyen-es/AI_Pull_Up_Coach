@@ -16,7 +16,9 @@
 
 package vinh.nguyen.app.ui.viewmodels
 
+import android.util.Log
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -53,7 +55,7 @@ class WorkoutEntryViewModel(private val workoutsRepository: WorkoutRepository) :
     var totalTimeHHMM by mutableStateOf("00:00")
         private set
 
-    var workoutsOnDate by mutableStateOf(mutableListOf<MutableList<Workout>>())
+    var workoutsOnDate by mutableStateOf(mutableStateListOf<MutableList<Workout>>())
         private set
 
     /**
@@ -101,28 +103,27 @@ class WorkoutEntryViewModel(private val workoutsRepository: WorkoutRepository) :
         return String.format("%02d:%02d:%02d", hh, mm, ss)
     }
 
-
     fun getWorkoutsOnDate() {
         val workouts: Flow<List<Workout>> = getAllWorkouts()
         viewModelScope.launch {
             workouts.collect {
                     workouts ->
+                workoutsOnDate.clear()
                 if (workouts.size != 0) {
                     var date = workouts[0].date
-
                     var dateIndex = 0
+
                     for ((i, workout) in workouts.withIndex()) {
                         if (i == 0) {
+                            workoutsOnDate.add(mutableStateListOf(workout))
                             continue
                         }
                         if (workout.date == date) {
-                            if (workoutsOnDate.size == 0) {
-                                workoutsOnDate.add(mutableListOf())
-                            }
                             workoutsOnDate[dateIndex].add(workout)
                         } else {
                             dateIndex++
-                            workoutsOnDate[dateIndex] = mutableListOf(workout)
+                            workoutsOnDate.add(mutableStateListOf(workout))
+                            date = workout.date
                         }
                     }
                 }

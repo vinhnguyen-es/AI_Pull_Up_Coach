@@ -57,7 +57,7 @@ private val DarkColorScheme = darkColorScheme(
 @Composable
 fun AppTheme(
     darkTheme: Boolean = false,
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = true, // Change colours based on wallpaper
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
