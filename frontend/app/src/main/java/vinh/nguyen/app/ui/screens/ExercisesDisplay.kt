@@ -56,7 +56,7 @@ fun ExercisesDisplay(navController: NavController,
                      onToggleTheme: () -> Unit,
                      modifier: Modifier = Modifier, viewModel: WorkoutViewModel) {
     Column(
-        //this is the banner colourd
+        //this is the banner colour
         modifier = Modifier.background(MaterialTheme.colorScheme.onTertiary)
     ) {
         Row(
