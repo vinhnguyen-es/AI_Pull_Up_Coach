@@ -5,9 +5,6 @@ import android.speech.tts.TextToSpeech
 import android.util.Log
 import java.util.Locale
 
-/**
- * Manages Text-to-Speech announcements for workout rep counting
- */
 class WorkoutTTSManager(context: Context) {
 
     private var tts: TextToSpeech? = null
@@ -38,11 +35,6 @@ class WorkoutTTSManager(context: Context) {
         }
     }
 
-    /**
-     * Announces the current rep count
-     * @param repCount The number of reps completed
-     * @param isTTSEnabled Whether TTS is enabled in settings
-     */
     fun announceRep(repCount: Int, isTTSEnabled: Boolean) {
         if (!isTTSEnabled || !isInitialized || repCount <= 0) {
             return
@@ -59,26 +51,20 @@ class WorkoutTTSManager(context: Context) {
         speak(announcement)
     }
 
-    /**
-     * Speaks the given text using TTS
-     */
+
     private fun speak(text: String) {
         tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
         Log.d(TAG, "TTS: $text")
     }
 
-    /**
-     * Stops any ongoing speech
-     */
+
     fun stop() {
         if (tts?.isSpeaking == true) {
             tts?.stop()
         }
     }
 
-    /**
-     * Shuts down TTS engine - call this in onDestroy/onCleared
-     */
+
     fun shutdown() {
         tts?.stop()
         tts?.shutdown()

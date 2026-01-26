@@ -59,9 +59,6 @@ class WorkoutViewModel(application: Application): AndroidViewModel(application) 
         workoutEntryViewModel = entryViewModel
     }
 
-    /**
-     * Toggle TTS on/off
-     */
     fun toggleTTS(enabled: Boolean) {
         _isTTSEnabled.value = enabled
         Log.i(TAG, "TTS ${if (enabled) "enabled" else "disabled"}")
