@@ -156,7 +156,7 @@ fun ControlPanel(
 
 
 @Composable
-private fun PanelTitle(viewModel: WorkoutViewModel) {
+fun PanelTitle(viewModel: WorkoutViewModel) {
     Text(
         text = viewModel.returnExercise() + " Coach",
         fontSize = 18.sp,
@@ -362,14 +362,8 @@ fun DialogWithImage(
                         .height(160.dp)
                 )
                 Text(
-                    //text = "This is a dialog with buttons and an image.",
-//                    text = buildString {
-//                        append("Total Reps: ${viewModel.workoutEntryViewModel?.totalReps}\n")
-//                        append("Total Workout Time: ${viewModel.workoutEntryViewModel?.totalTimeHHMM}")
-//                    },
                     text = buildString {
                         append("Total Reps: ${viewModel.state.value.repCount}\n")
-                        //append("Total Workout Time: ${viewModel.state.value.completedWorkoutTime ?: "00:00"}")
                         append("Total Workout Time: ${viewModel.state.value.completedWorkoutTime ?: "00:00"}\n")
                         val presentText = when (viewModel.state.value.repCount) {
                             0 -> "Ready to start!"
@@ -387,12 +381,6 @@ fun DialogWithImage(
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center,
                 ) {
-//                    TextButton(
-//                        onClick = { onDismissRequest() },
-//                        modifier = Modifier.padding(8.dp),
-//                    ) {
-//                        Text("Dismiss")
-//                    }
                     TextButton(
                         onClick = {
                             onConfirmation()

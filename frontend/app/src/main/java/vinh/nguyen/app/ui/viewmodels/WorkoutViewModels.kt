@@ -138,7 +138,6 @@ class WorkoutViewModel: ViewModel() {
                 lastRepTime = 0L,
                 completedWorkoutTime = workoutTime
             )
-            //resetTime()
 
             // Reset backend session
             viewModelScope.launch {
