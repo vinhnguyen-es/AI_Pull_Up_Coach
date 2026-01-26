@@ -144,39 +144,42 @@ fun ControlPanel(
         "Sit Ups" -> 0xFFAEA5D7//504294
         "Squats"-> 0xFFF9B0BC//F46C83
         else -> 0xFFFFFFF
+
     }
-    Card(
-        modifier = modifier,
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color(colourChoice), // dialog background
-            contentColor = MaterialTheme.colorScheme.onSurface  // text/icon default
-        )
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-            // Title
-            PanelTitle(viewModel)
-
-            // Stats Display
-            StatsDisplay(state)
-
-            // Control Buttons
-            ControlButtons(
-                isConnected = state.isConnected,
-                isWorkoutActive = state.isWorkoutActive,
-                onStartReset = onStartReset,
-                onReset = onReset,
-                onReconnect = onReconnect,
-                navController = navController,
-                viewModel = viewModel
+    Column(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+        Card(
+            modifier = modifier,
+            shape = RoundedCornerShape(16.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = Color(colourChoice), // dialog background
+                contentColor = MaterialTheme.colorScheme.onSurface  // text/icon default
             )
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                // Title
+                PanelTitle(viewModel)
+
+                // Stats Display
+                StatsDisplay(state)
+
+                // Control Buttons
+                ControlButtons(
+                    isConnected = state.isConnected,
+                    isWorkoutActive = state.isWorkoutActive,
+                    onStartReset = onStartReset,
+                    onReset = onReset,
+                    onReconnect = onReconnect,
+                    navController = navController,
+                    viewModel = viewModel
+                )
+            }
         }
     }
 }
@@ -194,7 +197,7 @@ private fun PanelTitle(viewModel: WorkoutViewModel) {
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onSurface
+            color = Color.Black
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -209,18 +212,6 @@ private fun PanelTitle(viewModel: WorkoutViewModel) {
 }
 
 
-//@Composable
-//private fun PanelTitle(viewModel: WorkoutViewModel) {
-//    Text(
-//        text = viewModel.returnExercise() + " Coach",
-//        fontSize = 18.sp,
-//        fontWeight = FontWeight.Bold,
-//        textAlign = TextAlign.Center,
-//        color = MaterialTheme.colorScheme.onSurface,
-//        modifier = Modifier.padding(top = 50.dp)
-//    )
-//}
-
 @Composable
 private fun StatsDisplay(state: WorkoutState) {
     Column(
@@ -229,13 +220,13 @@ private fun StatsDisplay(state: WorkoutState) {
         Text(
             text = "Current Reps",
             fontSize = 12.sp,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+            color = Color.Black.copy(alpha = 0.7f)
         )
         Text(
             text = "${state.repCount}",
             fontSize = 48.sp,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSurface
+            color = Color.Black
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -243,13 +234,13 @@ private fun StatsDisplay(state: WorkoutState) {
         Text(
             text = "Status: ${state.status}",
             fontSize = 11.sp,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+            color = Color.Black .copy(alpha = 0.6f)
         )
 
         Text(
             text = "Frames: ${state.framesSent}",
             fontSize = 10.sp,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+            color = Color.Black .copy(alpha = 0.5f)
         )
     }
 }

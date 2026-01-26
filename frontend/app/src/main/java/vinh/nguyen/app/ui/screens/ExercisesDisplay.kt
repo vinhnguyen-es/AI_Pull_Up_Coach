@@ -58,11 +58,14 @@ fun ExercisesDisplay(navController: NavController,
     Column(
         //this is the banner colour
         modifier = Modifier.background(MaterialTheme.colorScheme.onTertiary)
+            .fillMaxSize()
     ) {
         Row(
-            modifier = modifier
-                .padding(20.dp)
-                .fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.primaryContainer)
+                .padding(horizontal = 24.dp, vertical = 10.dp)
+                ,
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -75,15 +78,8 @@ fun ExercisesDisplay(navController: NavController,
 
             )
             SettingsCog(onClick = { navController.navigate("Settings") })
-                //{navController.navigate("Settings")}
-
-//            ThemeSwitch(
-//                darkTheme = darkTheme,
-//                onToggle = onToggleTheme
-//            )
         }
 
-        // The row below the top banner
         Row() {
             Column(
                 //the background

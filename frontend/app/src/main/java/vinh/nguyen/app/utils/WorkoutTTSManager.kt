@@ -58,7 +58,7 @@ class WorkoutTTSManager(context: Context) {
     }
 
 
-    fun stop() {
+    fun stop()  {
         if (tts?.isSpeaking == true) {
             tts?.stop()
         }

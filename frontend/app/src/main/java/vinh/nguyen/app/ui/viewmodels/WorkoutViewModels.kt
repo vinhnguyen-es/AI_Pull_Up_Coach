@@ -44,6 +44,8 @@ class WorkoutViewModel(application: Application): AndroidViewModel(application) 
     private var consecutiveFailures = 0
     private val maxConsecutiveFailures = 5
 
+    private var darkTheme = true
+
     private var returningTime = "Default value"
 
     var captureInterval = 200L // Capture every 200ms (5 FPS)
@@ -91,6 +93,14 @@ class WorkoutViewModel(application: Application): AndroidViewModel(application) 
 
     fun returnExercise(): String {
         return exerciseType
+    }
+
+    fun flipTheme(){
+        darkTheme = !darkTheme
+    }
+
+    fun returnTheme(): Boolean{
+        return darkTheme
     }
 
 
