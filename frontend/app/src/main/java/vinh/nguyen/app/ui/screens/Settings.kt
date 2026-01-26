@@ -21,11 +21,16 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.RecordVoiceOver
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.WbSunny
+import androidx.compose.material.icons.outlined.RecordVoiceOver
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -33,6 +38,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -99,6 +105,9 @@ fun Settings(
 
             // Add more settings here if needed
             Spacer(modifier = Modifier.weight(1f))
+//            ttsSwitch(darkTheme,
+//                    onToggle = onToggleTheme)
+            TTSSettingsToggleSimple(viewModel = viewModel)
         }
 
         // Back button on bottom right
@@ -150,6 +159,43 @@ fun ThemeSwitch(
 }
 
 @Composable
+fun ttsSwitch(
+    ttsOn: Boolean,
+    onToggle: () -> Unit
+
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(16.dp)
+    ) {
+        if (ttsOn){
+            Text("Text to speech on",
+                color = MaterialTheme.colorScheme.onBackground)
+        } else {
+            Text("Text to speech off",
+                color = MaterialTheme.colorScheme.onBackground)
+        }
+        Spacer(modifier = Modifier.width(8.dp))
+        Switch(
+            checked = ttsOn,
+            onCheckedChange = {  onToggle()},
+            thumbContent = {
+                Icon(
+                    imageVector = if (ttsOn)
+                        Icons.Filled.RecordVoiceOver
+                    else
+                        Icons.Outlined.RecordVoiceOver,
+                    contentDescription = if (ttsOn) "Voice cues enabled" else "Voice cues disabled",
+                    modifier = Modifier.size(SwitchDefaults.IconSize),
+                    tint = if (ttsOn) Color(0xFF4CAF50) else Color.Gray
+                )
+            }
+        )
+    }
+}
+
+
+@Composable
 private fun BackButton(
     onClick: () -> Unit
 ) {
@@ -174,6 +220,148 @@ private fun BackButton(
         )
     }
 }
+
+
+/**
+ * TTS Settings Toggle Component
+ * Add this to your settings screen to allow users to enable/disable TTS
+
+@Composable
+fun TTSSettingsToggle(
+    viewModel: WorkoutViewModel,
+    modifier: Modifier = Modifier
+) {
+    val isTTSEnabled by viewModel.isTTSEnabled.collectAsState()
+
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        )
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.weight(1f)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.VolumeUp,
+                    contentDescription = "Voice announcements",
+                    tint = MaterialTheme.colorScheme.primary
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+                Column {
+                    Text(
+                        text = "Voice Announcements",
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                    Text(
+                        text = "Announce reps during workout",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+
+            Switch(
+                checked = isTTSEnabled,
+                onCheckedChange = { viewModel.toggleTTS(it) }
+            )
+        }
+    }
+}*/
+
+/**
+ * Alternative: Simple row version (no card)
+ */
+@Composable
+fun TTSSettingsToggleSimple(
+    viewModel: WorkoutViewModel,
+    modifier: Modifier = Modifier
+) {
+    val isTTSEnabled by viewModel.isTTSEnabled.collectAsState()
+
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = "Voice Announcements",
+            style = MaterialTheme.typography.bodyLarge
+        )
+
+        Switch(
+            checked = isTTSEnabled,
+            onCheckedChange = { viewModel.toggleTTS(it) }
+        )
+    }
+}
+
+/**
+ * Version that accepts generic ViewModel and casts it
+ * Use this when your Settings screen receives ViewModel instead of WorkoutViewModel
+ */
+@Composable
+fun TTSSettingsToggleSimple(
+    viewModel: ViewModel,
+    modifier: Modifier = Modifier
+) {
+    // Safe cast to WorkoutViewModel
+    val workoutViewModel = viewModel as? WorkoutViewModel
+
+    if (workoutViewModel != null) {
+        val isTTSEnabled by workoutViewModel.isTTSEnabled.collectAsState()
+
+        Row(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Voice Announcements",
+                style = MaterialTheme.typography.bodyLarge
+            )
+
+            Switch(
+                checked = isTTSEnabled,
+                onCheckedChange = { workoutViewModel.toggleTTS(it) }
+            )
+        }
+    } else {
+        // Fallback: Show disabled toggle if wrong ViewModel type
+        Row(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Voice Announcements",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+            )
+
+            Switch(
+                checked = false,
+                onCheckedChange = {},
+                enabled = false
+            )
+        }
+    }
+}
+
 //
 //@Composable
 //fun Settings(

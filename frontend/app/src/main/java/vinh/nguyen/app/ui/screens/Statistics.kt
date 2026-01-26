@@ -242,7 +242,7 @@ fun Statistics(
             // Total Reps Card
             StatCard(
                 title = "Total Reps",
-                value = "${viewModel.workoutEntryViewModel?.totalReps ?: 0}",
+                value = "${viewModel.workoutEntryViewModel?.totalReps ?: "You got this! Do some reps!"}",//0
                 backgroundColor = Color(0xFF19CDB9),
                 modifier = Modifier.fillMaxWidth()
             )
@@ -250,7 +250,7 @@ fun Statistics(
             // Total Workouts Card
             StatCard(
                 title = "Total Workouts",
-                value = "${viewModel.workoutEntryViewModel?.totalWorkouts ?: 0}",
+                value = "${viewModel.workoutEntryViewModel?.totalWorkouts ?: "Lets do some work outs"}",//0
                 backgroundColor = Color(0xFF75AEE4),
                 modifier = Modifier.fillMaxWidth()
             )
@@ -258,7 +258,7 @@ fun Statistics(
             // Total Workout Time Card
             StatCard(
                 title = "Total Workout Time",
-                value = "${viewModel.workoutEntryViewModel?.totalWorkoutTime ?: "00:00"}",
+                value = "${viewModel.workoutEntryViewModel?.totalTimeHHMM ?: "Start now!"}",
                 backgroundColor = Color(0xFFF6BF3B),
                 modifier = Modifier.fillMaxWidth()
             )
@@ -266,11 +266,11 @@ fun Statistics(
             // Average Reps Card
             StatCard(
                 title = "Average Reps per Workout",
-                value = "${viewModel.workoutEntryViewModel?.avgReps ?: 0}",
+                value = "${viewModel.workoutEntryViewModel?.avgReps ?: ""}",
                 backgroundColor = Color(0xFFE04A4C),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(10.dp),
+                    .padding(10.dp)
             )
         }
 

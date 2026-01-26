@@ -1,5 +1,6 @@
 package vinh.nguyen.app.ui.components
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -112,6 +113,19 @@ fun ErrorMessageCard(
     }
 }
 
+@DrawableRes
+fun exerciseIcon(exercise: String): Int {
+    return when (exercise) {
+        "Pull Ups" -> R.drawable.pull_up_bar_plain
+        "Bicep Curls" -> R.drawable.bicep_curl_plain
+        "Jumping Jacks" -> R.drawable.jumping_jack_plain
+        "Push Ups" -> R.drawable.push_up_plain
+        "Sit Ups" -> R.drawable.sit_up_plain
+        "Squats" -> R.drawable.squat_plain
+        else -> R.drawable.pull_up_bar_plain
+    }
+}
+
 @Composable
 fun ControlPanel(
     modifier: Modifier = Modifier,
@@ -166,19 +180,46 @@ fun ControlPanel(
         }
     }
 }
-
-
 @Composable
 private fun PanelTitle(viewModel: WorkoutViewModel) {
-    Text(
-        text = viewModel.returnExercise() + " Coach",
-        fontSize = 18.sp,
-        fontWeight = FontWeight.Bold,
-        textAlign = TextAlign.Center,
-        color = MaterialTheme.colorScheme.onSurface,
+    val exercise = viewModel.returnExercise()
+    val iconRes = exerciseIcon(exercise)
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding(top = 50.dp)
-    )
+    ) {
+        Text(
+            text = "$exercise Coach",
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Image(
+            painter = painterResource(id = iconRes),
+            contentDescription = exercise,
+            modifier = Modifier.size(100.dp),
+            contentScale = ContentScale.Fit
+        )
+    }
 }
+
+
+//@Composable
+//private fun PanelTitle(viewModel: WorkoutViewModel) {
+//    Text(
+//        text = viewModel.returnExercise() + " Coach",
+//        fontSize = 18.sp,
+//        fontWeight = FontWeight.Bold,
+//        textAlign = TextAlign.Center,
+//        color = MaterialTheme.colorScheme.onSurface,
+//        modifier = Modifier.padding(top = 50.dp)
+//    )
+//}
 
 @Composable
 private fun StatsDisplay(state: WorkoutState) {
@@ -338,7 +379,8 @@ private fun BackButton(
             .fillMaxWidth()
             .height(60.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color(colourChoice)
+            containerColor = Color(colourChoice),
+            contentColor = MaterialTheme.colorScheme.onSurface
         ),
         shape = RoundedCornerShape(12.dp)
     ) {
@@ -433,8 +475,8 @@ fun DialogWithImage(
                         text = buildString {
 
                             append("Total Reps: ${viewModel.state.value.repCount}\n")
-                            //append("Total Workout Time: ${viewModel.state.value.completedWorkoutTime ?: "00:00"}")
                             append("Total Workout Time: ${viewModel.state.value.completedWorkoutTime ?: "00:00"}\n")
+
                             val presentText = when (viewModel.state.value.repCount) {
                                 0 -> "Ready to start!"
                                 in 1..5 -> "Good start!"
