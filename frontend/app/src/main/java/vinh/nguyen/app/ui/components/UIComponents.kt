@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,16 +21,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import vinh.nguyen.app.ui.components.DialogWithImage
 import vinh.nguyen.app.ui.viewmodels.WorkoutState
 import vinh.nguyen.app.ui.viewmodels.WorkoutViewModel
 import vinh.nguyen.app.R
+import vinh.nguyen.app.database.Workout
+
 @Composable
 fun ConnectionStatusCard(
     modifier: Modifier = Modifier,
@@ -240,7 +246,7 @@ private fun StatsDisplay(state: WorkoutState) {
         Text(
             text = "Frames: ${state.framesSent}",
             fontSize = 10.sp,
-            color = Color.Black .copy(alpha = 0.5f)
+            color = Color.Black.copy(alpha = 0.5f)
         )
     }
 }
@@ -465,7 +471,12 @@ fun DialogWithImage(
                     Text(
                         text = buildString {
 
-                            append("Total Reps: ${viewModel.state.value.repCount}\n")
+                            //append("Total Reps: ${viewModel.state.value.repCount}\n")//"${state.repCount}"
+                            //repcount as flow
+
+
+
+
                             append("Total Workout Time: ${viewModel.state.value.completedWorkoutTime ?: "00:00"}\n")
 
                             val presentText = when (viewModel.state.value.repCount) {

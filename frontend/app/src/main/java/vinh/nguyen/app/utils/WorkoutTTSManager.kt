@@ -45,7 +45,13 @@ class WorkoutTTSManager(context: Context) {
             MILESTONE_PHRASES.random().format(repCount)
         } else {
             // Regular rep announcement
-            "$repCount reps"
+            if (repCount == 1){
+                "$repCount rep"
+            }
+            else {
+                "$repCount reps"
+            }
+
         }
 
         speak(announcement)

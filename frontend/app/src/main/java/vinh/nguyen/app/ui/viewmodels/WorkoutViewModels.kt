@@ -53,6 +53,9 @@ class WorkoutViewModel(application: Application): AndroidViewModel(application) 
     var exerciseType = ""
     var workoutEntryViewModel: WorkoutEntryViewModel? = null
 
+
+
+
     companion object {
         private const val TAG = "WorkoutViewModel"
     }
