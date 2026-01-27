@@ -24,9 +24,32 @@ interface WorkoutEntryDao {
     @Query("SELECT * from workouts ORDER BY date DESC")
     fun getAllWorkoutsStream(): Flow<List<Workout>>
 
-    @Query("SELECT SUM(reps) from workouts")
-    suspend fun getTotalReps(): Int
 
     @Query("SELECT length FROM workouts")
     suspend fun getAllLengths(): List<String>
+
+
+
+    @Query("SELECT SUM(reps) from workouts")
+    suspend fun getTotalReps(): Int
+
+    @Query("SELECT COUNT(reps) from workouts")
+    suspend fun getTotalWorkouts(): Int
+
+    @Query("SELECT SUM(length) from workouts")
+    suspend fun getTotalWorkoutTime(): Int
+    //pull into a list, then pulls the numbers out of the strings
+    // he already did it for stats...
+
+    @Query("SELECT AVG(reps) FROM workouts ")
+    suspend fun avgRepsPerWorkout(): Int
+
+
+    /**
+     * cumulative reps ✅
+     * total workout number ✅
+     * total workout time ✅
+     * average resps per workout
+     */
+
 }

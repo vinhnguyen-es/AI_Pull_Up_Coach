@@ -42,6 +42,16 @@ class WorkoutEntryViewModel(private val workoutsRepository: WorkoutRepository) :
     var totalReps by mutableStateOf(0)
         private set
 
+    var totalWorkouts by mutableStateOf(0)
+        private set
+
+    var totalWorkoutTime by mutableStateOf(0)
+        private set
+
+    var avgReps by mutableStateOf(0)
+        private set
+
+
     var totalTimeHHMM by mutableStateOf("00:00")
         private set
 
@@ -63,6 +73,12 @@ class WorkoutEntryViewModel(private val workoutsRepository: WorkoutRepository) :
 
             val lengths = workoutsRepository.getAllLengths()
             totalTimeHHMM = sumLengthsToHHMMSS(lengths)
+
+            totalWorkouts = workoutsRepository.getTotalWorkouts()
+
+            totalWorkoutTime = workoutsRepository.getTotalWorkoutTime()
+
+            avgReps = workoutsRepository.avgRepsPerWorkout()
         }
     }
 

@@ -34,6 +34,12 @@ interface WorkoutRepository {
 
     suspend fun getTotalReps(): Int
 
+    suspend fun getTotalWorkouts(): Int
+
+    suspend fun getTotalWorkoutTime(): Int
+
+    suspend fun avgRepsPerWorkout(): Int
+
     suspend fun getAllLengths(): List<String>
 
     /**
@@ -50,4 +56,6 @@ interface WorkoutRepository {
      * Update workout in the data source
      */
     suspend fun updateWorkout(workout: Workout)
+
+
 }

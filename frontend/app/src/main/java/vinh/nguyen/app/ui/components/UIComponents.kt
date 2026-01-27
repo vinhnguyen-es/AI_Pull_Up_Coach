@@ -1,5 +1,6 @@
 package vinh.nguyen.app.ui.components
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -51,7 +52,7 @@ fun ConnectionStatusCard(
             Text(
                 text = if (isConnected) "LIVE" else "OFFLINE",
                 //i made a change here should still be white
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 10.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -66,7 +67,7 @@ private fun ConnectionStatusIndicator() {
             .size(6.dp)
             .background(
                 //not touched
-                color = Color.White,
+                color = MaterialTheme.colorScheme.onSurface,
                 shape = RoundedCornerShape(50.dp)
             )
     )
@@ -112,6 +113,19 @@ fun ErrorMessageCard(
     }
 }
 
+@DrawableRes
+fun exerciseIcon(exercise: String): Int {
+    return when (exercise) {
+        "Pull Ups" -> R.drawable.pull_up_bar_plain
+        "Bicep Curls" -> R.drawable.bicep_curl_plain
+        "Jumping Jacks" -> R.drawable.jumping_jack_plain
+        "Push Ups" -> R.drawable.push_up_plain
+        "Sit Ups" -> R.drawable.sit_up_plain
+        "Squats" -> R.drawable.squat_plain
+        else -> R.drawable.pull_up_bar_plain
+    }
+}
+
 @Composable
 fun ControlPanel(
     modifier: Modifier = Modifier,
@@ -122,50 +136,81 @@ fun ControlPanel(
     viewModel: WorkoutViewModel,
     navController: NavController
 ) {
-    Card(
-        modifier = modifier,
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-            // Title
-            PanelTitle(viewModel)
+    val colourChoice = when (viewModel.returnExercise()) {
+        "Pull Ups"-> 0xFF67EDDE//19CDB9
+        "Bicep Curls"-> 0xFFABCEEF//75AEE4
+        "Jumping Jacks" -> 0xFFFAD98B//F6BF3B
+        "Push Ups" -> 0xFFEfA3A4//E04A4C
+        "Sit Ups" -> 0xFFAEA5D7//504294
+        "Squats"-> 0xFFF9B0BC//F46C83
+        else -> 0xFFFFFFF
 
-            // Stats Display
-            StatsDisplay(state)
-
-            // Control Buttons
-            ControlButtons(
-                isConnected = state.isConnected,
-                isWorkoutActive = state.isWorkoutActive,
-                onStartReset = onStartReset,
-                onReset = onReset,
-                onReconnect = onReconnect,
-                navController = navController,
-                viewModel = viewModel
+    }
+    Column(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+        Card(
+            modifier = modifier,
+            shape = RoundedCornerShape(16.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = Color(colourChoice), // dialog background
+                contentColor = MaterialTheme.colorScheme.onSurface  // text/icon default
             )
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                // Title
+                PanelTitle(viewModel)
+
+                // Stats Display
+                StatsDisplay(state)
+
+                // Control Buttons
+                ControlButtons(
+                    isConnected = state.isConnected,
+                    isWorkoutActive = state.isWorkoutActive,
+                    onStartReset = onStartReset,
+                    onReset = onReset,
+                    onReconnect = onReconnect,
+                    navController = navController,
+                    viewModel = viewModel
+                )
+            }
         }
     }
 }
-
-
 @Composable
-fun PanelTitle(viewModel: WorkoutViewModel) {
-    Text(
-        text = viewModel.returnExercise() + " Coach",
-        fontSize = 18.sp,
-        fontWeight = FontWeight.Bold,
-        textAlign = TextAlign.Center,
-        color = MaterialTheme.colorScheme.secondary,
+private fun PanelTitle(viewModel: WorkoutViewModel) {
+    val exercise = viewModel.returnExercise()
+    val iconRes = exerciseIcon(exercise)
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding(top = 50.dp)
-    )
+    ) {
+        Text(
+            text = "$exercise Coach",
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+            color = Color.Black
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Image(
+            painter = painterResource(id = iconRes),
+            contentDescription = exercise,
+            modifier = Modifier.size(100.dp),
+            contentScale = ContentScale.Fit
+        )
+    }
 }
+
 
 @Composable
 private fun StatsDisplay(state: WorkoutState) {
@@ -175,13 +220,13 @@ private fun StatsDisplay(state: WorkoutState) {
         Text(
             text = "Current Reps",
             fontSize = 12.sp,
-            color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.7f)
+            color = Color.Black.copy(alpha = 0.7f)
         )
         Text(
             text = "${state.repCount}",
             fontSize = 48.sp,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.secondary
+            color = Color.Black
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -189,13 +234,13 @@ private fun StatsDisplay(state: WorkoutState) {
         Text(
             text = "Status: ${state.status}",
             fontSize = 11.sp,
-            color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.6f)
+            color = Color.Black .copy(alpha = 0.6f)
         )
 
         Text(
             text = "Frames: ${state.framesSent}",
             fontSize = 10.sp,
-            color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f)
+            color = Color.Black .copy(alpha = 0.5f)
         )
     }
 }
@@ -216,7 +261,7 @@ private fun ControlButtons(
         if (!isConnected) {
             ReconnectButton(onReconnect)
         } else {
-            StartResetButton(isWorkoutActive, onStartReset)
+            StartResetButton(isWorkoutActive, onStartReset, viewModel)
         }
         BackButton(
             onClick = {
@@ -257,8 +302,27 @@ private fun ReconnectButton(onClick: () -> Unit) {
 @Composable
 private fun StartResetButton(
     isWorkoutActive: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    viewModel: WorkoutViewModel
 ) {
+    val colourChoice = when (viewModel.returnExercise()) {
+        "Pull Ups"-> 0xFF19CDB9
+        "Bicep Curls"-> 0xFF75AEE4
+        "Jumping Jacks" -> 0xFFF6BF3B
+        "Push Ups" -> 0xFFE04A4C
+        "Sit Ups" -> 0xFF504294
+        "Squats"-> 0xFFF46C83
+        else -> 0xFFFFFFF
+    }
+    val secondcolourChoice = when (viewModel.returnExercise()) {
+        "Pull Ups"-> 0xFF13988A//19CDB9
+        "Bicep Curls"-> 0xFF2573BC//75AEE4
+        "Jumping Jacks" -> 0xFFDC9E0A//F6BF3B
+        "Push Ups" -> 0xFF9A1A1C//E04A4C
+        "Sit Ups" -> 0xFF3A306B//504294
+        "Squats"-> 0xFFF03353//F46C83
+        else -> 0xFFFFFFF
+    }
     Button(
         onClick = onClick,
         modifier = Modifier
@@ -266,16 +330,17 @@ private fun StartResetButton(
             .height(60.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = if (isWorkoutActive)
-                MaterialTheme.colorScheme.tertiary
+                Color(secondcolourChoice)
             else
-                MaterialTheme.colorScheme.primary
+                Color(colourChoice)
         ),
         shape = RoundedCornerShape(12.dp)
     ) {
         Text(
             text = if (isWorkoutActive) "RESET" else "START",
             fontWeight = FontWeight.Bold,
-            fontSize = 16.sp
+            fontSize = 16.sp,
+            color = MaterialTheme.colorScheme.onSurface
         )
     }
 }
@@ -287,16 +352,26 @@ private fun BackButton(
     navController: NavController,
     viewModel: WorkoutViewModel
 ) {
-
     var showDialog by remember { mutableStateOf(false)}
+    val colourChoice = when (viewModel.returnExercise()) {
+        "Pull Ups"-> 0xFF19CDB9
+        "Bicep Curls"-> 0xFF75AEE4
+        "Jumping Jacks" -> 0xFFF6BF3B
+        "Push Ups" -> 0xFFE04A4C
+        "Sit Ups" -> 0xFF504294
+        "Squats"-> 0xFFF46C83
+        else -> 0xFFFFFFF
+    }
     Button(
         onClick = {showDialog = true
-            },//onReset()
+            onReset()
+            },
         modifier = Modifier
             .fillMaxWidth()
             .height(60.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.primary
+            containerColor = Color(colourChoice),
+            contentColor = MaterialTheme.colorScheme.onSurface
         ),
         shape = RoundedCornerShape(12.dp)
     ) {
@@ -339,14 +414,30 @@ fun DialogWithImage(
     onReset: () -> Unit,
     viewModel: WorkoutViewModel
 ) {
+
     Dialog(onDismissRequest = { onDismissRequest() }) {
         // Draw a rectangle shape with rounded corners inside the dialog
+        val colourChoice = when (viewModel.returnExercise()) {
+            "Pull Ups"-> 0xFF19CDB9
+            "Bicep Curls"-> 0xFF75AEE4
+            "Jumping Jacks" -> 0xFFF6BF3B
+            "Push Ups" -> 0xFFE04A4C
+            "Sit Ups" -> 0xFF504294
+            "Squats"-> 0xFFF46C83
+            else -> 0xFFFFFFF
+        }
+        val title = viewModel.returnExercise()
+
         Card(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(375.dp)
                 .padding(16.dp),
             shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = Color(colourChoice), // dialog background
+                contentColor = MaterialTheme.colorScheme.onSurface  // text/icon default
+            )
         ) {
             Column(
                 modifier = Modifier
@@ -354,32 +445,48 @@ fun DialogWithImage(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Image(
-                    painter = painterResource(id = drawableRes),  // Changed to painterResource
-                    contentDescription = imageDescription,
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier
-                        .height(160.dp)
-                )
-                Text(
-                    text = buildString {
-                        append("Total Reps: ${viewModel.state.value.repCount}\n")
-                        append("Total Workout Time: ${viewModel.state.value.completedWorkoutTime ?: "00:00"}\n")
-                        val presentText = when (viewModel.state.value.repCount) {
-                            0 -> "Ready to start!"
-                            in 1..5 -> "Good start!"
-                            in 6..15 -> "Great job!"
-                            in 21..30 -> "Outstanding!"
-                            else -> "You're a champion!"
-                        }
-                        append("${presentText}")
-                    },
-                    modifier = Modifier.padding(16.dp),
-                )
+                Row {
+                    Image(
+                        painter = painterResource(id = drawableRes),  // Changed to painterResource
+                        contentDescription = imageDescription,
+                        contentScale = ContentScale.Fit,
+                        modifier = Modifier
+                            .height(160.dp)
+                    )
+                }
+                Row{
+                    Text(text = title,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        textAlign = TextAlign.Center)
+                }
+                Row {
+                    Text(
+                        text = buildString {
+
+                            append("Total Reps: ${viewModel.state.value.repCount}\n")
+                            append("Total Workout Time: ${viewModel.state.value.completedWorkoutTime ?: "00:00"}\n")
+
+                            val presentText = when (viewModel.state.value.repCount) {
+                                0 -> "Ready to start!"
+                                in 1..5 -> "Good start!"
+                                in 6..15 -> "Great job!"
+                                in 21..30 -> "Outstanding!"
+                                else -> "You're a champion!"
+                            }
+                            append("${presentText}")
+                        },
+                        modifier = Modifier.padding(10.dp),
+                        color = MaterialTheme.colorScheme.onSurface,
+                        textAlign = TextAlign.Center
+                    )
+                }
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center,
+
                 ) {
                     TextButton(
                         onClick = {
@@ -387,9 +494,14 @@ fun DialogWithImage(
                             viewModel.clearCompletedTime()
                             navController.navigate("ExercisesDisplay")
                             },
+
                         modifier = Modifier.padding(8.dp),
+
                     ) {
-                        Text("Confirm")
+                        Text("Confirm",
+                                color = MaterialTheme.colorScheme.onSurface//onSurface,
+
+                        )
                     }
                 }
             }
