@@ -75,7 +75,7 @@ fun History(
         }
     }
 
-    Row(Modifier.fillMaxSize()) {
+    Row(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         Box(Modifier.weight(3f)) {
             if (groupedByDate.isNotEmpty()) {
                 LazyColumn(Modifier.background(MaterialTheme.colorScheme.background)) {
