@@ -79,6 +79,7 @@ dependencies {
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.compose.foundation)
+    implementation(libs.androidx.compose.foundation.layout)
 
     val roomVersion = "2.8.4"
 
